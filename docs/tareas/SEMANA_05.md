@@ -14,6 +14,19 @@ La distribución sigue cuatro reglas:
 2. Cada integrante investigará un antecedente.
 3. Cada integrante diseñará al menos una pantalla o formulario.
 4. Cada integrante se hará responsable de cinco o más clases de dominio.
+5. Cada categoría tendrá un único responsable; nadie modificará las clases de otro rubro sin coordinación previa.
+
+## Propiedad exclusiva por rubro
+
+| Responsable | Rubro del dominio | Cantidad de clases |
+|---|---|---:|
+| Emanuel | Identidad y estructura empresarial | 7 |
+| Daniel | Afiliación y control documental | 6 |
+| Franco | Packs y ofertas | 5 |
+| Piero | Reservas y recojo | 5 |
+| Alejandro | Pagos, postventa y experiencia | 8 |
+
+Las clases pueden relacionarse entre rubros, pero su archivo y sus reglas pertenecen únicamente al responsable indicado. Una relación con una clase ajena no autoriza a modificarla.
 
 Los archivos individuales deberán guardarse separados para evitar que dos personas editen el mismo documento al mismo tiempo. La integración final se realizará después de recibir todos los aportes.
 
@@ -199,7 +212,7 @@ El modelo ER deberá coincidir con el diagrama de clases y el backend deberá in
 
 ---
 
-### Piero — Casos de uso, base teórica y compra
+### Piero — Casos de uso, base teórica, reservas y recojo
 
 #### Entregable principal
 
@@ -224,9 +237,9 @@ También redactará la base teórica con un máximo de dos páginas. Debe cubrir
 
 #### Antecedente
 
-- **OLIO**
-- Fuente inicial: https://olioapp.com/es/
-- Guardar el aporte por separado con el nombre `piero_olio`.
+- **ResQ Club**
+- Fuente inicial: https://www.resq-club.com/
+- Guardar el aporte por separado con el nombre `piero_resq_club`.
 
 #### Prototipo
 
@@ -239,14 +252,12 @@ También redactará la base teórica con un máximo de dos páginas. Debe cubrir
 1. `RetencionStock`
 2. `Reserva`
 3. `DetalleReserva`
-4. `Pago`
-5. `BoletaSimulada`
-6. `CodigoRecojo`
-7. `Recojo`
+4. `CodigoRecojo`
+5. `Recojo`
 
 #### Exposición
 
-Explicar los actores, los casos de uso y el proceso de compra y recojo.
+Explicar los actores, los casos de uso y el proceso de reserva y recojo.
 
 #### Criterio de finalización
 
@@ -254,7 +265,7 @@ Los casos de uso deben corresponder con los requisitos RF-01 a RF-26 y la base t
 
 ---
 
-### Alejandro — Gestión, postventa e impacto
+### Alejandro — Gestión, pagos, postventa e impacto
 
 #### Entregable principal
 
@@ -288,16 +299,18 @@ El cronograma debe cubrir desde el primer avance hasta la entrega final de la se
 
 #### Clases de dominio
 
-1. `CancelacionReserva`
-2. `Reembolso`
-3. `ComisionPlataforma`
-4. `Resena`
-5. `Notificacion`
-6. `ImpactoCO2Evitado`
+1. `Pago`
+2. `BoletaSimulada`
+3. `CancelacionReserva`
+4. `Reembolso`
+5. `ComisionPlataforma`
+6. `Resena`
+7. `Notificacion`
+8. `ImpactoCO2Evitado`
 
 #### Exposición
 
-Explicar el modelo de negocio, cancelaciones, comisiones, reseñas e impacto esperado.
+Explicar los pagos simulados, el modelo de negocio, las cancelaciones, las comisiones, las reseñas y el impacto esperado.
 
 #### Criterio de finalización
 
@@ -343,6 +356,9 @@ Mientras se espera este bloque, nadie debe quedarse detenido: continúa con su a
 ## Reglas para evitar conflictos
 
 - Cada integrante trabajará en una rama propia.
+- Cada rubro y cada clase tendrán un único responsable.
+- Nadie modificará archivos de otro rubro sin conversarlo con su responsable.
+- Las relaciones entre rubros se acordarán mediante el diagrama y la documentación, sin trasladar la propiedad de las clases.
 - Los antecedentes se guardarán como archivos separados.
 - Los prototipos tendrán nombres diferentes.
 - Solo Emanuel editará la copia principal del informe durante la integración.
