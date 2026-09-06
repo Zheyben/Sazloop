@@ -133,6 +133,184 @@ No se crearán clases independientes para listas cerradas como:
 - Resultado de una revisión.
 - Motivo general de suspensión cuando provenga de una lista predefinida.
 
+## Grupo 3 — Packs sorpresa y ofertas
+
+### Clases seleccionadas
+
+| Clase | ¿Qué representa? | ¿Por qué existe? |
+|---|---|---|
+| `PackSorpresa` | La definición general del pack ofrecido por un establecimiento. | Reúne su descripción, posibles productos y advertencias, sin revelar el contenido exacto que recibirá el consumidor. |
+| `OfertaPack` | La publicación concreta del pack disponible en una fecha determinada. | Guarda la vigencia, ventana de recojo, hora límite y estado de la oferta sin modificar la definición general del pack. |
+| `VariantePack` | Cada tamaño disponible dentro de una oferta, por ejemplo pequeño, mediano o grande. | Cada opción necesita su propio precio y cantidad disponible, aunque todas formen parte del mismo pack activo. |
+| `Alergeno` | Una sustancia que el pack podría contener y que puede causar una reacción alérgica. | Permite advertir al consumidor antes de comprar, aunque el contenido exacto del pack sea sorpresa. |
+| `RestriccionAlimentaria` | Una condición o característica alimentaria relevante, como presencia de gluten o falta de compatibilidad vegana. | Ayuda al consumidor a saber si el pack podría ser inadecuado para sus necesidades alimentarias. |
+
+### Relaciones principales
+
+- Cada `PackSorpresa` pertenece a un solo `Establecimiento`.
+- Un `PackSorpresa` puede utilizarse en varias `OfertaPack` a lo largo del tiempo.
+- Un establecimiento solo puede tener una `OfertaPack` activa simultáneamente en la primera versión.
+- Cada oferta contiene una o más `VariantePack`.
+- Cada variante guarda su tamaño, precio referencial, precio con descuento, stock inicial y stock disponible.
+- Un pack puede relacionarse con varios `Alergeno` y varias `RestriccionAlimentaria`.
+
+### Decisiones de modelado
+
+#### Diferencia entre pack y oferta
+
+El `PackSorpresa` describe lo que normalmente ofrece el establecimiento. La `OfertaPack` representa una publicación específica para un día y horario concretos.
+
+Separarlos evita tener que repetir toda la descripción del pack cada vez que cambia el precio, el stock o la ventana de recojo.
+
+#### Variantes dentro de una sola oferta
+
+En la primera versión no existirán varios tipos de ofertas activos en un mismo establecimiento. Existirá un solo pack activo con diferentes `VariantePack`.
+
+Por ejemplo, una oferta puede incluir:
+
+- Variante pequeña: precio y stock propios.
+- Variante mediana: precio y stock propios.
+- Variante grande: precio y stock propios.
+
+#### Información visible antes de comprar
+
+El consumidor podrá conocer:
+
+- La descripción general del pack.
+- Ejemplos de productos que podría recibir.
+- El tamaño seleccionado.
+- El precio referencial y el precio con descuento.
+- La ventana y el límite de recojo.
+- Los posibles alérgenos.
+- Las restricciones alimentarias informadas.
+
+La lista exacta de alimentos seguirá siendo sorpresa.
+
+#### QR del establecimiento
+
+No se creará una clase de dominio solo para representar el código QR. El QR será un enlace estable asociado al establecimiento que abrirá su oferta activa.
+
+Si no existe una oferta activa, la plataforma mostrará que el pack no está disponible. La imagen o enlace del QR podrá resolverse técnicamente sin convertirlo en una entidad del negocio.
+
+## Grupo 4 — Compra, pago y recojo
+
+### Clases seleccionadas
+
+| Clase | ¿Qué representa? | ¿Por qué existe? |
+|---|---|---|
+| `RetencionStock` | La separación temporal de unidades mientras una compra está en proceso. | Evita que otra persona compre el mismo stock y permite esperar la confirmación manual de un pago presencial en efectivo. |
+| `Reserva` | La compra confirmada de uno o varios packs que deberán recogerse en el establecimiento. | Es el registro principal que conecta al consumidor, la oferta, el pago y el recojo. |
+| `DetalleReserva` | Cada variante y cantidad incluida dentro de una reserva. | Conserva exactamente qué tamaños se compraron, cuántas unidades y a qué precio, incluso si la oferta cambia después. |
+| `Pago` | La operación de pago asociada con la reserva. | Registra el medio utilizado, el importe, el contexto remoto o presencial y su estado. En la primera versión todos los pagos digitales serán simulados. |
+| `BoletaSimulada` | El comprobante interno generado después de confirmar el pago. | Permite mostrar el resumen de la compra y el código de recojo, dejando claro que no es un comprobante tributario real. |
+| `CodigoRecojo` | El código único que demuestra qué reserva debe entregar el establecimiento. | El consumidor lo dicta al personal y el sistema impide reutilizarlo después de confirmar el recojo. |
+| `Recojo` | El registro de la entrega física del pack al consumidor. | Permite saber cuándo se completó la reserva, quién la confirmó desde la cuenta del local y cuándo se habilita la reseña. |
+| `CancelacionReserva` | El registro de una cancelación solicitada por el consumidor. | Conserva la fecha, el motivo, la penalización aplicada y la devolución del stock. |
+| `Reembolso` | La devolución simulada de una parte del pago. | Permite representar de forma separada el 50 % devuelto al consumidor cuando corresponde. |
+| `ComisionPlataforma` | El importe que SalvemosLaComida retiene por una venta. | Representa directamente el modelo de negocio y permite calcular el ingreso neto del establecimiento. |
+
+### Relaciones principales
+
+- Una `RetencionStock` corresponde a una variante, una cantidad y un consumidor durante un tiempo limitado.
+- Una `Reserva` pertenece a un `Consumidor` y a una `OfertaPack`.
+- Cada reserva tiene uno o más `DetalleReserva`.
+- Cada detalle señala la `VariantePack` seleccionada, la cantidad y el precio aplicado.
+- Una reserva confirmada tiene un `Pago`, una `BoletaSimulada` y un `CodigoRecojo`.
+- Una reserva puede terminar en un `Recojo` o en una `CancelacionReserva`, pero no en ambos.
+- Una cancelación que cumpla las reglas genera un `Reembolso` simulado.
+- Cada importe efectivamente cobrado genera una `ComisionPlataforma`.
+
+### Decisiones de modelado
+
+#### Reserva y pago remoto
+
+En una compra remota, el pago digital simulado y la confirmación de la reserva se tratarán como una sola operación lógica. Si el pago no se confirma, la reserva no debe quedar confirmada ni el stock descontado definitivamente.
+
+Los medios disponibles serán tarjeta de débito simulada y Yape simulado.
+
+#### Compra presencial mediante QR
+
+Desde el QR del establecimiento se podrá pagar mediante:
+
+- Tarjeta de débito simulada.
+- Yape simulado.
+- Efectivo.
+
+Cuando se elija efectivo, la `RetencionStock` separará las unidades temporalmente. El personal confirmará manualmente que recibió el dinero y, en ese momento, el pago y el recojo quedarán completados.
+
+En una compra digital, incluso si se realiza estando dentro del local, el personal confirmará la entrega utilizando el código de recojo.
+
+#### Boleta y código de recojo
+
+La `BoletaSimulada` mostrará claramente que no posee validez tributaria. Incluirá el resumen de la compra y su `CodigoRecojo`.
+
+El personal buscará ese código desde la cuenta del establecimiento. Al confirmar la entrega, el código quedará utilizado y no podrá emplearse nuevamente.
+
+#### Cancelación y devolución de stock
+
+Una reserva remota podrá cancelarse mientras continúe pendiente de recojo y no haya superado el límite definitivo de la oferta.
+
+Al cancelar:
+
+- Se devuelve de forma simulada el 50 % de lo pagado.
+- El otro 50 % se conserva como penalización.
+- El stock vuelve a estar disponible cuando la oferta todavía puede venderse.
+- No se permite cancelar una reserva ya recogida, expirada o cancelada.
+
+Las compras presenciales completadas en el establecimiento no tendrán cancelación mediante la plataforma.
+
+#### Comisión de la plataforma
+
+La comisión será el **10 % del importe que realmente permanezca cobrado**.
+
+Ejemplos:
+
+- Venta completada de S/ 20: la plataforma recibe S/ 2 y el establecimiento S/ 18.
+- Reserva de S/ 20 cancelada: se devuelven S/ 10 al consumidor; de los S/ 10 retenidos, la plataforma recibe S/ 1 y el establecimiento S/ 9.
+
+En pagos presenciales en efectivo, la comisión se registrará como un saldo simulado que el establecimiento mantiene con la plataforma.
+
+## Grupo 5 — Experiencia posterior e impacto
+
+### Clases seleccionadas
+
+| Clase | ¿Qué representa? | ¿Por qué existe? |
+|---|---|---|
+| `Resena` | La calificación y comentario que deja el consumidor después de recibir su compra. | Permite evaluar la experiencia real y construir la reputación del establecimiento. |
+| `Notificacion` | Un aviso enviado a un usuario por un suceso importante. | Informa sobre resultados de afiliación, documentos por vencer, suspensiones, recordatorios de recojo y otros cambios relevantes. |
+| `ImpactoCO2Evitado` | El registro del impacto ambiental atribuido a una compra recogida. | Permite mostrar cuánto alimento se rescató y una estimación del CO₂ evitado sin definir todavía una fórmula definitiva. |
+
+### Relaciones principales
+
+- Una `Reserva` solo puede recibir una `Resena` después de tener un `Recojo` completado.
+- Cada reseña pertenece a un consumidor y califica a un establecimiento.
+- Una `Notificacion` tiene un usuario destinatario y se origina por un acontecimiento del sistema.
+- Un `Recojo` completado puede generar un registro `ImpactoCO2Evitado`.
+
+### Decisiones de modelado
+
+#### Reseñas verificadas
+
+No se permitirá calificar únicamente por haber pagado. La reseña se habilita después de confirmar el recojo, porque solo entonces el consumidor recibió realmente el pack.
+
+La calificación y el comentario formarán parte de la misma clase `Resena`; no necesitan entidades separadas.
+
+#### Notificaciones como concepto del negocio
+
+La notificación se mantiene como clase porque debe conservar destinatario, contenido, fecha, motivo y estado de lectura. No representa únicamente un mensaje visual momentáneo.
+
+#### Impacto ambiental pendiente de fórmula
+
+`ImpactoCO2Evitado` se incluye porque forma parte de la propuesta de valor del proyecto. Sin embargo, el peso recuperado, los factores de conversión y la fórmula exacta se definirán en una etapa posterior.
+
+Para el primer avance bastará con mostrar que el impacto se registra después de un recojo completado.
+
+## Información calculada que no necesita una entidad propia
+
+El panel empresarial mostrará ventas, comisiones, ingresos netos, cancelaciones, no recojos, calificaciones e impacto. Estos valores se calcularán utilizando las clases ya definidas.
+
+Por ahora no se crearán clases como `EstadisticaEmpresa`, `ReporteVentas` o `Dashboard`, porque representan consultas o presentaciones de datos y no objetos independientes del negocio.
+
 ## Elementos que no se contarán como clases de dominio
 
 Algunos conceptos serán necesarios en el código, pero no deben utilizarse para completar artificialmente la cantidad mínima de clases:
@@ -148,9 +326,11 @@ Algunos conceptos serán necesarios en el código, pero no deben utilizarse para
 
 Los roles, estados y métodos de pago se representarán mediante enumeraciones cuando corresponda.
 
-## Conteo actual
+## Conteo final propuesto
 
-Hasta este punto se han definido **13 clases de dominio justificadas**:
+El modelo contiene **31 clases de dominio justificadas**. El mínimo académico para cinco integrantes es de 25 clases, por lo que el proyecto cumple el requisito sin crear conceptos artificiales.
+
+### Usuarios y estructura empresarial
 
 1. `Usuario`
 2. `Consumidor`
@@ -159,6 +339,9 @@ Hasta este punto se han definido **13 clases de dominio justificadas**:
 5. `Establecimiento`
 6. `Direccion`
 7. `CuentaEstablecimiento`
+
+### Afiliación y revisión documental
+
 8. `SolicitudAfiliacion`
 9. `DocumentoEstablecimiento`
 10. `RevisionDocumento`
@@ -166,4 +349,35 @@ Hasta este punto se han definido **13 clases de dominio justificadas**:
 12. `AdministradorPlataforma`
 13. `SuspensionEstablecimiento`
 
-El siguiente grupo por modelar será el correspondiente a los packs sorpresa, sus variantes y las ofertas publicadas.
+### Packs y ofertas
+
+14. `PackSorpresa`
+15. `OfertaPack`
+16. `VariantePack`
+17. `Alergeno`
+18. `RestriccionAlimentaria`
+
+### Compra, pago y recojo
+
+19. `RetencionStock`
+20. `Reserva`
+21. `DetalleReserva`
+22. `Pago`
+23. `BoletaSimulada`
+24. `CodigoRecojo`
+25. `Recojo`
+26. `CancelacionReserva`
+27. `Reembolso`
+28. `ComisionPlataforma`
+
+### Experiencia e impacto
+
+29. `Resena`
+30. `Notificacion`
+31. `ImpactoCO2Evitado`
+
+## Conclusión del modelado inicial
+
+Las 31 clases nacen de las funciones ya acordadas para SalvemosLaComida. No todas tendrán la misma complejidad ni necesariamente serán tablas independientes: algunas podrán implementarse como entidades y otras como objetos de valor, según se defina al preparar el diagrama de clases y la persistencia.
+
+El siguiente trabajo será revisar las relaciones y responsabilidades de estas clases para convertir este catálogo en un diagrama de clases coherente. Si durante esa revisión se descubre que dos conceptos pueden unirse o que falta uno indispensable, el documento deberá actualizarse antes de escribir el código.
