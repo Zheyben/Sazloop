@@ -117,6 +117,75 @@ La aplicación no se dividirá en microservicios durante la V1. Una separación 
 - La organización modular deberá corresponder con los requerimientos, casos de uso y clases definitivas.
 - Las versiones y tecnologías concretas se confirmarán según lo utilizado en clase.
 
----
 
-Las versiones y tecnologías concretas se confirmarán según lo utilizado en clase.
+## DEC-026 — Una identidad con perfiles combinables
+
+Una persona utilizará una sola cuenta y podrá tener perfil de consumidor, perfil empresarial o ambos. El cambio de perfil no requiere crear credenciales duplicadas.
+
+## DEC-027 — Empresa con varios establecimientos
+
+Una empresa puede registrar varios establecimientos físicos. Cada establecimiento tiene una ubicación, documentos, aprobación y operación independientes.
+
+## DEC-028 — Cuenta operativa por establecimiento
+
+Después de la aprobación, el propietario crea una cuenta compartida para el personal de cada establecimiento. Esta cuenta solo puede gestionar el local asignado. No se registrarán empleados individualmente en la V1.
+
+## DEC-029 — Nueva solicitud después de un rechazo
+
+Si una solicitud presenta problemas, se rechaza y se informa el motivo. La cuenta, empresa y establecimiento se conservan; el propietario deberá presentar una nueva solicitud para ese local.
+
+## DEC-030 — Suspensión por documento vencido
+
+Un establecimiento aprobado se suspende si vence un documento obligatorio. No podrá publicar nuevas ofertas hasta que el documento renovado sea revisado y aprobado. Su cuenta e historial se conservan.
+
+## DEC-031 — Una oferta activa con variantes
+
+Cada establecimiento tendrá como máximo una oferta activa simultáneamente. La oferta puede contener varios tamaños con precios y stock propios.
+
+## DEC-032 — Información previa del pack
+
+Antes de comprar se mostrarán la descripción, posibles productos, tamaño, precio, horario, alérgenos y restricciones alimentarias. El contenido exacto seguirá siendo sorpresa.
+
+## DEC-033 — Boleta simulada y código de recojo
+
+Al confirmarse el pago se generará una boleta sin validez tributaria y un código único. El personal buscará ese código y lo invalidará al marcar la entrega.
+
+## DEC-034 — Retención para efectivo presencial
+
+Cuando se elija efectivo desde el QR del local, el stock se retendrá temporalmente. El personal confirmará manualmente el dinero recibido y el recojo quedará completado en ese momento.
+
+## DEC-035 — Límites de cancelación remota
+
+Una reserva remota puede cancelarse mientras esté pendiente de recojo y no haya superado el límite definitivo. Se registra un reembolso simulado del 50 % y el stock se recupera si todavía puede venderse.
+
+## DEC-036 — Comisión del 10 % sobre lo cobrado
+
+La comisión de la plataforma será el 10 % del importe que efectivamente permanezca cobrado. Si una reserva se cancela, la comisión se calcula sobre la mitad retenida, no sobre el precio original.
+
+## DEC-037 — Panel basado en información calculada
+
+Ventas, comisiones, ingresos, cancelaciones, no recojos, calificaciones e impacto se calcularán desde los registros existentes. No se crearán entidades artificiales para representar el dashboard.
+
+## DEC-038 — Cálculo ambiental postergado
+
+El impacto ambiental se registrará conceptualmente después de un recojo completado. La fórmula exacta de alimento recuperado y CO₂ evitado se definirá en una etapa posterior.
+
+## DEC-039 — Stack tecnológico principal
+
+- Java 21.
+- Spring Boot.
+- Maven.
+- Spring Data JPA.
+- MySQL.
+- HTML, CSS y JavaScript.
+- Tailwind CSS.
+
+La versión exacta de Spring Boot se registrará al generar el proyecto base.
+
+## Documentos relacionados
+
+- [Visión y alcance](../PROYECTO.md)
+- [Requisitos](../requisitos/REQUISITOS.md)
+- [Flujos de negocio](../FLUJOS_NEGOCIO.md)
+- [Modelo de dominio](MODELO_DOMINIO.md)
+- [Arquitectura](../ARQUITECTURA.md)
