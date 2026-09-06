@@ -6,7 +6,7 @@ Este documento explica las clases de dominio propuestas para SalvemosLaComida, q
 
 Su finalidad es que todos los integrantes comprendan el modelo antes de elaborar el diagrama de clases y comenzar la programación. El contenido se ampliará por grupos conforme avance el análisis del proyecto.
 
-> **Estado:** En construcción. Las clases aquí registradas corresponden a decisiones ya revisadas, pero podrán ajustarse si durante el desarrollo aparece una necesidad real.
+> **Estado:** Catálogo inicial completo. Las relaciones y atributos se validarán al elaborar el diagrama de clases y el modelo entidad-relación.
 
 ## Criterios para escoger las clases
 
