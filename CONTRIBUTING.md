@@ -27,6 +27,27 @@ Ejemplos:
 - `feature/publicar-oferta`
 - `design/formulario-afiliacion`
 
+## Propiedad exclusiva de los rubros
+
+| Responsable | Módulos o rubros |
+|---|---|
+| Emanuel | Identidad y estructura empresarial |
+| Daniel | Afiliación y control documental |
+| Franco | Packs y ofertas |
+| Piero | Reservas y recojo |
+| Alejandro | Transacciones y experiencia posterior |
+
+Cada clase tiene un solo responsable. Relacionarse con una clase de otro módulo no permite modificarla.
+
+Si necesitas un cambio en otro rubro:
+
+1. Explica la necesidad a su responsable.
+2. Acuerden el cambio en la documentación o el diagrama.
+3. El responsable del rubro modifica su clase.
+4. Ambos verifican que la relación siga funcionando.
+
+Los cambios en `shared` requieren revisión técnica de Daniel y Franco.
+
 ## Flujo con GitHub Desktop
 
 1. Actualiza `main`.
@@ -57,6 +78,7 @@ Una tarea se considera completa cuando:
 
 - Cumple lo solicitado.
 - Utiliza los nombres definidos en el glosario y modelo de dominio.
+- Respeta la propiedad del módulo y no modifica clases ajenas sin coordinación.
 - No contradice las decisiones registradas.
 - Los archivos relacionados fueron actualizados.
 - El proyecto continúa iniciando correctamente cuando el cambio contiene código.
