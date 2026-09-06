@@ -30,9 +30,25 @@ La versión exacta de Spring Boot se registrará en este documento cuando se gen
 | `identidad` | Usuarios, perfiles, empresas, establecimientos y cuentas operativas. |
 | `afiliacion` | Solicitudes, documentos, revisiones, aprobaciones y suspensiones. |
 | `ofertas` | Packs, ofertas, variantes, alérgenos y restricciones. |
-| `reservas` | Stock, reservas, pagos, boletas, códigos, recojos, cancelaciones y comisiones. |
+| `reservas` | Retenciones de stock, reservas, detalles, códigos de recojo y entregas. |
+| `transacciones` | Pagos, boletas simuladas, cancelaciones, reembolsos y comisiones. |
 | `experiencia` | Reseñas, notificaciones e impacto ambiental. |
 | `shared` | Configuración y componentes técnicos reutilizados por varios módulos. |
+
+## Propiedad funcional de los módulos
+
+| Módulo | Responsable principal |
+|---|---|
+| `identidad` | Emanuel |
+| `afiliacion` | Daniel |
+| `ofertas` | Franco |
+| `reservas` | Piero |
+| `transacciones` | Alejandro |
+| `experiencia` | Alejandro |
+
+Cada responsable conoce y modifica las clases de su módulo. Los demás módulos pueden relacionarse con ellas mediante asociaciones y servicios acordados, pero no cambiarán su funcionamiento interno sin coordinación.
+
+El módulo `shared` no pertenece a un rubro del negocio. Sus cambios técnicos deberán ser revisados por Daniel y Franco para evitar que se convierta en una carpeta de código mezclado.
 
 Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/MODELO_DOMINIO.md).
 
@@ -55,6 +71,8 @@ Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/
 - El dominio no dependerá del frontend.
 - Las funciones compartidas no deben convertirse en un lugar para colocar código sin organización.
 - Una comunicación entre módulos deberá realizarse mediante servicios claros, no accediendo indiscriminadamente a sus repositories.
+- Una relación entre clases de módulos diferentes no cambia la propiedad de esas clases.
+- Los cambios que afecten el contrato entre dos módulos deberán ser revisados por ambos responsables.
 - Las operaciones que afecten reserva, pago y stock deberán ejecutarse mediante transacciones.
 
 ## Organización prevista del backend
@@ -68,6 +86,7 @@ backend/
     │   │   ├── afiliacion/
     │   │   ├── ofertas/
     │   │   ├── reservas/
+    │   │   ├── transacciones/
     │   │   ├── experiencia/
     │   │   └── shared/
     │   └── resources/
