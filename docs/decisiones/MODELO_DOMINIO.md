@@ -77,6 +77,62 @@ En la primera versión no se registrará a cada trabajador por separado. Por esa
 
 La `Direccion` pertenece al establecimiento y no tiene sentido por sí sola dentro del sistema. Se mantiene como clase porque reúne datos relacionados, como distrito, calle, número y referencia, y facilita el filtrado de locales.
 
+## Grupo 2 — Afiliación, documentos y revisión administrativa
+
+### Clases seleccionadas
+
+| Clase | ¿Qué representa? | ¿Por qué existe? |
+|---|---|---|
+| `SolicitudAfiliacion` | El pedido formal para que un establecimiento pueda operar en la plataforma. | Reúne el proceso de evaluación de un local y permite conocer si está pendiente, aprobado o rechazado. Cada nuevo intento se registra como una solicitud nueva. |
+| `DocumentoEstablecimiento` | Cada archivo presentado por un establecimiento, junto con datos como tipo, número, emisión y vencimiento. | Los documentos tienen vigencias y resultados propios, por lo que no deben guardarse como simples campos generales del establecimiento. |
+| `RevisionDocumento` | La revisión manual realizada sobre un documento. | Permite registrar quién lo revisó, cuándo lo hizo, cuál fue el resultado y qué observaciones encontró. También sirve para revisar documentos renovados. |
+| `EvaluacionAfiliacion` | La decisión final tomada sobre una solicitud de afiliación. | Separa la aprobación o rechazo general del resultado individual de cada documento y deja constancia del motivo de la decisión. |
+| `AdministradorPlataforma` | El perfil interno autorizado para revisar documentos y solicitudes. | Identifica al responsable de cada revisión. Su cuenta es creada internamente y no mediante el registro público. |
+| `SuspensionEstablecimiento` | El registro de una suspensión aplicada a un establecimiento ya aprobado. | Conserva la causa y duración de la suspensión, especialmente cuando vence un documento obligatorio, sin borrar el local ni su historial. |
+
+### Relaciones principales
+
+- Un `Establecimiento` puede tener varias `SolicitudAfiliacion` a lo largo del tiempo, pero solo una solicitud activa a la vez.
+- Cada `SolicitudAfiliacion` corresponde a un solo `Establecimiento`.
+- La solicitud reúne los `DocumentoEstablecimiento` necesarios para evaluar ese local.
+- Cada documento puede recibir una o más `RevisionDocumento`, por ejemplo, después de presentar una renovación.
+- Un `AdministradorPlataforma` realiza las revisiones documentales.
+- Una solicitud puede recibir una `EvaluacionAfiliacion` final cuando la revisión termina.
+- Un establecimiento aprobado puede tener registros de `SuspensionEstablecimiento` sin perder sus datos, ventas ni historial.
+
+### Decisiones de modelado
+
+#### La afiliación se evalúa por establecimiento
+
+La empresa no se aprueba en bloque. Cada local presenta sus propios documentos y se evalúa de forma independiente. Por eso, una empresa puede tener un establecimiento aprobado mientras otro continúa pendiente o se encuentra suspendido.
+
+#### Revisión individual de documentos
+
+Cada documento posee sus propias fechas y estado. El administrador lo revisará manualmente; la primera versión no utilizará OCR ni lectura automática de archivos.
+
+El resultado de un documento no reemplaza la decisión final sobre la solicitud. Primero se revisan los documentos y después se registra la evaluación general del establecimiento.
+
+#### Nueva solicitud después de un rechazo
+
+Si se encuentran problemas, la solicitud se rechaza y se informa el motivo al propietario. No se elimina la cuenta, la empresa ni el establecimiento. Para volver a intentarlo, el propietario deberá presentar una nueva solicitud para ese local.
+
+Conservar cada intento permite mantener un historial claro de lo sucedido.
+
+#### Suspensión por documento vencido
+
+Si vence un documento obligatorio de un establecimiento aprobado, el local se suspende y no podrá publicar nuevas ofertas. La información existente se conserva.
+
+El propietario deberá presentar el documento renovado. Cuando este sea revisado y aprobado manualmente, la suspensión podrá finalizar y el establecimiento volverá a operar.
+
+### Elementos que se representarán como enumeraciones
+
+No se crearán clases independientes para listas cerradas como:
+
+- Tipo de documento.
+- Estado de una solicitud.
+- Resultado de una revisión.
+- Motivo general de suspensión cuando provenga de una lista predefinida.
+
 ## Elementos que no se contarán como clases de dominio
 
 Algunos conceptos serán necesarios en el código, pero no deben utilizarse para completar artificialmente la cantidad mínima de clases:
@@ -94,7 +150,7 @@ Los roles, estados y métodos de pago se representarán mediante enumeraciones c
 
 ## Conteo actual
 
-Hasta este punto se han definido **7 clases de dominio justificadas**:
+Hasta este punto se han definido **13 clases de dominio justificadas**:
 
 1. `Usuario`
 2. `Consumidor`
@@ -103,5 +159,11 @@ Hasta este punto se han definido **7 clases de dominio justificadas**:
 5. `Establecimiento`
 6. `Direccion`
 7. `CuentaEstablecimiento`
+8. `SolicitudAfiliacion`
+9. `DocumentoEstablecimiento`
+10. `RevisionDocumento`
+11. `EvaluacionAfiliacion`
+12. `AdministradorPlataforma`
+13. `SuspensionEstablecimiento`
 
-El siguiente grupo por modelar será el correspondiente a la afiliación, la documentación y la revisión administrativa.
+El siguiente grupo por modelar será el correspondiente a los packs sorpresa, sus variantes y las ofertas publicadas.
