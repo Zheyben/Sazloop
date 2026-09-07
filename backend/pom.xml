@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- VERSION DEL FORMATO POM: siempre 4.0.0 para Maven 2 y 3 -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        PARENT: herencia de Spring Boot.
+        Heredar de spring-boot-starter-parent nos da versiones
+        compatibles de todas las librerias, plugins de Maven
+        preconfigurados y soporte de compilacion para Java.
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
+    <!--
+        IDENTIDAD DEL PROYECTO
+        groupId    : paquete de la organizacion (dominio invertido)
+        artifactId : nombre unico del proyecto dentro del grupo
+        version    : version actual (SNAPSHOT = en desarrollo)
+        packaging  : jar = archivo ejecutable
+    -->
+    <groupId>com.mealflow</groupId>
+    <artifactId>mealflow-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>MealFlow</name>
+    <description>Plataforma web mobile-first para reducir el desperdicio alimentario</description>
+
+    <!--
+        PROPIEDADES GLOBALES
+        java.version: version de Java para compilar y ejecutar.
+        Debe coincidir con el JDK instalado.
+    -->
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <!--
+        DEPENDENCIAS
+        Cada dependencia es una libreria que Maven descarga
+        automaticamente desde Maven Central (internet).
+        Se guardan localmente en ~/.m2/repository.
+    -->
+    <dependencies>
+
+        <!--
+            SPRING BOOT STARTER WEB
+            Todo lo necesario para crear una API REST:
+            Spring MVC (controllers), Tomcat embebido, Jackson (JSON).
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <!--
+            SPRING BOOT STARTER DATA JPA
+            Persistencia con Spring Data JPA e Hibernate.
+            JPA: estandar Java para trabajar con BD usando objetos.
+            Hibernate: implementacion de JPA que genera el SQL.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!--
+            MYSQL CONNECTOR/J
+            El conector JDBC entre Java y MySQL.
+            scope runtime: solo se necesita en ejecucion, no al compilar.
+        -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
+            LOMBOK
+            Genera codigo repetitivo mediante anotaciones:
+            @Getter, @Setter, @NoArgsConstructor, @AllArgsConstructor.
+            Reduce el codigo de las clases de dominio.
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--
+            H2 DATABASE (PERFIL DE DESARROLLO)
+            Base de datos en memoria RAM, sin instalacion.
+            Permite arrancar y verificar el backend sin MySQL.
+            scope runtime: solo en ejecucion.
+        -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
+            SPRING BOOT STARTER TEST
+            Herramientas de prueba: JUnit 5, Mockito, AssertJ.
+            scope test: solo se usa al ejecutar pruebas.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            SPRING VALIDATION
+        -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!--
+            DEVTOOLS
+        -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <!--
+        BUILD: configuracion de construccion del proyecto.
+    -->
+    <build>
+        <plugins>
+            <!--
+                SPRING BOOT MAVEN PLUGIN
+                Empaqueta el proyecto como un .jar ejecutable
+                con Tomcat incluido (fat jar).
+                Excluye Lombok del .jar final (no es necesario en ejecucion).
+            -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
