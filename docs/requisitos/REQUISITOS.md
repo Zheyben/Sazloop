@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Estos requisitos describen la primera versión de SalvemosLaComida y sirven como fuente para el informe, los casos de uso, los prototipos, los diagramas y el código.
+Estos requisitos describen la primera versión de MealFlow y sirven como fuente para el informe, los casos de uso, los prototipos, los diagramas y el código.
 
 Que una función aparezca aquí no significa que deba estar completamente programada en el primer avance. El primer avance exige principalmente análisis, diseño, prototipos y configuración inicial del backend.
 

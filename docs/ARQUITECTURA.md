@@ -2,7 +2,7 @@
 
 ## Decisión principal
 
-SalvemosLaComida utilizará una arquitectura de **monolito modular organizado por capas**.
+MealFlow utilizará una arquitectura de **monolito modular organizado por capas**.
 
 Habrá un solo backend desplegable y una sola base de datos. El código se separará internamente por áreas del negocio para evitar que todas las clases terminen mezcladas.
 
@@ -81,7 +81,7 @@ Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/
 backend/
 └── src/
     ├── main/
-    │   ├── java/com/salvemoslacomida/
+    │   ├── java/com/mealflow/
     │   │   ├── identidad/
     │   │   ├── afiliacion/
     │   │   ├── ofertas/

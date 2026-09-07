@@ -1,8 +1,8 @@
-# Modelado del dominio — SalvemosLaComida
+# Modelado del dominio — MealFlow
 
 ## Propósito del documento
 
-Este documento explica las clases de dominio propuestas para SalvemosLaComida, qué representa cada una y por qué es necesaria.
+Este documento explica las clases de dominio propuestas para MealFlow, qué representa cada una y por qué es necesaria.
 
 Su finalidad es que todos los integrantes comprendan el modelo antes de elaborar el diagrama de clases y comenzar la programación. El contenido se ampliará por grupos conforme avance el análisis del proyecto.
 
@@ -19,7 +19,7 @@ Su finalidad es que todos los integrantes comprendan el modelo antes de elaborar
 
 ## Visión general del dominio
 
-SalvemosLaComida será una plataforma web mobile-first en la que los establecimientos de comida podrán ofrecer sus excedentes mediante packs sorpresa. Los consumidores podrán encontrarlos, comprarlos mediante pagos simulados y recogerlos presencialmente.
+MealFlow será una plataforma web mobile-first en la que los establecimientos de comida podrán ofrecer sus excedentes mediante packs sorpresa. Los consumidores podrán encontrarlos, comprarlos mediante pagos simulados y recogerlos presencialmente.
 
 Una empresa podrá tener varios establecimientos físicos. Cada establecimiento tendrá su propia ubicación, revisión documental, estado de aprobación y acceso operativo. La cuenta propietaria podrá consultar información general de todos los establecimientos pertenecientes a su empresa.
 
@@ -207,7 +207,7 @@ Si no existe una oferta activa, la plataforma mostrará que el pack no está dis
 | `Recojo` | El registro de la entrega física del pack al consumidor. | Permite saber cuándo se completó la reserva, quién la confirmó desde la cuenta del local y cuándo se habilita la reseña. |
 | `CancelacionReserva` | El registro de una cancelación solicitada por el consumidor. | Conserva la fecha, el motivo, la penalización aplicada y la devolución del stock. |
 | `Reembolso` | La devolución simulada de una parte del pago. | Permite representar de forma separada el 50 % devuelto al consumidor cuando corresponde. |
-| `ComisionPlataforma` | El importe que SalvemosLaComida retiene por una venta. | Representa directamente el modelo de negocio y permite calcular el ingreso neto del establecimiento. |
+| `ComisionPlataforma` | El importe que MealFlow retiene por una venta. | Representa directamente el modelo de negocio y permite calcular el ingreso neto del establecimiento. |
 
 ### Relaciones principales
 
@@ -378,6 +378,6 @@ El modelo contiene **31 clases de dominio justificadas**. El mínimo académico 
 
 ## Conclusión del modelado inicial
 
-Las 31 clases nacen de las funciones ya acordadas para SalvemosLaComida. No todas tendrán la misma complejidad ni necesariamente serán tablas independientes: algunas podrán implementarse como entidades y otras como objetos de valor, según se defina al preparar el diagrama de clases y la persistencia.
+Las 31 clases nacen de las funciones ya acordadas para MealFlow. No todas tendrán la misma complejidad ni necesariamente serán tablas independientes: algunas podrán implementarse como entidades y otras como objetos de valor, según se defina al preparar el diagrama de clases y la persistencia.
 
 El siguiente trabajo será revisar las relaciones y responsabilidades de estas clases para convertir este catálogo en un diagrama de clases coherente. Si durante esa revisión se descubre que dos conceptos pueden unirse o que falta uno indispensable, el documento deberá actualizarse antes de escribir el código.

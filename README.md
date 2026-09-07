@@ -1,8 +1,10 @@
-# SalvemosLaComida
+# MealFlow
+
+> **Lo bueno sigue fluyendo.**
 
 Proyecto final del curso Desarrollo Web Integrado.
 
-SalvemosLaComida es el nombre provisional de una plataforma web mobile-first para reducir el desperdicio alimentario. Los establecimientos afiliados ofrecerán sus excedentes mediante packs sorpresa con descuento y los consumidores los recogerán presencialmente.
+MealFlow es una plataforma web mobile-first para reducir el desperdicio alimentario. Los establecimientos afiliados ofrecerán sus excedentes mediante packs sorpresa con descuento y los consumidores los recogerán presencialmente.
 
 ## Empieza aquí
 
