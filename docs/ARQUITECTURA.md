@@ -13,15 +13,54 @@ Esta solución es suficiente para el alcance académico y permite que los cinco 
 | Componente | Tecnología |
 |---|---|
 | Lenguaje backend | Java 21 |
-| Framework backend | Spring Boot |
+| Framework backend | Spring Boot 4.1.1 |
 | Construcción y dependencias | Maven |
 | Persistencia | Spring Data JPA |
-| Base de datos | MySQL |
+| Base de datos oficial | MySQL |
+| Base de datos de desarrollo | H2 |
 | Frontend | HTML, CSS y JavaScript |
 | Estilos | Tailwind CSS |
 | Comunicación | API REST sobre HTTP |
 
-La versión exacta de Spring Boot se registrará en este documento cuando se genere el proyecto base.
+El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inicial se usa H2 en memoria para realizar comprobaciones rápidas; MySQL continúa siendo la base de datos oficial para la integración y la entrega final.
+
+## Dependencias del backend
+
+Maven utiliza dos tipos de dependencias:
+
+- **Directas:** aparecen declaradas expresamente en el `pom.xml`.
+- **Transitivas:** son incorporadas automáticamente por una dependencia directa. No están ocultas ni deben copiarse una por una en el `pom.xml`.
+
+### Dependencias directas
+
+| Dependencia | Uso en MealFlow | Alcance |
+|---|---|---|
+| `spring-boot-starter-webmvc` | API REST, Spring MVC, conversión JSON y servidor web. | Aplicación |
+| `spring-boot-starter-data-jpa` | Persistencia mediante JPA, Hibernate y repositories. | Aplicación |
+| `spring-boot-starter-validation` | Validación de los datos recibidos por formularios y endpoints. | Aplicación |
+| `mysql-connector-j` | Conexión JDBC con la base de datos oficial MySQL. | Ejecución |
+| `h2` | Base de datos en memoria para desarrollo y pruebas rápidas. | Ejecución |
+| `lombok` | Reducción controlada de código repetitivo en las clases Java. | Opcional |
+| `spring-boot-devtools` | Reinicio rápido y ayudas durante el desarrollo. | Opcional |
+| `spring-boot-starter-test` | Pruebas con JUnit Jupiter, Mockito y AssertJ. | Pruebas |
+
+Las versiones compatibles son administradas por `spring-boot-starter-parent` 4.1.1. No se declararán versiones individuales salvo que exista una necesidad técnica comprobada.
+
+### Dependencias transitivas principales
+
+| Componente incorporado | Dependencia directa que lo aporta | Función |
+|---|---|---|
+| Spring Framework 7.0.9 y Spring MVC | `spring-boot-starter-webmvc` | Controladores, inyección de dependencias y procesamiento HTTP. |
+| Apache Tomcat 11.0.24 | `spring-boot-starter-webmvc` | Servidor HTTP embebido en el backend. |
+| Jackson 3.1.5 | `spring-boot-starter-webmvc` | Conversión entre objetos Java y JSON. |
+| Hibernate ORM 7.4.5.Final | `spring-boot-starter-data-jpa` | Implementación de JPA y generación de operaciones SQL. |
+| Spring Data JPA 4.1.1 | `spring-boot-starter-data-jpa` | Creación de repositories y consultas de persistencia. |
+| HikariCP 7.0.2 | `spring-boot-starter-data-jpa` | Administración eficiente de conexiones a la base de datos. |
+| Hibernate Validator 9.1.3.Final | `spring-boot-starter-validation` | Ejecución de las reglas de validación. |
+| SLF4J y Logback | Starters de Spring Boot | Registro de mensajes, advertencias y errores. |
+| JUnit Jupiter, Mockito y AssertJ | `spring-boot-starter-test` | Pruebas automatizadas. |
+
+Esta tabla registra los componentes principales que el equipo debe conocer; no intenta repetir cada archivo JAR descargado. El árbol completo y vigente puede consultarse desde la carpeta del backend con `mvnw.cmd dependency:tree` en Windows o `./mvnw dependency:tree` en Linux y macOS.
 
 ## Módulos propuestos
 
