@@ -1,4 +1,4 @@
-# Documentación de SalvemosLaComida
+# Documentación de MealFlow
 
 Esta carpeta es el punto de entrada para comprender el proyecto, conocer las decisiones vigentes y continuar el trabajo sin depender de explicaciones externas.
 

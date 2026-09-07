@@ -2,7 +2,7 @@
 
 ## Decisión principal
 
-SalvemosLaComida utilizará una arquitectura de **monolito modular organizado por capas**.
+MealFlow utilizará una arquitectura de **monolito modular organizado por capas**.
 
 Habrá un solo backend desplegable y una sola base de datos. El código se separará internamente por áreas del negocio para evitar que todas las clases terminen mezcladas.
 
@@ -13,15 +13,54 @@ Esta solución es suficiente para el alcance académico y permite que los cinco 
 | Componente | Tecnología |
 |---|---|
 | Lenguaje backend | Java 21 |
-| Framework backend | Spring Boot |
+| Framework backend | Spring Boot 4.1.1 |
 | Construcción y dependencias | Maven |
 | Persistencia | Spring Data JPA |
-| Base de datos | MySQL |
+| Base de datos oficial | MySQL |
+| Base de datos de desarrollo | H2 |
 | Frontend | HTML, CSS y JavaScript |
 | Estilos | Tailwind CSS |
 | Comunicación | API REST sobre HTTP |
 
-La versión exacta de Spring Boot se registrará en este documento cuando se genere el proyecto base.
+El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inicial se usa H2 en memoria para realizar comprobaciones rápidas; MySQL continúa siendo la base de datos oficial para la integración y la entrega final.
+
+## Dependencias del backend
+
+Maven utiliza dos tipos de dependencias:
+
+- **Directas:** aparecen declaradas expresamente en el `pom.xml`.
+- **Transitivas:** son incorporadas automáticamente por una dependencia directa. No están ocultas ni deben copiarse una por una en el `pom.xml`.
+
+### Dependencias directas
+
+| Dependencia | Uso en MealFlow | Alcance |
+|---|---|---|
+| Spring Web MVC | API REST, controladores, conversión JSON y servidor web. | Aplicación |
+| Spring Data JPA | Persistencia mediante JPA, Hibernate y repositories. | Aplicación |
+| Spring Validation | Validación de los datos recibidos por formularios y endpoints. | Aplicación |
+| MySQL Connector/J | Conexión JDBC con la base de datos oficial MySQL. | Ejecución |
+| H2 Database | Base de datos en memoria para desarrollo y pruebas rápidas. | Ejecución |
+| Lombok | Reducción controlada de código repetitivo en las clases Java. | Opcional |
+| Spring Boot DevTools | Reinicio rápido y ayudas durante el desarrollo. | Opcional |
+| Spring Boot Starter Test | Pruebas con JUnit Jupiter, Mockito y AssertJ. | Pruebas |
+
+Las versiones compatibles son administradas por Spring Boot 4.1.1. Los identificadores técnicos se mantienen en el `pom.xml`; no se declararán versiones individuales salvo que exista una necesidad técnica comprobada.
+
+### Dependencias transitivas principales
+
+| Componente incorporado | Dependencia directa que lo aporta | Función |
+|---|---|---|
+| Spring Framework 7.0.9 y Spring MVC | Spring Web MVC | Controladores, inyección de dependencias y procesamiento HTTP. |
+| Apache Tomcat 11.0.24 | Spring Web MVC | Servidor HTTP embebido en el backend. |
+| Jackson 3.1.5 | Spring Web MVC | Conversión entre objetos Java y JSON. |
+| Hibernate ORM 7.4.5.Final | Spring Data JPA | Implementación de JPA y generación de operaciones SQL. |
+| Spring Data JPA 4.1.1 | Spring Data JPA | Creación de repositories y consultas de persistencia. |
+| HikariCP 7.0.2 | Spring Data JPA | Administración eficiente de conexiones a la base de datos. |
+| Hibernate Validator 9.1.3.Final | Spring Validation | Ejecución de las reglas de validación. |
+| SLF4J y Logback | Spring Boot | Registro de mensajes, advertencias y errores. |
+| JUnit Jupiter, Mockito y AssertJ | Spring Boot Starter Test | Pruebas automatizadas. |
+
+Esta tabla registra los componentes principales que el equipo debe conocer; no intenta repetir cada archivo JAR descargado. El árbol completo y vigente puede consultarse desde la carpeta del backend con `mvnw.cmd dependency:tree` en Windows o `./mvnw dependency:tree` en Linux y macOS.
 
 ## Módulos propuestos
 
@@ -81,7 +120,7 @@ Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/
 backend/
 └── src/
     ├── main/
-    │   ├── java/com/salvemoslacomida/
+    │   ├── java/com/mealflow/
     │   │   ├── identidad/
     │   │   ├── afiliacion/
     │   │   ├── ofertas/

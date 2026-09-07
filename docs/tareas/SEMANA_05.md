@@ -61,7 +61,7 @@ El antecedente debe explicar:
 1. Nombre y propósito de la solución.
 2. Problema que atiende.
 3. Funcionamiento principal.
-4. Similitudes con SalvemosLaComida.
+4. Similitudes con MealFlow.
 5. Diferencias o limitaciones.
 6. Una enseñanza aplicable al proyecto.
 7. Fuentes consultadas.
@@ -273,7 +273,7 @@ Elaborar el Project Charter y el cronograma.
 
 El Project Charter debe incluir:
 
-- Nombre provisional del proyecto.
+- Nombre del proyecto y lema.
 - Problema y justificación.
 - Objetivo general.
 - Alcance resumido.
