@@ -1,38 +1,41 @@
-/* package com.salvemoslacomida.afiliacion.domain;
+package com.mealflow.afiliacion.domain;
 
+import com.mealflow.identidad.domain.Establecimiento;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import java.util.Date;
 
+import java.time.LocalDateTime;
+
+/** Suspensión que conserva el establecimiento y todo su historial. */
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
-@Table(name = "suspensiones_establecimientos")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "suspensiones_establecimiento")
 public class SuspensionEstablecimiento {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String motivo;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "establecimiento_id", nullable = false)
+    private Establecimiento establecimiento;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaInicio;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaFin;
-
-    @Column(nullable = false)
-    private Boolean estadoActivo;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "administrador_id", nullable = false)
     private AdministradorPlataforma administrador;
 
-    // Referencia temporal usando Long según las reglas de tu arquitectura para clases externas
-    @Column(name = "establecimiento_id", nullable = false)
-    private Long establecimientoId; 
-} */
+    @NotBlank @Size(max = 500)
+    @Column(nullable = false, length = 500)
+    private String motivo;
+
+    @Builder.Default
+    @Column(name = "fecha_inicio", nullable = false, updatable = false)
+    private LocalDateTime fechaInicio = LocalDateTime.now();
+
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
+
+    @Builder.Default @Column(nullable = false)
+    private boolean activa = true;
+}
+

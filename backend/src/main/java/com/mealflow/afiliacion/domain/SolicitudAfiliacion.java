@@ -1,31 +1,42 @@
-/* package com.mealflow.afiliacion.domain;
+package com.mealflow.afiliacion.domain;
 
+import com.mealflow.identidad.domain.Establecimiento;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.Date;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+/** Solicitud para autorizar a un establecimiento; cada reintento crea una nueva. */
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
 @Table(name = "solicitudes_afiliacion")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SolicitudAfiliacion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaSolicitud;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "establecimiento_id", nullable = false)
+    private Establecimiento establecimiento;
 
-    @Column(nullable = false)
-    private String estado; // PENDIENTE, EN_REVISION, APROBADO, RECHAZADO
+    @Builder.Default
+    @Column(name = "fecha_solicitud", nullable = false, updatable = false)
+    private LocalDateTime fechaSolicitud = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "solicitudAfiliacion", cascade = CascadeType.ALL)
-    private List<DocumentoEstablecimiento> documentos;
+    @Builder.Default @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EstadoSolicitud estado = EstadoSolicitud.PENDIENTE;
 
-    @OneToOne(mappedBy = "solicitudAfiliacion", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "solicitudAfiliacion",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocumentoEstablecimiento> documentos = new ArrayList<>();
+
+    @OneToOne(mappedBy = "solicitudAfiliacion", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private EvaluacionAfiliacion evaluacion;
-} */
+
+    public enum EstadoSolicitud { PENDIENTE, EN_REVISION, APROBADA, RECHAZADA }
+}
+
