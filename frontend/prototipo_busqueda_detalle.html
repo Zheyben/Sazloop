@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MealFlow - Búsqueda y Detalle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans flex justify-center">
+
+  <!-- Mobile Container / Layout Mobile-First -->
+  <div class="w-full max-w-md bg-white min-h-screen flex flex-col shadow-2xl relative pb-20">
+
+    <!-- Header -->
+    <header class="bg-emerald-600 text-white p-4 sticky top-0 z-50 shadow-md flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="bg-white text-emerald-600 font-black px-2.5 py-1 rounded-xl text-lg tracking-tight">MF</div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">MealFlow</h1>
+          <p class="text-[10px] text-emerald-100 uppercase tracking-widest font-medium">Lo bueno sigue fluyendo</p>
+        </div>
+      </div>
+      <button class="w-9 h-9 rounded-full bg-emerald-700/60 flex items-center justify-center">
+        <i class="fa-solid fa-user text-sm"></i>
+      </button>
+    </header>
+
+    <main class="flex-1 p-4 space-y-5">
+
+      <!-- Navegación entre vistas para pruebas -->
+      <div class="bg-slate-800 text-white p-2 rounded-xl text-xs flex justify-around shadow-inner">
+        <button onclick="switchView('busqueda')" id="btn-busqueda" class="px-3 py-1.5 rounded-lg bg-emerald-500 font-semibold transition">
+          1. Búsqueda y Filtros
+        </button>
+        <button onclick="switchView('detalle')" id="btn-detalle" class="px-3 py-1.5 rounded-lg hover:bg-slate-700 text-slate-300 font-medium transition">
+          2. Detalle del Pack
+        </button>
+      </div>
+
+      <!-- VISTA 1: BÚSQUEDA Y FILTROS -->
+      <section id="view-busqueda" class="space-y-4">
+        
+        <!-- Búsqueda Principal -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ubicación</label>
+          <div class="relative">
+            <i class="fa-solid fa-location-dot absolute left-3.5 top-3.5 text-emerald-600"></i>
+            <input type="text" placeholder="Ej. San Isidro, Miraflores..." value="Miraflores, Lima"
+                   class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-sm">
+          </div>
+        </div>
+
+        <!-- Panel de Filtros -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders text-emerald-600"></i> Filtros de búsqueda
+            </span>
+            <button class="text-[11px] text-emerald-600 font-semibold hover:underline">Limpiar</button>
+          </div>
+
+          <!-- Filtro por Precio Máximo -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-medium text-slate-600">
+              <span>Precio máximo:</span>
+              <span class="font-bold text-emerald-700" id="price-val">S/ 25.00</span>
+            </div>
+            <input type="range" min="5" max="50" value="25" class="w-full accent-emerald-600 cursor-pointer"
+                   oninput="document.getElementById('price-val').innerText = 'S/ ' + parseFloat(this.value).toFixed(2)">
+          </div>
+
+          <!-- Filtro por Calificación -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-slate-600">Calificación mínima</label>
+            <div class="grid grid-cols-4 gap-2">
+              <button class="py-1.5 rounded-lg border border-slate-200 text-xs font-medium bg-white">Cualquiera</button>
+              <button class="py-1.5 rounded-lg border border-slate-200 text-xs font-medium bg-white">3.5 <i class="fa-solid fa-star text-amber-400 text-[10px]"></i></button>
+              <button class="py-1.5 rounded-lg border border-emerald-500 bg-emerald-50 text-emerald-700 font-bold text-xs">4.0 <i class="fa-solid fa-star text-amber-400 text-[10px]"></i></button>
+              <button class="py-1.5 rounded-lg border border-slate-200 text-xs font-medium bg-white">4.5 <i class="fa-solid fa-star text-amber-400 text-[10px]"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultados de Búsqueda -->
+        <div class="space-y-3">
+          <div class="flex justify-between items-center text-xs text-slate-500">
+            <span>Resultados: <strong class="text-slate-800">2 packs</strong></span>
+            <span class="text-emerald-600 font-medium"><i class="fa-solid fa-arrow-down-wide-short"></i> Más cercanos</span>
+          </div>
+
+          <!-- Card de Pack -->
+          <div onclick="switchView('detalle')" class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-sm hover:shadow-md transition cursor-pointer flex gap-3 relative overflow-hidden">
+            <div class="absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+              -60%
+            </div>
+            <div class="w-24 h-24 rounded-xl bg-slate-200 flex-shrink-0 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=200&q=80" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-slate-900 text-sm leading-snug">Panadería Delipan</h3>
+                <div class="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
+                  <span class="text-amber-500 font-semibold"><i class="fa-solid fa-star text-[10px]"></i> 4.7</span>
+                  <span>•</span>
+                  <span>Miraflores (0.8 km)</span>
+                </div>
+              </div>
+
+              <div class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md inline-block w-fit">
+                <i class="fa-regular fa-clock text-emerald-600"></i> Hoy: 18:00 - 19:30
+              </div>
+
+              <div class="flex justify-between items-baseline mt-1">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="text-base font-extrabold text-emerald-700">S/ 12.00</span>
+                  <span class="text-xs text-slate-400 line-through">S/ 30.00</span>
+                </div>
+                <span class="text-[10px] bg-red-50 text-red-600 font-bold px-1.5 py-0.5 rounded">Quedan 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- VISTA 2: DETALLE DEL PACK -->
+      <section id="view-detalle" class="space-y-4 hidden">
+        <button onclick="switchView('busqueda')" class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+          <i class="fa-solid fa-chevron-left"></i> Volver
+        </button>
+
+        <div class="relative rounded-2xl overflow-hidden h-40 bg-slate-200">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+          <div class="absolute bottom-3 left-3 text-white">
+            <h2 class="text-lg font-bold leading-tight">Pack Sorpresa de Panes y Dulces</h2>
+            <p class="text-xs text-slate-200"><i class="fa-solid fa-store text-emerald-400"></i> Panadería Delipan</p>
+          </div>
+        </div>
+
+        <!-- Horario -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex justify-between items-center">
+          <div>
+            <span class="text-[10px] font-bold text-emerald-800 uppercase">Horario de Recojo Presencial</span>
+            <p class="text-sm font-extrabold text-emerald-900"><i class="fa-regular fa-clock"></i> Hoy: 18:00 - 19:30 hrs</p>
+          </div>
+        </div>
+
+        <!-- Posibles Productos -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
+          <h3 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-box-open text-emerald-600"></i> ¿Qué puede contener tu pack?
+          </h3>
+          <ul class="text-xs text-slate-700 space-y-1 list-disc list-inside font-medium">
+            <li>Panes artesanales (Ciabatta, Baguette)</li>
+            <li>Empanadas variadas</li>
+            <li>Pasteles dulces o croissants del día</li>
+          </ul>
+        </div>
+
+        <!-- Alérgenos -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-2">
+          <h3 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Alérgenos y Restricciones
+          </h3>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="bg-amber-50 text-amber-800 text-[11px] font-medium px-2.5 py-1 rounded-lg border border-amber-200">Contiene Gluten</span>
+            <span class="bg-amber-50 text-amber-800 text-[11px] font-medium px-2.5 py-1 rounded-lg border border-amber-200">Contiene Lácteos</span>
+          </div>
+        </div>
+
+        <!-- Botón de Compra -->
+        <div class="bg-slate-900 text-white rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-400 uppercase">Tamaño: Pack Mediano</span>
+            <span class="text-[11px] text-emerald-400 font-semibold">Stock: 2 disponibles</span>
+          </div>
+          <button class="w-full bg-emerald-500 text-slate-950 font-black py-3 rounded-xl flex justify-center items-center gap-2 text-sm">
+            <span>Reservar por S/ 12.00</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    function switchView(view) {
+      document.getElementById('view-busqueda').classList.toggle('hidden', view !== 'busqueda');
+      document.getElementById('view-detalle').classList.toggle('hidden', view !== 'detalle');
+    }
+  </script>
+</body>
+</html>
