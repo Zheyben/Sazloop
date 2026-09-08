@@ -1,7 +1,7 @@
-// CÓDIGO TEMPORALMENTE DESACTIVADO PARA EL PRIMER AVANCE.
-// Todas las líneas Java están comentadas para evitar dependencias cruzadas
-// mientras el equipo termina los demás módulos. Al integrarlo, se debe
-// retirar únicamente el primer prefijo "// " de cada línea.
+// // CÓDIGO TEMPORALMENTE DESACTIVADO PARA EL PRIMER AVANCE.
+// // Todas las líneas Java están comentadas para evitar dependencias cruzadas
+// // mientras el equipo termina los demás módulos. Al integrarlo, se debe
+// // retirar únicamente el primer prefijo "// " de cada línea.
 // package com.mealflow.identidad.domain;
 //
 // import jakarta.persistence.CascadeType;
