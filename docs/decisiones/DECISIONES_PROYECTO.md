@@ -162,6 +162,8 @@ Una reserva remota puede cancelarse mientras esté pendiente de recojo y no haya
 
 La comisión de la plataforma será el 10 % del importe que efectivamente permanezca cobrado. Si una reserva se cancela, la comisión se calcula sobre la mitad retenida, no sobre el precio original.
 
+**Estado de esta cifra:** documentada en la decisión inicial, pendiente de confirmación formal por el equipo. El informe corregido no define una tasa y el código todavía no calcula comisiones.
+
 ## DEC-037 — Panel basado en información calculada
 
 Ventas, comisiones, ingresos, cancelaciones, no recojos, calificaciones e impacto se calcularán desde los registros existentes. No se crearán entidades artificiales para representar el dashboard.
@@ -180,7 +182,19 @@ El impacto ambiental se registrará conceptualmente después de un recojo comple
 - HTML, CSS y JavaScript.
 - Tailwind CSS.
 
-La versión exacta de Spring Boot se registrará al generar el proyecto base.
+El POM ya declara Spring Boot 4.1.1 y Java 21. H2 se utiliza en el perfil `dev`; MySQL tiene un perfil local separado. El stack del frontend permanece previsto.
+
+## DEC-040 — Identidad del proyecto
+
+El nombre de la plataforma es **Sazloop**. El equipo ha confirmado que corresponde al proyecto **N.º 91 — SalvemosLaComida**. La URL histórica `Zheyben/MealFlow` se conserva; no identifica un proyecto diferente. El paquete Java pasa a `com.sazloop` y el artefacto Maven a `sazloop-backend`. El esquema MySQL mantiene su identificador anterior por compatibilidad con las instalaciones existentes.
+
+## DEC-041 — Delimitación territorial del informe corregido
+
+La primera versión se dirige a establecimientos y consumidores de Lima Metropolitana, con recojo presencial y pagos simulados. Las menciones de GPS y delivery externo son investigación futura; no introducen funcionalidades activas en esta actualización.
+
+## DEC-042 — Separación entre diseño e implementación
+
+Los RF se sincronizan con los 26 requisitos agrupados del informe corregido. Las 31 entidades existen en el backend y originan 33 tablas al incluir las dos asociaciones muchos a muchos. Las operaciones dibujadas, la API REST y los prototipos describen comportamiento previsto; no se marcan como ejecutados sin evidencia. Las discrepancias pendientes se registran en [REVISION_APF1.md](../informe/REVISION_APF1.md).
 
 ## Documentos relacionados
 

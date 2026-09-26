@@ -2,7 +2,7 @@
 
 ## Decisión principal
 
-MealFlow utilizará una arquitectura de **monolito modular organizado por capas**.
+Sazloop utilizará una arquitectura de **monolito modular organizado por capas**.
 
 Habrá un solo backend desplegable y una sola base de datos. El código se separará internamente por áreas del negocio para evitar que todas las clases terminen mezcladas.
 
@@ -24,6 +24,17 @@ Esta solución es suficiente para el alcance académico y permite que los cinco 
 
 El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inicial se usa H2 en memoria para realizar comprobaciones rápidas; MySQL continúa siendo la base de datos oficial para la integración y la entrega final.
 
+## Estado implementado al 26 de septiembre de 2026
+
+- Backend: clase `SazloopApplication`, 31 entidades JPA, enumeraciones, configuración y una prueba de carga de contexto.
+- Paquete base: `com.sazloop`; coordenadas Maven: `com.sazloop:sazloop-backend`.
+- No hay controllers, services, repositories ni DTO implementados en el árbol revisado.
+- `frontend/` contiene únicamente `.gitkeep`. La API REST y su comunicación con el frontend son arquitectura prevista.
+- El perfil activo es `dev` (H2). La configuración MySQL existe, pero no demuestra una integración ejecutada.
+- El esquema MySQL conserva el identificador `mealflow` por compatibilidad; el cambio de marca no requiere alterar tablas ni migrar datos.
+
+Las secciones siguientes describen responsabilidades previstas; declarar una dependencia no significa que su funcionalidad esté implementada. La revisión y sus límites están en [REVISION_APF1.md](informe/REVISION_APF1.md).
+
 ## Dependencias del backend
 
 Maven utiliza dos tipos de dependencias:
@@ -33,7 +44,7 @@ Maven utiliza dos tipos de dependencias:
 
 ### Dependencias directas
 
-| Dependencia | Uso en MealFlow | Alcance |
+| Dependencia | Uso en Sazloop | Alcance |
 |---|---|---|
 | Spring Web MVC | API REST, controladores, conversión JSON y servidor web. | Aplicación |
 | Spring Data JPA | Persistencia mediante JPA, Hibernate y repositories. | Aplicación |
@@ -50,17 +61,17 @@ Las versiones compatibles son administradas por Spring Boot 4.1.1. Los identific
 
 | Componente incorporado | Dependencia directa que lo aporta | Función |
 |---|---|---|
-| Spring Framework 7.0.9 y Spring MVC | Spring Web MVC | Controladores, inyección de dependencias y procesamiento HTTP. |
-| Apache Tomcat 11.0.24 | Spring Web MVC | Servidor HTTP embebido en el backend. |
-| Jackson 3.1.5 | Spring Web MVC | Conversión entre objetos Java y JSON. |
-| Hibernate ORM 7.4.5.Final | Spring Data JPA | Implementación de JPA y generación de operaciones SQL. |
-| Spring Data JPA 4.1.1 | Spring Data JPA | Creación de repositories y consultas de persistencia. |
-| HikariCP 7.0.2 | Spring Data JPA | Administración eficiente de conexiones a la base de datos. |
-| Hibernate Validator 9.1.3.Final | Spring Validation | Ejecución de las reglas de validación. |
+| Spring Framework y Spring MVC | Spring Web MVC | Controladores, inyección de dependencias y procesamiento HTTP. |
+| Apache Tomcat | Spring Web MVC | Servidor HTTP embebido en el backend. |
+| Jackson | Spring Web MVC | Conversión entre objetos Java y JSON. |
+| Hibernate ORM | Spring Data JPA | Implementación de JPA y generación de operaciones SQL. |
+| Spring Data JPA | Spring Data JPA | Creación de repositories y consultas de persistencia. |
+| HikariCP | Spring Data JPA | Administración eficiente de conexiones a la base de datos. |
+| Hibernate Validator | Spring Validation | Ejecución de las reglas de validación. |
 | SLF4J y Logback | Spring Boot | Registro de mensajes, advertencias y errores. |
 | JUnit Jupiter, Mockito y AssertJ | Spring Boot Starter Test | Pruebas automatizadas. |
 
-Esta tabla registra los componentes principales que el equipo debe conocer; no intenta repetir cada archivo JAR descargado. El árbol completo y vigente puede consultarse desde la carpeta del backend con `mvnw.cmd dependency:tree` en Windows o `./mvnw dependency:tree` en Linux y macOS.
+Las versiones transitivas deben verificarse con el árbol resuelto de Maven; no se fijan aquí versiones que esta revisión no pudo resolver. Esta tabla registra los componentes principales que el equipo debe conocer; no intenta repetir cada archivo JAR descargado. El árbol completo y vigente puede consultarse desde la carpeta del backend con `mvnw.cmd dependency:tree` en Windows o `sh mvnw dependency:tree` en Linux y macOS.
 
 ## Módulos propuestos
 
@@ -120,7 +131,7 @@ Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/
 backend/
 └── src/
     ├── main/
-    │   ├── java/com/mealflow/
+    │   ├── java/com/sazloop/
     │   │   ├── identidad/
     │   │   ├── afiliacion/
     │   │   ├── ofertas/
@@ -134,7 +145,7 @@ backend/
 
 Cada módulo podrá contener las capas que realmente necesite. No se crearán carpetas vacías únicamente para cumplir una forma visual.
 
-## Comunicación general
+## Comunicación prevista
 
 ```mermaid
 flowchart LR

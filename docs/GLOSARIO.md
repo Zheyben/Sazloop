@@ -4,6 +4,7 @@ Este glosario establece los términos que utilizarán el informe, los diagramas,
 
 | Término | Significado |
 |---|---|
+| Sazloop | Nombre de la plataforma del proyecto N.º 91 — SalvemosLaComida. |
 | Usuario | Identidad principal utilizada para registrarse e iniciar sesión. |
 | Consumidor | Perfil que busca, compra, recoge y califica packs. |
 | Propietario de empresa | Perfil que administra la empresa y observa sus establecimientos. |
@@ -18,7 +19,7 @@ Este glosario establece los términos que utilizarán el informe, los diagramas,
 | Variante de pack | Tamaño disponible dentro de la oferta, con precio y stock propios. |
 | Stock | Cantidad de unidades disponibles de una variante. |
 | Retención de stock | Separación temporal de unidades mientras se confirma una compra. |
-| Reserva | Compra confirmada que queda pendiente de recojo. |
+| Reserva | Registro de una operación de compra. El modelo contempla un estado inicial pendiente de pago; la reserva solo queda confirmada después de confirmar el pago. |
 | Detalle de reserva | Variante, cantidad y precio conservados dentro de una reserva. |
 | Pago simulado | Registro académico de un pago que no mueve dinero real. |
 | Boleta simulada | Resumen interno de la compra sin validez tributaria. |
@@ -39,6 +40,6 @@ Este glosario establece los términos que utilizarán el informe, los diagramas,
 - **Empresa y establecimiento:** la empresa agrupa; el establecimiento es un local físico.
 - **Pack y oferta:** el pack describe; la oferta publica esa descripción para un día y horario.
 - **Oferta y variante:** la oferta es una publicación; la variante es un tamaño con precio y stock.
-- **Retención y reserva:** la retención es temporal; la reserva aparece cuando el pago queda confirmado.
+- **Retención y reserva:** la retención es temporal; la reserva solo queda confirmada cuando el pago queda confirmado. Un registro en estado `PENDIENTE_PAGO` no equivale a una compra confirmada.
 - **Pago y recojo:** pagar no demuestra que el consumidor recibió el pack.
 - **Rechazo y suspensión:** se rechaza una solicitud pendiente; se suspende un establecimiento que ya estaba aprobado.

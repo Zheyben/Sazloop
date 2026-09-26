@@ -1,4 +1,4 @@
-# Documentación de MealFlow
+# Documentación de Sazloop
 
 Esta carpeta es el punto de entrada para comprender el proyecto, conocer las decisiones vigentes y continuar el trabajo sin depender de explicaciones externas.
 
@@ -12,7 +12,7 @@ Si es la primera vez que trabajas en el proyecto, sigue este orden:
 4. Lee los [Requisitos](requisitos/REQUISITOS.md) para saber qué debe hacer el sistema.
 5. Consulta las [Decisiones del proyecto](decisiones/DECISIONES_PROYECTO.md) y el [Modelo de dominio](decisiones/MODELO_DOMINIO.md).
 6. Revisa la [Arquitectura](ARQUITECTURA.md) antes de modificar el backend o frontend.
-7. Abre el [Estado actual](tareas/ESTADO_ACTUAL.md) y después la tarea de la semana correspondiente.
+7. Abre el [Estado actual](tareas/ESTADO_ACTUAL.md) y la [revisión del informe corregido](informe/REVISION_APF1.md). Los planes de semanas anteriores son históricos.
 
 ## Fuentes oficiales
 
@@ -41,7 +41,9 @@ Cada tema tiene un único documento principal. Los demás documentos deben enlaz
 
 ## Estado actual
 
-El proyecto se encuentra en análisis y diseño del primer avance. El concepto general, el alcance inicial, las principales decisiones y las 31 clases de dominio ya están registrados.
+Sazloop corresponde al proyecto N.º 91 — SalvemosLaComida, según la identificación confirmada por el equipo. El primer avance ya fue presentado y se ha subido una versión corregida del informe. Hay 26 RF agrupados por módulo, tres diagramas y cinco prototipos en el documento, además de 31 entidades JPA en el backend.
+
+La revisión hasta Referencias bibliográficas detectó pendientes de notación, coherencia, citas y presentación. No se da por concluido el levantamiento de observaciones. El frontend y las capas de servicios y controladores todavía no están implementados en `main`.
 
 La situación detallada y el próximo trabajo se mantienen en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
 

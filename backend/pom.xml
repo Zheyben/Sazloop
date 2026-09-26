@@ -27,11 +27,11 @@
         version    : version actual (SNAPSHOT = en desarrollo)
         packaging  : jar = archivo ejecutable
     -->
-    <groupId>com.mealflow</groupId>
-    <artifactId>mealflow-backend</artifactId>
+    <groupId>com.sazloop</groupId>
+    <artifactId>sazloop-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>MealFlow</name>
+    <name>Sazloop</name>
     <description>Plataforma web mobile-first para reducir el desperdicio alimentario</description>
 
     <!--

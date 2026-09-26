@@ -1,69 +1,23 @@
 # Informe del primer avance
 
-Esta carpeta contendrá la copia de trabajo y la versión final del informe académico.
+La versión corregida de trabajo es [Informe_Primer_Avance.docx](Informe_Primer_Avance.docx), incorporada en el commit `0448628` del 26 de septiembre de 2026. La plataforma se llama **Sazloop** y corresponde al proyecto **N.º 91 — SalvemosLaComida**, según la identificación confirmada por el equipo.
 
-## Estructura requerida
+## Revisión vigente
 
-### Capítulo 1 — Planteamiento del proyecto
+La [revisión detallada](REVISION_APF1.md) abarca desde la carátula hasta Referencias bibliográficas inclusive. El informe contiene problema, objetivo general, cuatro objetivos específicos, alcance, limitaciones, cinco antecedentes, fundamento, RF, RNF, tres diagramas, cinco prototipos, componentes, conclusiones, lecciones y referencias. La sección 3.8 está vacía.
 
-- Definición y descripción del problema.
-- Objetivo general.
-- Objetivos específicos.
-- Alcance.
-- Limitaciones.
+La presencia de estas secciones no equivale a su aprobación: quedan observaciones de notación UML, coherencia entre clases y persistencia, citas, leyendas y descripción del estado implementado. El DOCX se conserva como fuente de la revisión; no fue reescrito por esta actualización de Markdown y código.
 
-Fuente principal: [PROYECTO.md](../PROYECTO.md).
+## Alcance exigido por APF1
 
-### Capítulo 2 — Antecedentes y marco teórico
+La consigna delimita el primer informe a los capítulos 1 y 2 y las secciones 3.1–3.6, además de PDF, Project Charter, cronograma y backend configurado con clases de dominio en ZIP. Pide un antecedente y un formulario no relacionado con login/seguridad por integrante, y fundamento teórico de máximo dos hojas.
 
-- Una solución similar por integrante: cinco antecedentes.
-- Base teórica con una extensión máxima de dos páginas.
+La consigna sitúa 3.7–3.8 en el segundo entregable. Sin embargo, la rúbrica del primer informe también evalúa evidencias de interfaces en ejecución y fragmentos de código. La revisión distingue ambos textos: no exige completar toda la aplicación ni considera un prototipo como prueba de ejecución.
 
-Los antecedentes deberán incluir fuentes verificables y no limitarse a descripciones publicitarias.
+## Pendientes de cierre
 
-### Capítulo 3 — Análisis y diseño
+- Resolver las observaciones de [REVISION_APF1.md](REVISION_APF1.md).
+- Actualizar las imágenes y leyendas en el DOCX después de corregir sus editables.
+- Exportar a PDF y comprobar legibilidad en el archivo de entrega.
 
-- 3.1 Requisitos funcionales.
-- 3.2 Requisitos no funcionales.
-- 3.3 Diagrama de casos de uso.
-- 3.4 Diagrama de clases.
-- 3.5 Modelo entidad-relación.
-- 3.6 Prototipos.
-
-Fuentes:
-
-- [REQUISITOS.md](../requisitos/REQUISITOS.md)
-- [Diagramas](../diagramas/README.md)
-- [Prototipos](../prototipos/README.md)
-
-### Secciones finales
-
-- Conclusiones.
-- Lecciones aprendidas.
-- Anexos.
-
-## Otros entregables relacionados
-
-Además del informe en PDF:
-
-- Project Charter.
-- Cronograma.
-- Backend configurado y entregado en ZIP.
-- Presentación oral de 6 a 10 minutos.
-
-## Corrección de la plantilla
-
-La plantilla repite por error el título “Capítulo 2 — Marco teórico” en la sección correspondiente al capítulo 3. En el informe del proyecto deberá utilizarse “Capítulo 3 — Análisis y diseño del sistema”.
-
-## Estado
-
-- [ ] Copia de trabajo de la plantilla.
-- [ ] Capítulo 1.
-- [ ] Cinco antecedentes.
-- [ ] Marco teórico.
-- [ ] Requisitos incorporados.
-- [ ] Diagramas incorporados.
-- [ ] Prototipos incorporados.
-- [ ] Conclusiones y lecciones.
-- [ ] Revisión general.
-- [ ] Exportación a PDF.
+Charter, cronograma y demás anexos quedan fuera del alcance de esta revisión, por indicación del equipo. Su actualización se abordará después.

@@ -1,6 +1,6 @@
 # Guía para colaborar
 
-Esta guía explica la forma de trabajar en MealFlow mediante GitHub Desktop.
+Esta guía explica la forma de trabajar en Sazloop mediante GitHub Desktop.
 
 ## Antes de comenzar
 

@@ -1,12 +1,12 @@
-# Modelado del dominio — MealFlow
+# Modelado del dominio — Sazloop
 
 ## Propósito del documento
 
-Este documento explica las clases de dominio propuestas para MealFlow, qué representa cada una y por qué es necesaria.
+Este documento explica las clases de dominio de Sazloop, qué representa cada una y por qué es necesaria.
 
-Su finalidad es que todos los integrantes comprendan el modelo antes de elaborar el diagrama de clases y comenzar la programación. El contenido se ampliará por grupos conforme avance el análisis del proyecto.
+Su finalidad es que todos los integrantes comprendan las responsabilidades del modelo y mantengan alineados el informe, los diagramas y el backend.
 
-> **Estado:** Catálogo inicial completo. Las relaciones y atributos se validarán al elaborar el diagrama de clases y el modelo entidad-relación.
+> **Estado al 26 de septiembre de 2026:** Las 31 clases del catálogo existen como entidades JPA. Hay diagramas editables y un informe corregido, pero la coherencia completa sigue pendiente; véase [la revisión](../informe/REVISION_APF1.md). Los métodos de negocio representados en UML son diseño previsto, no métodos ejecutados y verificados en Java.
 
 ## Criterios para escoger las clases
 
@@ -19,7 +19,7 @@ Su finalidad es que todos los integrantes comprendan el modelo antes de elaborar
 
 ## Visión general del dominio
 
-MealFlow será una plataforma web mobile-first en la que los establecimientos de comida podrán ofrecer sus excedentes mediante packs sorpresa. Los consumidores podrán encontrarlos, comprarlos mediante pagos simulados y recogerlos presencialmente.
+Sazloop será una plataforma web mobile-first en la que los establecimientos de comida podrán ofrecer sus excedentes mediante packs sorpresa. Los consumidores podrán encontrarlos, comprarlos mediante pagos simulados y recogerlos presencialmente.
 
 Una empresa podrá tener varios establecimientos físicos. Cada establecimiento tendrá su propia ubicación, revisión documental, estado de aprobación y acceso operativo. La cuenta propietaria podrá consultar información general de todos los establecimientos pertenecientes a su empresa.
 
@@ -207,7 +207,7 @@ Si no existe una oferta activa, la plataforma mostrará que el pack no está dis
 | `Recojo` | El registro de la entrega física del pack al consumidor. | Permite saber cuándo se completó la reserva, quién la confirmó desde la cuenta del local y cuándo se habilita la reseña. |
 | `CancelacionReserva` | El registro de una cancelación solicitada por el consumidor. | Conserva la fecha, el motivo, la penalización aplicada y la devolución del stock. |
 | `Reembolso` | La devolución simulada de una parte del pago. | Permite representar de forma separada el 50 % devuelto al consumidor cuando corresponde. |
-| `ComisionPlataforma` | El importe que MealFlow retiene por una venta. | Representa directamente el modelo de negocio y permite calcular el ingreso neto del establecimiento. |
+| `ComisionPlataforma` | El importe que Sazloop retiene por una venta. | Representa directamente el modelo de negocio y permite calcular el ingreso neto del establecimiento. |
 
 ### Relaciones principales
 
@@ -326,7 +326,7 @@ Algunos conceptos serán necesarios en el código, pero no deben utilizarse para
 
 Los roles, estados y métodos de pago se representarán mediante enumeraciones cuando corresponda.
 
-## Conteo final propuesto
+## Conteo verificado
 
 El modelo contiene **31 clases de dominio justificadas**. El mínimo académico para cinco integrantes es de 25 clases, por lo que el proyecto cumple el requisito sin crear conceptos artificiales.
 
@@ -376,8 +376,16 @@ El modelo contiene **31 clases de dominio justificadas**. El mínimo académico 
 30. `Notificacion`
 31. `ImpactoCO2Evitado`
 
-## Conclusión del modelado inicial
+## Persistencia y relaciones verificadas
 
-Las 31 clases nacen de las funciones ya acordadas para MealFlow. No todas tendrán la misma complejidad ni necesariamente serán tablas independientes: algunas podrán implementarse como entidades y otras como objetos de valor, según se defina al preparar el diagrama de clases y la persistencia.
+El código contiene 31 entidades JPA, repartidas en Identidad (7), Afiliación (6), Ofertas (5), Reservas (5), Transacciones (5) y Experiencia (3). El DBML contiene esas 31 tablas y las tablas asociativas `pack_alergenos` y `pack_restricciones`: 33 en total. Esta diferencia de cantidad está justificada y no exige inventar dos clases adicionales.
 
-El siguiente trabajo será revisar las relaciones y responsabilidades de estas clases para convertir este catálogo en un diagrama de clases coherente. Si durante esa revisión se descubre que dos conceptos pueden unirse o que falta uno indispensable, el documento deberá actualizarse antes de escribir el código.
+El código y el DBML actuales representan:
+
+- `AdministradorPlataforma` como entidad independiente, sin herencia de `Usuario`.
+- Una evaluación final por solicitud: `EvaluacionAfiliacion.solicitudAfiliacion` es `@OneToOne` con FK única.
+- `OfertaPack` asociada a `PackSorpresa` mediante `pack_id`.
+- `BoletaSimulada` asociada a `Reserva` mediante `reserva_id`.
+- `Reembolso` asociado a `CancelacionReserva` mediante `cancelacion_id`.
+
+El diagrama de clases del informe aún difiere en estas relaciones. No debe declararse coherencia completa por coincidir solo los nombres o el número de clases. Las correcciones concretas están en [REVISION_APF1.md](../informe/REVISION_APF1.md). Este registro describe el mapeo existente; no incorpora nuevas relaciones ni implementa reglas de negocio.

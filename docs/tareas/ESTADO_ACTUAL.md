@@ -1,76 +1,48 @@
 # Estado actual del proyecto
 
-**Última actualización:** 6 de septiembre de 2026  
-**Etapa:** Primer avance — análisis, diseño y configuración inicial  
-**Entrega:** Semana 5, martes 8 de septiembre de 2026 a las 6:00 p. m.
+**Actualización:** 26 de septiembre de 2026.  
+**Proyecto:** N.º 91 — SalvemosLaComida.  
+**Plataforma:** Sazloop.  
+**Etapa:** revisión de las correcciones del primer avance, antes de integrar sugerencias adicionales.
 
-## Completado
+## Avance comprobado
 
-- Estructura inicial del repositorio.
-- Arquitectura de monolito modular por capas.
-- Tecnologías principales confirmadas.
-- Alcance inicial y exclusiones de la V1.
-- Decisiones funcionales iniciales.
-- Glosario común.
-- Flujos principales del negocio.
-- Requisitos funcionales y no funcionales iniciales.
-- Catálogo de 31 clases de dominio justificadas.
-- Ruta de lectura de la documentación.
-- Guía para colaborar mediante GitHub Desktop.
+- Informe corregido en `docs/informe/Informe_Primer_Avance.docx`.
+- Problema delimitado a Lima Metropolitana; objetivo general y cuatro objetivos específicos.
+- 26 RF agrupados en seis módulos, con redacción “El sistema deberá…”, prioridad y dependencias.
+- Cinco antecedentes, fundamento teórico, RNF y referencias presentes.
+- Tres diagramas con archivos editables; 31 clases y 33 tablas físicas contando dos asociativas.
+- Cinco prototipos de Google Stitch incorporados al informe.
+- Proyecto Spring Boot con Java 21 declarado, 31 entidades JPA y perfiles H2/MySQL.
+- Nombre Sazloop sincronizado en documentación vigente, Maven, paquete Java, clase de entrada, prueba y título DBML.
 
-## Pendiente para el primer avance
+## Pendientes confirmados en la revisión
 
-### Informe
+1. Corregir la notación de casos de uso y las diferencias entre el diagrama de clases, ER y entidades.
+2. Mejorar la legibilidad de los diagramas en el archivo entregado.
+3. Corregir la cita de Phenix, la referencia de ResQ y el orden/correspondencia de citas IEEE.
+4. Precisar el RNF de rendimiento sin inventar carga de usuarios ni mediciones.
+5. Intercambiar las leyendas de búsqueda/pago y corregir el texto de recojo del prototipo.
+6. Distinguir arquitectura prevista de componentes implementados en 3.7 y moderar las conclusiones que afirman validaciones no acreditadas.
+7. Corregir la numeración de Fundamento y aclarar la identidad oficial del proyecto en el informe.
 
-- Redactar el capítulo 1: problema, objetivos, alcance y limitaciones.
-- Preparar cinco antecedentes, uno por integrante.
-- Redactar la base teórica con un máximo de dos páginas.
-- Incorporar requisitos, diagramas y prototipos en el capítulo 3.
-- Preparar conclusiones, lecciones aprendidas y anexos.
-- Revisar formato y exportar el informe a PDF.
+Detalle y evidencia: [REVISION_APF1.md](../informe/REVISION_APF1.md). El informe aún no tiene visto bueno completo.
 
-### Entregables de gestión
+## Estado real del código
 
-- Elaborar el Project Charter.
-- Elaborar el cronograma.
+Hay modelo de persistencia y configuración inicial. No hay controllers, services, repositories ni DTO; `frontend/` contiene solo `.gitkeep`. Las reglas de stock, pago, cancelación y recojo están especificadas, pero no se acreditan como ejecutadas. No se creó funcionalidad adicional en esta actualización.
 
-### Modelado
+La comprobación estática del cambio de identidad verifica rutas, imports y conservación de mapeos. Maven no pudo descargar el POM padre por fallo DNS de `repo.maven.apache.org`. El entorno de revisión dispone de Java 17, mientras el proyecto exige Java 21. Se necesita ejecutar las pruebas existentes con JDK 21 y acceso a dependencias; no hay resultado de compilación exitosa en esta revisión.
 
-- Crear el diagrama de casos de uso.
-- Convertir las 31 clases en un diagrama de clases revisado.
-- Crear el modelo entidad-relación.
-- Comprobar que los tres diagramas sean coherentes entre sí.
+## Siguiente tarea solicitada, aún no incorporada
 
-### Prototipos
+- Evaluación de integración futura con empresas externas de delivery.
+- Investigación del registro de ubicación mediante GPS.
+- Evaluación de MySQL para la cantidad teórica de usuarios que se defina.
+- Confirmación formal de la tasa de comisión del 10 % registrada en DEC-036.
+- Renovación del cronograma completo y Project Charter.
+- Corrección de citas y aclaración de la asignación oficial dentro del DOCX.
 
-- Diseñar al menos cinco formularios o pantallas funcionales, uno por integrante.
-- No utilizar el login o funciones de seguridad para completar el mínimo.
-- Mantener el enfoque mobile-first.
+Las notas de GPS/delivery ya presentes en prototipos permanecen como investigación futura. No se habilitan en V1 ni se añaden RF.
 
-### Backend
-
-- Generar el proyecto Spring Boot con Java 21 y Maven.
-- Crear la estructura modular.
-- Implementar las clases de dominio acordadas para este avance.
-- Preparar la configuración de MySQL y Spring Data JPA.
-- Comprobar que el backend inicia correctamente.
-- Preparar el archivo ZIP solicitado.
-
-### Presentación
-
-- Preparar una exposición de 6 a 10 minutos.
-- Distribuir las partes entre los cinco integrantes.
-- Asegurar que todos comprendan el problema, la solución y su parte asignada.
-
-## Bloqueos actuales
-
-- Todavía no se ha generado el proyecto Spring Boot.
-- Todavía no existen los diagramas ni prototipos.
-- El informe académico no ha comenzado.
-- Falta definir la versión exacta de Spring Boot al generar el backend.
-
-## Próximo objetivo
-
-Comenzar el informe del primer avance utilizando como fuente los documentos ya consolidados. En paralelo, los diagramas, prototipos y backend deberán producirse y luego incorporarse al informe.
-
-El detalle operativo se mantiene en [SEMANA_05.md](SEMANA_05.md).
+Los planes [SEMANA_04.md](SEMANA_04.md) y [SEMANA_05.md](SEMANA_05.md) conservan la planificación histórica. Sus casillas no representan el estado actual.

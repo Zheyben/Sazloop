@@ -1,5 +1,7 @@
 # Semana 05 — Entrega del primer avance
 
+> **Plan histórico.** Se conserva el contenido y las casillas de esta semana; el nombre usado entonces era MealFlow (hoy Sazloop). Para progreso y pendientes vigentes, consultar [ESTADO_ACTUAL.md](ESTADO_ACTUAL.md).
+
 ## Objetivo
 
 Completar y revisar todos los entregables del primer avance mediante trabajo paralelo entre los cinco integrantes.

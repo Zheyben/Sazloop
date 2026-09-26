@@ -1,33 +1,15 @@
 # Diagramas del primer avance
 
-Esta carpeta contendrá los diagramas exigidos por el primer avance.
+Los tres diagramas ya están incorporados en el informe corregido de Sazloop. Se conservan sus fuentes:
 
-## Diagramas requeridos
+| Diagrama | Archivo editable | Estado de revisión |
+|---|---|---|
+| Casos de uso | [01-Diagrama de casos de uso.drawio](<01-Diagrama de casos de uso.drawio>) | Incluye los 26 IDs CU/RF agrupados; quedan observaciones de notación UML. |
+| Clases | [02-Diagrama de clases.drawio](<02-Diagrama de clases.drawio>) | Presenta 31 clases, atributos y métodos; persisten diferencias de relaciones frente al código y ER. |
+| Entidad-relación | [03-Diagrama ER de base de datos.txt](<03-Diagrama ER de base de datos.txt>) | Fuente DBML: 33 tablas, incluidas dos asociativas. Se actualizó únicamente el nombre del proyecto a Sazloop. |
 
-1. **Diagrama de casos de uso**
-   - Debe reflejar los actores y requisitos funcionales principales.
-   - Fuente: [REQUISITOS.md](../requisitos/REQUISITOS.md).
+Las observaciones específicas se detallan en [REVISION_APF1.md](../informe/REVISION_APF1.md). No se consideran corregidas solo por existir una nueva imagen.
 
-2. **Diagrama de clases**
-   - Debe utilizar las clases y relaciones revisadas del dominio.
-   - Fuente: [MODELO_DOMINIO.md](../decisiones/MODELO_DOMINIO.md).
-   - Si el diagrama general resulta muy grande, puede acompañarse con vistas por módulo, pero debe conservarse una vista global.
+Las clases y el ER están reducidos a un tamaño difícil de leer en el informe. Debe facilitarse el diagrama legible como archivo adjunto o exportación enlazada, como indicó el profesor. Se pueden utilizar estos editables; no hace falta inventar diagramas adicionales ni agregar una tabla de clases al informe.
 
-3. **Modelo entidad-relación**
-   - Debe mostrar las entidades persistentes, claves y relaciones de la base de datos.
-   - No todas las clases de dominio tienen que convertirse en tablas.
-
-## Formato recomendado
-
-Por cada diagrama se conservará:
-
-- El archivo editable.
-- Una exportación en PNG o PDF para visualizarlo fácilmente.
-- Un nombre estable, por ejemplo `CASOS_USO`, `CLASES_DOMINIO` y `MODELO_ER`.
-
-## Estado
-
-- [ ] Diagrama de casos de uso.
-- [ ] Diagrama de clases.
-- [ ] Modelo entidad-relación.
-- [ ] Revisión de coherencia entre los tres.
+Las 31 entidades originan 31 tablas principales y dos tablas muchos a muchos (`pack_alergenos`, `pack_restricciones`). La coherencia requiere revisar también las relaciones, claves y cardinalidades, no igualar artificialmente el número de clases y tablas.

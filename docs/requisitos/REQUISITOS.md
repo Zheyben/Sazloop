@@ -1,41 +1,86 @@
-# Requisitos del sistema
+# Requisitos del sistema — Sazloop
 
-## Propósito
+## Fuente y estado
 
-Estos requisitos describen la primera versión de MealFlow y sirven como fuente para el informe, los casos de uso, los prototipos, los diagramas y el código.
+Sincronizados el 26 de septiembre de 2026 con las secciones 3.1 y 3.2 de [Informe_Primer_Avance.docx](../informe/Informe_Primer_Avance.docx). Se conservan los 26 IDs, descripciones, actores, prioridades y dependencias del informe corregido. Los IDs no se renumeran al agrupar por módulos.
 
-Que una función aparezca aquí no significa que deba estar completamente programada en el primer avance. El primer avance exige principalmente análisis, diseño, prototipos y configuración inicial del backend.
+Son requisitos de la solución; su presencia aquí no acredita implementación. Las operaciones del backend y el frontend todavía están pendientes. La revisión del APF1 está en [REVISION_APF1.md](../informe/REVISION_APF1.md).
 
 ## Requisitos funcionales
 
-| ID | Requisito | Actor principal | Prioridad |
-|---|---|---|---|
-| RF-01 | El sistema permitirá registrar una cuenta con datos personales básicos. | Usuario | Esencial |
-| RF-02 | El sistema permitirá iniciar y cerrar sesión. | Usuario | Esencial |
-| RF-03 | Una misma cuenta podrá utilizar un perfil de consumidor y un perfil empresarial. | Usuario | Esencial |
-| RF-04 | El propietario podrá registrar los datos de su empresa. | Propietario | Esencial |
-| RF-05 | El propietario podrá registrar varios establecimientos, cada uno con una ubicación. | Propietario | Esencial |
-| RF-06 | El propietario deberá adjuntar los documentos obligatorios de cada establecimiento. | Propietario | Esencial |
-| RF-07 | El administrador podrá revisar manualmente cada documento y registrar observaciones. | Administrador | Esencial |
-| RF-08 | El administrador podrá aprobar o rechazar la solicitud de un establecimiento e indicar el motivo. | Administrador | Esencial |
-| RF-09 | El sistema suspenderá un establecimiento cuando venza un documento obligatorio y permitirá revisar su renovación. | Administrador | Esencial |
-| RF-10 | El propietario podrá crear una cuenta operativa para cada establecimiento aprobado. | Propietario | Esencial |
-| RF-11 | El establecimiento podrá definir la descripción y los posibles contenidos de su pack sorpresa. | Establecimiento | Esencial |
-| RF-12 | El establecimiento podrá publicar una oferta activa con una o más variantes de tamaño, precio y stock. | Establecimiento | Esencial |
-| RF-13 | El establecimiento podrá configurar la ventana y el límite definitivo de recojo. | Establecimiento | Esencial |
-| RF-14 | El consumidor podrá buscar y filtrar establecimientos por ubicación textual, precio y calificación. | Consumidor | Esencial |
-| RF-15 | El consumidor podrá consultar información del establecimiento, oferta, descuentos, alérgenos y restricciones. | Consumidor | Esencial |
-| RF-16 | El consumidor podrá comprar una o más unidades disponibles mediante tarjeta o Yape simulados. | Consumidor | Esencial |
-| RF-17 | El QR físico del establecimiento abrirá directamente su oferta activa. | Consumidor | Esencial |
-| RF-18 | Una compra presencial desde el QR permitirá seleccionar efectivo además de los pagos digitales simulados. | Consumidor | Esencial |
-| RF-19 | El sistema podrá retener temporalmente el stock mientras se confirma un pago presencial en efectivo. | Sistema | Esencial |
-| RF-20 | Después de confirmar el pago, el sistema generará una boleta simulada y un código único de recojo. | Sistema | Esencial |
-| RF-21 | El personal podrá buscar el código y confirmar la entrega del pack. | Establecimiento | Esencial |
-| RF-22 | El consumidor podrá cancelar una reserva remota pendiente dentro del límite y recibirá un reembolso simulado del 50 %. | Consumidor | Esencial |
-| RF-23 | El consumidor podrá calificar y comentar después de un recojo completado. | Consumidor | Esencial |
-| RF-24 | El propietario podrá consultar ventas, comisiones, ingresos, cancelaciones, no recojos, reseñas e impacto por local y de forma consolidada. | Propietario | Importante |
-| RF-25 | El sistema enviará avisos sobre solicitudes, documentos, suspensiones y recojos. | Sistema | Importante |
-| RF-26 | El sistema registrará de forma conceptual el alimento recuperado y el CO₂ evitado después del recojo. | Sistema | Importante |
+### Módulo de Identidad
+
+Este módulo administra el acceso, los perfiles y la estructura
+empresarial registrada en la plataforma.
+
+| **ID**    | **Requisito Funcional**                                                                                                                         | **Actor Principal** | **Prioridad** | **Dependencia**                                                    |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|--------------------------------------------------------------------|
+| **RF-01** | El sistema deberá permitir que el usuario registre una cuenta mediante sus datos personales básicos.                                            | Usuario             | **Esencial**  | **-**                                                              |
+| **RF-02** | El sistema deberá gestionar el acceso del usuario mediante las opciones de inicio y cierre de sesión.                                           | Usuario             | **Esencial**  | **-**                                                              |
+| **RF-03** | El sistema deberá permitir que una misma cuenta utilice un perfil de consumidor y un perfil empresarial.                                        | Usuario             | **Esencial**  | **-**                                                              |
+| **RF-04** | El sistema deberá permitir que el propietario registre los datos de su empresa.                                                                 | Propietario         | **Esencial**  | **-**                                                              |
+| **RF-05** | El sistema deberá permitir que el propietario registre uno o más establecimientos asociados a su empresa, cada uno con su respectiva ubicación. | Propietario         | **Esencial**  | **-**                                                              |
+| **RF-10** | El sistema deberá permitir que el propietario cree una cuenta operativa para cada establecimiento previamente aprobado.                         | Propietario         | **Esencial**  | Solo se habilita después de la aprobación realizada en Afiliación. |
+
+### Módulo de Afiliación
+
+Este módulo administra la presentación, revisión y vigencia de los
+documentos requeridos para aprobar cada establecimiento.
+
+| **ID**    | **Requisito Funcional**                                                                                                                                                                   | **Actor Principal** | **Prioridad** | **Dependencia** |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|-----------------|
+| **RF-06** | El sistema deberá permitir que el propietario adjunte los documentos obligatorios correspondientes a cada establecimiento.                                                                | Propietario         | **Esencial**  | **-**           |
+| **RF-07** | El sistema deberá permitir que el administrador registre el resultado de la revisión manual de cada documento, junto con las observaciones correspondientes.                              | Administrador       | **Esencial**  | **-**           |
+| **RF-08** | El sistema deberá permitir que el administrador registre la aprobación o el rechazo de la solicitud de un establecimiento e indique el motivo de la decisión.                             | Administrador       | **Esencial**  | **-**           |
+| **RF-09** | El sistema deberá suspender automáticamente un establecimiento cuando venza uno de sus documentos obligatorios y mantener la suspensión hasta que el administrador apruebe su renovación. | Administrador       | **Esencial**  | **-**           |
+
+### Módulo de Ofertas
+
+Este módulo administra la definición, publicación y consulta de los
+packs sorpresa disponibles.
+
+| **ID**    | **Requisito Funcional**                                                                                                                                              | **Actor Principal** | **Prioridad** | **Dependencia** |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|-----------------|
+| **RF-11** | El sistema deberá permitir que el establecimiento registre la descripción y los posibles contenidos de su pack sorpresa.                                             | Establecimiento     | **Esencial**  | **-**           |
+| **RF-12** | El sistema deberá permitir que el establecimiento publique una sola oferta activa de pack sorpresa con una o más variantes de tamaño, precio y stock.                | Establecimiento     | **Esencial**  | **-**           |
+| **RF-13** | El sistema deberá permitir que el establecimiento configure el horario y la hora límite para el recojo de los packs sorpresa.                                        | Establecimiento     | **Esencial**  | **-**           |
+| **RF-14** | El sistema deberá permitir que el consumidor busque y filtre establecimientos por distrito, dirección textual, precio y calificación.                                | Consumidor          | **Esencial**  | **-**           |
+| **RF-15** | El sistema deberá mostrar al consumidor la información del establecimiento, la oferta activa, el descuento, los posibles alérgenos y las restricciones alimentarias. | Consumidor          | **Esencial**  | **-**           |
+| **RF-17** | El sistema deberá mostrar directamente la oferta activa de un establecimiento cuando el consumidor acceda mediante su código QR físico.                              | Consumidor          | **Esencial**  | **-**           |
+
+### Módulo de Reservas
+
+Este módulo administra la disponibilidad temporal del stock, la
+cancelación y la entrega presencial de los packs.
+
+| **ID**    | **Requisito Funcional**                                                                                                                                                             | **Actor Principal** | **Prioridad** | **Dependencia**                                                                  |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|----------------------------------------------------------------------------------|
+| **RF-19** | El sistema deberá retener temporalmente el stock seleccionado mientras se confirma el pago presencial en efectivo.                                                                  | Sistema             | **Esencial**  | Consulta el stock de Ofertas mientras se confirma la operación en Transacciones. |
+| **RF-21** | El sistema deberá permitir que el personal del establecimiento busque el código único de recojo y confirme la entrega del pack.                                                     | Establecimiento     | **Esencial**  | **-**                                                                            |
+| **RF-22** | El sistema deberá procesar la cancelación de una reserva remota pendiente cuando el consumidor la solicite dentro del límite establecido, aplicando un reembolso simulado del 50 %. | Consumidor          | **Esencial**  | Solicita a Transacciones el registro del reembolso simulado.                     |
+
+### Módulo de Transacciones
+
+Este módulo administra los pagos simulados y los comprobantes asociados
+a las operaciones.
+
+| **ID**    | **Requisito Funcional**                                                                                                                                                                                      | **Actor Principal** | **Prioridad** | **Dependencia**                                                        |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|------------------------------------------------------------------------|
+| **RF-16** | El sistema deberá permitir que el consumidor compre una o más unidades disponibles mediante pagos simulados con tarjeta de débito o Yape.                                                                    | Consumidor          | **Esencial**  | Utiliza la oferta seleccionada y origina una reserva.                  |
+| **RF-18** | El sistema deberá permitir que el consumidor seleccione el pago en efectivo durante una compra presencial iniciada mediante el código QR del establecimiento, además de las modalidades digitales simuladas. | Consumidor          | **Esencial**  | **-**                                                                  |
+| **RF-20** | El sistema deberá generar una boleta simulada y un código único de recojo después de confirmar el pago de la operación.                                                                                      | Sistema             | **Esencial**  | Genera un código utilizado posteriormente por Reservas para el recojo. |
+
+### Módulo de Experiencia
+
+Este módulo administra las reseñas, los indicadores, los reportes y las
+notificaciones posteriores o complementarias a la operación principal.
+
+| **ID**    | **Requisito Funcional**                                                                                                                                                                                                | **Actor Principal** | **Prioridad**  | **Dependencia**                                             |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|----------------|-------------------------------------------------------------|
+| **RF-23** | El sistema deberá permitir que el consumidor registre una calificación y un comentario después de completar el recojo de su pedido.                                                                                    | Consumidor          | **Esencial**   | **-**                                                       |
+| **RF-24** | El sistema deberá mostrar al propietario un panel con información de ventas, comisiones, ingresos, cancelaciones, reservas no recogidas, reseñas e indicadores de impacto por establecimiento y de manera consolidada. | Propietario         | **Importante** | Consolida información de Ofertas, Reservas y Transacciones. |
+| **RF-25** | El sistema deberá enviar notificaciones a los usuarios correspondientes sobre el estado de las solicitudes, los documentos, las suspensiones y el recojo de los pedidos.                                               | Sistema             | **Importante** | Recibe eventos generados por Afiliación y Reservas.         |
+| **RF-26** | El sistema deberá registrar de manera conceptual los indicadores de alimento recuperado y CO₂ evitado después de completar el recojo de un pedido.                                                                     | Sistema             | **Importante** | **-**                                                       |
 
 ## Reglas funcionales centrales
 
@@ -52,25 +97,24 @@ Que una función aparezca aquí no significa que deba estar completamente progra
 
 ## Requisitos no funcionales
 
-| ID | Requisito |
+Se reproduce la tabla de seis criterios del informe. Sustituye la lista anterior de 12 RNF de este archivo, disponible en el historial de Git; las decisiones técnicas y de privacidad continúan documentadas en Arquitectura y Decisiones.
+
+| Criterio | Descripción del requisito no funcional |
 |---|---|
-| RNF-01 | La interfaz deberá diseñarse primero para celulares y adaptarse a tabletas y computadoras. |
-| RNF-02 | El frontend se comunicará con el backend mediante servicios REST sobre HTTP. |
-| RNF-03 | El backend utilizará Java 21, Spring Boot y Maven. |
-| RNF-04 | El sistema utilizará MySQL y Spring Data JPA para la persistencia. |
-| RNF-05 | El backend se organizará como monolito modular por capas. |
-| RNF-06 | Las operaciones de reserva y stock deberán mantener consistencia mediante transacciones. |
-| RNF-07 | Las contraseñas no deberán almacenarse como texto visible y el acceso deberá limitarse según el perfil. |
-| RNF-08 | Los archivos documentales privados no serán visibles para los consumidores. |
-| RNF-09 | Los formularios deberán validar campos obligatorios y mostrar mensajes comprensibles. |
-| RNF-10 | La interfaz deberá utilizar textos legibles, botones claros y navegación sencilla en pantallas pequeñas. |
-| RNF-11 | El código deberá mantener nombres coherentes con los requisitos, diagramas y modelo de dominio. |
-| RNF-12 | Toda función simulada o futura deberá identificarse claramente para no aparentar una operación real. |
+| Usabilidad (Mobile-First) | La interfaz web debe diseñarse y maquetarse bajo el enfoque mobile-first, adaptándose a dispositivos móviles sin degradar la experiencia de usuario. |
+| Rendimiento | El sistema debe responder a las consultas de búsqueda y procesamiento de compras simuladas en tiempos mínimos (de 2 a 3 segundos). |
+| Arquitectura | La aplicación backend debe desarrollarse siguiendo una estructura monolítica modular organizada por capas (Controlador, Servicio, Repositorio, Modelo). |
+| Tecnología y Stack | La solución debe ser construida con Java 21, Spring Boot, Maven, Spring Data JPA, MySQL en el backend; y HTML, CSS, JavaScript y Tailwind CSS en el frontend. |
+| Seguridad de Acceso | Las cuentas operativas de establecimientos y usuarios deben mantener la separación estricta de roles y permisos mediante autenticación segura. |
+| Persistencia e Integridad | Las transacciones de reservas y control de stock retenido deben mantener consistencia e integridad relacional en MySQL para evitar la sobreventa de packs. |
 
-## Trazabilidad
+**Pendiente de precisar en el informe:** Rendimiento usa “tiempos mínimos (de 2 a 3 segundos)”. Debe expresar un límite máximo verificable y las condiciones de medición; no se han inventado usuarios concurrentes ni resultados de pruebas para completar ese dato.
 
-- Las decisiones que justifican estos requisitos se encuentran en [DECISIONES_PROYECTO.md](../decisiones/DECISIONES_PROYECTO.md).
-- Las clases relacionadas se encuentran en [MODELO_DOMINIO.md](../decisiones/MODELO_DOMINIO.md).
-- Los procesos completos se explican en [FLUJOS_NEGOCIO.md](../FLUJOS_NEGOCIO.md).
+## Relación con los demás elementos
 
-Cuando cambie un requisito, deberán revisarse también sus casos de uso, prototipos, diagramas y clases relacionadas.
+- [Decisiones](../decisiones/DECISIONES_PROYECTO.md).
+- [Modelo de dominio](../decisiones/MODELO_DOMINIO.md).
+- [Flujos](../FLUJOS_NEGOCIO.md).
+- [Diagramas](../diagramas/README.md).
+
+La distribución funcional de un RF no obliga a que todas sus entidades estén en el mismo módulo. Por ejemplo, Reservas coordina RF-22, mientras `CancelacionReserva` y `Reembolso` pertenecen a Transacciones. Los módulos colaboran; no se cambian esas clases de paquete solo por la agrupación del requisito.

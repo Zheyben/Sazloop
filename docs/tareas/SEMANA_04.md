@@ -1,5 +1,7 @@
 # Semana 04 — Organización inicial del proyecto
 
+> **Plan histórico.** Se conserva el contenido y las casillas de esta semana; el nombre usado entonces era MealFlow (hoy Sazloop). Para progreso y pendientes vigentes, consultar [ESTADO_ACTUAL.md](ESTADO_ACTUAL.md).
+
 ## Objetivo de la semana
 
 Preparar la estructura del repositorio, registrar decisiones iniciales y organizar el trabajo previo al primer avance.

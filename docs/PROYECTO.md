@@ -1,22 +1,57 @@
-# Proyecto MealFlow
+# Proyecto Sazloop
 
 > **Lo bueno sigue fluyendo.**
 
+## Identidad
+
+- Proyecto asignado: **N.º 91 — SalvemosLaComida**, según la confirmación del equipo.
+- Plataforma: **Sazloop**.
+- Nombre anterior: MealFlow; permanece en la URL del repositorio y en el identificador técnico de la base MySQL existente.
+- Ámbito de la primera versión: **Lima Metropolitana**.
+
 ## Resumen
 
-MealFlow es una plataforma web mobile-first que busca reducir el desperdicio de alimentos preparados.
+Sazloop es una plataforma web mobile-first que busca reducir el desperdicio de alimentos preparados.
 
 Los restaurantes, panaderías y otros establecimientos afiliados podrán ofrecer sus excedentes del día mediante packs sorpresa con descuento. Los consumidores podrán encontrarlos, comprarlos mediante pagos simulados y recogerlos personalmente en el local.
 
 La plataforma no será un servicio de delivery.
 
-## Problema y oportunidad
+## Problema
 
-Al finalizar la jornada, muchos establecimientos descartan alimentos que todavía se encuentran en condiciones adecuadas para el consumo. Esto genera pérdida económica para el comercio y desperdicio de recursos.
+El problema abordado es el descarte de excedentes alimentarios todavía aptos para el consumo en establecimientos de Lima Metropolitana. La variación de la demanda, la disponibilidad superior a lo vendido y el tiempo limitado para aprovechar productos de corta duración pueden contribuir a este descarte. Sus consecuencias incluyen pérdidas económicas para los establecimientos y desaprovechamiento de alimentos y recursos.
 
-Al mismo tiempo, estudiantes, jóvenes profesionales y familias buscan alimentos a precios accesibles y muestran interés por prácticas de consumo responsables.
+Esta delimitación procede del capítulo 1 del informe corregido; no supone que se haya realizado un estudio de campo ni que establecimientos concretos hayan confirmado estas pérdidas.
 
-La oportunidad consiste en conectar a ambos grupos antes de que los productos sean descartados.
+## Objetivos
+
+### Objetivo general
+
+Desarrollar una plataforma web mobile-first dirigida a establecimientos
+de alimentos y consumidores de Lima Metropolitana, orientada a la
+reducción del desperdicio alimentario mediante la comercialización de
+excedentes aptos para el consumo en packs sorpresa con recojo
+presencial.
+
+### Objetivos específicos
+
+1.  Diseñar la arquitectura, el modelo de dominio, el modelo de datos y
+    las interfaces de la plataforma de acuerdo con los requerimientos
+    funcionales y no funcionales establecidos.
+
+2.  Implementar la gestión de usuarios, empresas, establecimientos y
+    ofertas de packs sorpresa, con revisión documental manual y
+    administración independiente de cada local.
+
+3.  Desarrollar el flujo transaccional del consumidor para la búsqueda,
+    reserva, pago simulado, cancelación y recojo presencial de packs
+    sorpresa, con control de stock, código único de recojo y registro
+    posterior de reseñas.
+
+4.  Validar el funcionamiento y la coherencia de la plataforma con los
+    requerimientos, modelos, base de datos e interfaces mediante pruebas
+    funcionales y técnicas.
+
 
 ## Propuesta de valor
 
@@ -91,11 +126,11 @@ No se implementará durante la primera versión:
 - Fórmula científica definitiva para calcular alimento recuperado o CO₂ evitado.
 - Microservicios.
 
-Las funciones futuras que aparezcan en un prototipo deberán mostrarse como “Próximamente”.
+Las funciones futuras que aparezcan en un prototipo deben identificarse como no disponibles en V1. El informe ya menciona delivery externo y GPS como investigación futura; su evaluación e integración documental detallada quedan para la siguiente tarea y no modifican los RF actuales.
 
 ## Modelo de negocio
 
-La plataforma retendrá una comisión del 10 % sobre el importe que efectivamente permanezca cobrado.
+La documentación previa registra una comisión del 10 % sobre el importe que efectivamente permanezca cobrado (DEC-036). Esta tasa está **documentada, pero pendiente de confirmación formal por el equipo**; el RF-24 del informe solicita mostrar comisiones, pero no especifica un porcentaje. Su cálculo aún no está implementado.
 
 Los pagos serán simulados. Si el pago presencial se realiza en efectivo, la comisión quedará registrada como un saldo simulado del establecimiento con la plataforma.
 
@@ -111,7 +146,7 @@ Los pagos serán simulados. Si el pago presencial se realiza en efectivo, la com
 | Base de datos | MySQL |
 | Persistencia | Spring Data JPA |
 
-La versión exacta de Spring Boot se registrará cuando se genere el proyecto base.
+El POM declara Spring Boot 4.1.1 y Java 21. H2 está configurada para desarrollo; MySQL sigue siendo la base prevista de persistencia. El frontend está planificado, aún sin código en `main`.
 
 ## Arquitectura
 

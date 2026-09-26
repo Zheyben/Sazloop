@@ -1,4 +1,4 @@
-Project MealFlow {
+Project Sazloop {
   database_type: 'MySQL'
   Note: 'Modelo ER derivado de las 31 entidades JPA entregadas por el equipo.'
 }
