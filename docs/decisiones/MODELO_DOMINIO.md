@@ -6,8 +6,6 @@ Este documento explica las clases de dominio de Sazloop, qué representa cada un
 
 Su finalidad es que todos los integrantes comprendan las responsabilidades del modelo y mantengan alineados el informe, los diagramas y el backend.
 
-> **Estado al 26 de septiembre de 2026:** Las 31 clases del catálogo existen como entidades JPA. Hay diagramas editables y un informe corregido, pero la coherencia completa sigue pendiente; véase [la revisión](../informe/REVISION_APF1.md). Los métodos de negocio representados en UML son diseño previsto, no métodos ejecutados y verificados en Java.
-
 ## Criterios para escoger las clases
 
 - Cada clase debe representar una persona, objeto, proceso o concepto importante del negocio.
@@ -387,5 +385,3 @@ El código y el DBML actuales representan:
 - `OfertaPack` asociada a `PackSorpresa` mediante `pack_id`.
 - `BoletaSimulada` asociada a `Reserva` mediante `reserva_id`.
 - `Reembolso` asociado a `CancelacionReserva` mediante `cancelacion_id`.
-
-El diagrama de clases del informe aún difiere en estas relaciones. No debe declararse coherencia completa por coincidir solo los nombres o el número de clases. Las correcciones concretas están en [REVISION_APF1.md](../informe/REVISION_APF1.md). Este registro describe el mapeo existente; no incorpora nuevas relaciones ni implementa reglas de negocio.

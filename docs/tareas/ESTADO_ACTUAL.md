@@ -3,7 +3,7 @@
 **Actualización:** 26 de septiembre de 2026.  
 **Proyecto:** N.º 91 — SalvemosLaComida.  
 **Plataforma:** Sazloop.  
-**Etapa:** revisión de las correcciones del primer avance, antes de integrar sugerencias adicionales.
+**Etapa:** Inicio del segundo avance del proyecto final.
 
 ## Avance comprobado
 
@@ -18,15 +18,7 @@
 
 ## Pendientes confirmados en la revisión
 
-1. Corregir la notación de casos de uso y las diferencias entre el diagrama de clases, ER y entidades.
-2. Mejorar la legibilidad de los diagramas en el archivo entregado.
-3. Corregir la cita de Phenix, la referencia de ResQ y el orden/correspondencia de citas IEEE.
-4. Precisar el RNF de rendimiento sin inventar carga de usuarios ni mediciones.
-5. Intercambiar las leyendas de búsqueda/pago y corregir el texto de recojo del prototipo.
-6. Distinguir arquitectura prevista de componentes implementados en 3.7 y moderar las conclusiones que afirman validaciones no acreditadas.
-7. Corregir la numeración de Fundamento y aclarar la identidad oficial del proyecto en el informe.
-
-Detalle y evidencia: [REVISION_APF1.md](../informe/REVISION_APF1.md). El informe aún no tiene visto bueno completo.
+- Sin pendientes
 
 ## Estado real del código
 

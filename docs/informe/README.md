@@ -1,12 +1,6 @@
 # Informe del primer avance
 
-La versión corregida de trabajo es [Informe_Primer_Avance.docx](Informe_Primer_Avance.docx), incorporada en el commit `0448628` del 26 de septiembre de 2026. La plataforma se llama **Sazloop** y corresponde al proyecto **N.º 91 — SalvemosLaComida**, según la identificación confirmada por el equipo.
-
-## Revisión vigente
-
-La [revisión detallada](REVISION_APF1.md) abarca desde la carátula hasta Referencias bibliográficas inclusive. El informe contiene problema, objetivo general, cuatro objetivos específicos, alcance, limitaciones, cinco antecedentes, fundamento, RF, RNF, tres diagramas, cinco prototipos, componentes, conclusiones, lecciones y referencias. La sección 3.8 está vacía.
-
-La presencia de estas secciones no equivale a su aprobación: quedan observaciones de notación UML, coherencia entre clases y persistencia, citas, leyendas y descripción del estado implementado. El DOCX se conserva como fuente de la revisión; no fue reescrito por esta actualización de Markdown y código.
+La versión corregida de trabajo es [01 - Avance del proyecto.docx](/informe/01-Avance_del_proyecto.docx), incorporada el 26 de septiembre de 2026. La plataforma se llama **Sazloop** y corresponde al proyecto **N.º 91 — SalvemosLaComida**, según la identificación confirmada por el equipo.
 
 ## Alcance exigido por APF1
 
@@ -16,8 +10,4 @@ La consigna sitúa 3.7–3.8 en el segundo entregable. Sin embargo, la rúbrica 
 
 ## Pendientes de cierre
 
-- Resolver las observaciones de [REVISION_APF1.md](REVISION_APF1.md).
-- Actualizar las imágenes y leyendas en el DOCX después de corregir sus editables.
-- Exportar a PDF y comprobar legibilidad en el archivo de entrega.
-
-Charter, cronograma y demás anexos quedan fuera del alcance de esta revisión, por indicación del equipo. Su actualización se abordará después.
+- No hay pendientes, se finalizo con todo el primer avance 1.
