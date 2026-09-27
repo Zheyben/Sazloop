@@ -2,9 +2,9 @@
 
 ## Fuente y estado
 
-Sincronizados el 26 de septiembre de 2026 con las secciones 3.1 y 3.2 de [Informe_Primer_Avance.docx](../informe/Informe_Primer_Avance.docx). Se conservan los 26 IDs, descripciones, actores, prioridades y dependencias del informe corregido. Los IDs no se renumeran al agrupar por módulos.
+Los requisitos corresponden a las secciones 3.1 y 3.2 del [informe del primer avance](../informe/Avance_del_proyecto_01.docx). Se conservan los 26 IDs, descripciones, actores, prioridades y dependencias. Los IDs no se renumeran al agrupar por módulos.
 
-Son requisitos de la solución; su presencia aquí no acredita implementación. Las operaciones del backend y el frontend todavía están pendientes. La revisión del APF1 está en [REVISION_APF1.md](../informe/REVISION_APF1.md).
+Son requisitos de la solución; su presencia aquí no acredita implementación. El [estado actual](../tareas/ESTADO_ACTUAL.md) describe las capas disponibles en el código.
 
 ## Requisitos funcionales
 
@@ -97,7 +97,7 @@ notificaciones posteriores o complementarias a la operación principal.
 
 ## Requisitos no funcionales
 
-Se reproduce la tabla de seis criterios del informe. Sustituye la lista anterior de 12 RNF de este archivo, disponible en el historial de Git; las decisiones técnicas y de privacidad continúan documentadas en Arquitectura y Decisiones.
+La tabla contiene los seis criterios del informe del primer avance. Las decisiones técnicas y de privacidad se documentan en Arquitectura y Decisiones.
 
 | Criterio | Descripción del requisito no funcional |
 |---|---|
@@ -108,7 +108,7 @@ Se reproduce la tabla de seis criterios del informe. Sustituye la lista anterior
 | Seguridad de Acceso | Las cuentas operativas de establecimientos y usuarios deben mantener la separación estricta de roles y permisos mediante autenticación segura. |
 | Persistencia e Integridad | Las transacciones de reservas y control de stock retenido deben mantener consistencia e integridad relacional en MySQL para evitar la sobreventa de packs. |
 
-**Pendiente de precisar en el informe:** Rendimiento usa “tiempos mínimos (de 2 a 3 segundos)”. Debe expresar un límite máximo verificable y las condiciones de medición; no se han inventado usuarios concurrentes ni resultados de pruebas para completar ese dato.
+La formulación de rendimiento se conserva como aparece en el informe. Las condiciones de medición y los resultados de pruebas se documentarán cuando se realicen las pruebas de la implementación.
 
 ## Relación con los demás elementos
 

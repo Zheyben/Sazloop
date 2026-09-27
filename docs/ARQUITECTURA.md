@@ -33,7 +33,7 @@ El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inic
 - El perfil activo es `dev` (H2). La configuración MySQL existe, pero no demuestra una integración ejecutada.
 - El esquema MySQL conserva el identificador `mealflow` por compatibilidad; el cambio de marca no requiere alterar tablas ni migrar datos.
 
-Las secciones siguientes describen responsabilidades previstas; declarar una dependencia no significa que su funcionalidad esté implementada. La revisión y sus límites están en [REVISION_APF1.md](informe/REVISION_APF1.md).
+Las secciones siguientes describen responsabilidades previstas; declarar una dependencia no significa que su funcionalidad esté implementada. El estado del código se resume en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
 
 ## Dependencias del backend
 
@@ -164,14 +164,6 @@ flowchart LR
 - El consumidor solo verá el estado de verificación, no los documentos originales.
 - No se guardarán credenciales ni secretos dentro del repositorio.
 
-## Alcance del primer avance
+## Base del primer avance
 
-Para el primer avance se necesita:
-
-- Proyecto Spring Boot configurado.
-- Estructura modular básica.
-- Clases de dominio iniciales.
-- Configuración de persistencia preparada.
-- Comprobación de que el backend inicia correctamente.
-
-No es necesario tener implementados todos los controllers, servicios REST, pagos o flujos completos en esta etapa.
+El avance 1 estableció el proyecto Spring Boot, la estructura modular, las clases de dominio y la configuración inicial de persistencia. El estado actual del código se documenta en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
