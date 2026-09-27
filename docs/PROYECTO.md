@@ -21,7 +21,7 @@ La plataforma no será un servicio de delivery.
 
 El problema abordado es el descarte de excedentes alimentarios todavía aptos para el consumo en establecimientos de Lima Metropolitana. La variación de la demanda, la disponibilidad superior a lo vendido y el tiempo limitado para aprovechar productos de corta duración pueden contribuir a este descarte. Sus consecuencias incluyen pérdidas económicas para los establecimientos y desaprovechamiento de alimentos y recursos.
 
-Esta delimitación procede del capítulo 1 del informe corregido; no supone que se haya realizado un estudio de campo ni que establecimientos concretos hayan confirmado estas pérdidas.
+Esta delimitación procede del capítulo 1 del informe del primer avance; no supone que se haya realizado un estudio de campo ni que establecimientos concretos hayan confirmado estas pérdidas.
 
 ## Objetivos
 
@@ -126,7 +126,7 @@ No se implementará durante la primera versión:
 - Fórmula científica definitiva para calcular alimento recuperado o CO₂ evitado.
 - Microservicios.
 
-Las funciones futuras que aparezcan en un prototipo deben identificarse como no disponibles en V1. El informe ya menciona delivery externo y GPS como investigación futura; su evaluación e integración documental detallada quedan para la siguiente tarea y no modifican los RF actuales.
+Las funciones futuras que aparezcan en un prototipo deben identificarse como no disponibles en V1. El informe menciona delivery externo y GPS como investigación futura; no modifican los RF actuales.
 
 ## Modelo de negocio
 

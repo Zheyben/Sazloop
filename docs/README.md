@@ -12,7 +12,7 @@ Si es la primera vez que trabajas en el proyecto, sigue este orden:
 4. Lee los [Requisitos](requisitos/REQUISITOS.md) para saber qué debe hacer el sistema.
 5. Consulta las [Decisiones del proyecto](decisiones/DECISIONES_PROYECTO.md) y el [Modelo de dominio](decisiones/MODELO_DOMINIO.md).
 6. Revisa la [Arquitectura](ARQUITECTURA.md) antes de modificar el backend o frontend.
-7. Abre el [Estado actual](tareas/ESTADO_ACTUAL.md) y la [revisión del informe corregido](informe/REVISION_APF1.md). Los planes de semanas anteriores son históricos.
+7. Abre el [Estado actual](tareas/ESTADO_ACTUAL.md). Los planes de semanas anteriores son históricos.
 
 ## Fuentes oficiales
 
@@ -41,11 +41,11 @@ Cada tema tiene un único documento principal. Los demás documentos deben enlaz
 
 ## Estado actual
 
-Sazloop corresponde al proyecto N.º 91 — SalvemosLaComida, según la identificación confirmada por el equipo. El primer avance ya fue presentado y se ha subido una versión corregida del informe. Hay 26 RF agrupados por módulo, tres diagramas y cinco prototipos en el documento, además de 31 entidades JPA en el backend.
+Sazloop corresponde al proyecto N.º 91 — SalvemosLaComida, según la identificación confirmada por el equipo. **El avance 1 está completo**: el informe reúne 26 RF agrupados por módulo, tres diagramas y cinco prototipos, y el backend contiene 31 entidades JPA.
 
-La revisión hasta Referencias bibliográficas detectó pendientes de notación, coherencia, citas y presentación. No se da por concluido el levantamiento de observaciones. El frontend y las capas de servicios y controladores todavía no están implementados en `main`.
+La siguiente etapa es el **avance 2**. Sus tareas concretas se definirán por separado. El frontend y las capas de servicios y controladores todavía no están implementados en `main`.
 
-La situación detallada y el próximo trabajo se mantienen en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
+La situación del proyecto se mantiene en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
 
 ## Regla para actualizar la documentación
 

@@ -6,7 +6,7 @@ Proyecto final del curso Desarrollo Web Integrado.
 
 **Proyecto asignado:** N.º 91 — SalvemosLaComida. **Nombre de la plataforma:** Sazloop.
 
-El repositorio conserva su URL histórica `Zheyben/MealFlow`.
+El repositorio está disponible en `Zheyben/Sazloop`.
 
 Sazloop es una plataforma web mobile-first para reducir el desperdicio alimentario. Los establecimientos afiliados ofrecerán sus excedentes mediante packs sorpresa con descuento y los consumidores los recogerán presencialmente.
 
@@ -18,17 +18,16 @@ Antes de comenzar una tarea:
 
 1. Lee la visión general y el glosario.
 2. Revisa el estado actual.
-3. Consulta los pendientes vigentes; los planes de las semanas 4 y 5 son históricos.
-4. Consulta las decisiones, los requisitos y la [revisión del informe corregido](docs/informe/REVISION_APF1.md).
-5. Sigue la [guía de colaboración](CONTRIBUTING.md).
+3. Consulta las decisiones, los requisitos y el [estado actual](docs/tareas/ESTADO_ACTUAL.md).
+4. Sigue la [guía de colaboración](CONTRIBUTING.md). Los planes de las semanas 4 y 5 son históricos.
 
 ## Estado
 
-Primer avance presentado; informe corregido disponible en `docs/informe/Informe_Primer_Avance.docx`. La revisión del 26 de septiembre de 2026 identifica observaciones pendientes hasta Referencias bibliográficas.
+**Avance 1 completado.** El [informe del primer avance](docs/informe/Avance_del_proyecto_01.docx) y los demás entregables se encuentran en `docs/`. La etapa que sigue es el **avance 2**; su trabajo se definirá por separado.
 
 El backend contiene 31 entidades JPA y configuración inicial. El frontend aún no contiene una implementación; las pantallas del informe son prototipos. No se considera implementado un RF por aparecer en un diagrama.
 
-Consulta el progreso y los pendientes en [docs/tareas/ESTADO_ACTUAL.md](docs/tareas/ESTADO_ACTUAL.md).
+Consulta el estado del proyecto en [docs/tareas/ESTADO_ACTUAL.md](docs/tareas/ESTADO_ACTUAL.md).
 
 ## Función principal
 
@@ -79,4 +78,3 @@ En Windows: `mvnw.cmd test` y `mvnw.cmd spring-boot:run`.
 
 La clase de entrada es `com.sazloop.SazloopApplication`. El perfil por defecto es `dev`, con H2 en memoria (`jdbc:h2:mem:sazloop`). Para MySQL, configura el perfil `mysql`; el esquema local conserva el nombre técnico `mealflow` para no requerir una migración por el cambio de marca.
 
-La verificación de esta actualización incluyó rutas, imports y mapeos estáticos. La ejecución de Maven quedó bloqueada por resolución DNS de Maven Central; no se afirma que las pruebas hayan pasado.

@@ -1,6 +1,6 @@
 # Flujos principales del negocio
 
-Este documento explica cómo interactúan los usuarios con la plataforma. Describe el comportamiento esperado de Sazloop, no una implementación terminada. Los 26 RF corregidos se mantienen en [REQUISITOS.md](requisitos/REQUISITOS.md); la ejecución de estos flujos no está acreditada por los prototipos.
+Este documento explica cómo interactúan los usuarios con la plataforma. Describe el comportamiento esperado de Sazloop, no una implementación terminada. Los 26 RF se mantienen en [REQUISITOS.md](requisitos/REQUISITOS.md); la ejecución de estos flujos no está acreditada por los prototipos.
 
 ## 1. Registro y afiliación de un establecimiento
 
