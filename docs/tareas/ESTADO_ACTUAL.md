@@ -1,9 +1,9 @@
 # Estado actual del proyecto
 
-**Actualización:** 27 de septiembre de 2026.  
+**Actualización:** 28 de septiembre de 2026.  
 **Proyecto:** N.º 91 — SalvemosLaComida.  
 **Plataforma:** Sazloop.  
-**Etapa:** Avance 1 completo; siguiente etapa: avance 2.
+**Etapa:** Avance 1 completo; planificación del avance 2 desde la semana 08.
 
 ## Avance 1 completado
 
@@ -20,8 +20,13 @@
 
 Hay modelo de persistencia y configuración inicial. No hay controllers, services, repositories ni DTO; `frontend/` contiene solo `.gitkeep`. Las reglas de stock, pago, cancelación y recojo están especificadas, pero no se acreditan como ejecutadas. No se creó funcionalidad adicional en esta actualización.
 
-## Siguiente etapa
+## Plan semanal del avance 2 y cierre final
 
-Corresponde avanzar con el **avance 2**. Sus tareas y especificaciones se definirán por separado.
+Las asignaciones propuestas para los cinco integrantes están en los archivos
+[`SEMANA_08.md`](SEMANA_08.md) a [`SEMANA_18.md`](SEMANA_18.md), uno por semana.
+La entrega del segundo avance corresponde a la semana 10 y la entrega final a la
+semana 18, conforme a las fechas confirmadas en [`PROYECTO.md`](../PROYECTO.md).
+Las tareas planificadas no acreditan funciones implementadas. El estado real del
+código se actualizará cuando los aportes hayan sido incorporados y comprobados.
 
 Los planes [SEMANA_04.md](SEMANA_04.md) y [SEMANA_05.md](SEMANA_05.md) conservan la planificación histórica. Sus casillas no representan el estado actual.
