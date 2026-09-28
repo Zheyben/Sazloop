@@ -2,7 +2,7 @@
 
 > **Plan propuesto para el equipo.** Las casillas indican trabajo pendiente. Cada integrante conserva su módulo y sube su aporte en una rama propia según [CONTRIBUTING.md](../../CONTRIBUTING.md). Una tarea se marca completa después de comprobar el resultado; ningún prototipo cuenta como función implementada.
 
-**Objetivo:** Verificar, presentar y entregar el segundo avance el martes 13 de octubre de 2026 a las 6:00 p. m.; el resto de la semana queda para continuar después de la entrega.
+**Objetivo:** Verificar, presentar y entregar el segundo avance el martes 13 de octubre de 2026 a las 6:00 p. m.
 
 ## Tareas por integrante
 
@@ -21,4 +21,4 @@
 - [ ] El informe PDF, los ZIP del código y los enlaces de GitHub de backend y frontend están preparados para su entrega.
 - [ ] La presentación recoge el contenido indicado en la consigna. Los cinco integrantes ensayan el lunes 12, participan en la exposición del martes 13, dominan su parte y respetan la duración de 6 a 10 minutos y la vestimenta formal solicitada.
 
-**Cierre de la semana:** Exponer y entregar el martes 13 de octubre; conservar únicamente evidencias de ejecución real y registrar el trabajo que continúe pendiente para la entrega final.
+**Cierre de la semana:** Exponer y entregar el martes 13 de octubre; conservar únicamente evidencias de ejecución real e indicar con honestidad qué funciones quedaron pendientes en el segundo avance.
