@@ -2,14 +2,23 @@
 
 > **Plan propuesto para el equipo.** Las casillas indican trabajo pendiente. Cada integrante conserva su módulo y sube su aporte en una rama propia según [CONTRIBUTING.md](../../CONTRIBUTING.md). Una tarea se marca completa después de comprobar el resultado; ningún prototipo cuenta como función implementada.
 
-**Objetivo:** Cerrar y entregar el segundo avance el martes 13 de octubre de 2026 a las 6:00 p. m.; el resto de la semana queda para continuar después de la entrega.
+**Objetivo:** Verificar, presentar y entregar el segundo avance el martes 13 de octubre de 2026 a las 6:00 p. m.; el resto de la semana queda para continuar después de la entrega.
 
 ## Tareas por integrante
 
-- [ ] **Emanuel —** Integrar el informe en PDF, revisar la coherencia con lo implementado y completar 3.7 y 3.8 con aportes y capturas reales de cada integrante.
-- [ ] **Daniel —** Verificar que el backend integrado arranque, revisar la funcionalidad de afiliación y preparar con el equipo el ZIP del backend.
-- [ ] **Franco —** Comprobar la persistencia en MySQL, revisar que el modelo ER coincida con el código y ayudar a resolver fallas de integración comprobadas.
-- [ ] **Piero —** Ejecutar y documentar la prueba del recorrido reserva → pago → código → recojo; registrar cualquier parte aún pendiente.
-- [ ] **Alejandro —** Verificar las pantallas implementadas, preparar con el equipo el ZIP del frontend y actualizar el cronograma conforme al avance real.
+- [ ] **Emanuel —** Integrar el informe en PDF, revisar la coherencia con lo implementado, completar 3.7 y 3.8 con aportes reales y exponer problema, objetivos y alcance.
+- [ ] **Daniel —** Verificar que el backend integrado arranque, preparar con el equipo el ZIP del backend y exponer arquitectura, diagrama de clases y afiliación.
+- [ ] **Franco —** Comprobar la persistencia en MySQL, revisar la correspondencia del modelo ER con el código y exponer ofertas y base de datos.
+- [ ] **Piero —** Ejecutar y documentar la prueba del recorrido reserva → pago → código → recojo y mostrarlo durante la exposición.
+- [ ] **Alejandro —** Verificar las pantallas implementadas, preparar con el equipo el ZIP del frontend, actualizar el cronograma y exponer pagos simulados y resultados.
 
-**Cierre de la semana:** Entregar informe, ZIP y enlaces de GitHub de backend y frontend; conservar únicamente evidencias de ejecución real. Cada integrante prepara su explicación.
+## Comprobación antes de la presentación y entrega
+
+- [ ] El informe incorpora las correcciones del primer avance y las secciones 3.7 y 3.8 describen componentes, pantallas en ejecución y fragmentos de código que existen realmente.
+- [ ] El backend y el frontend funcionan juntos, el backend conserva datos en MySQL y ambos alcanzan el avance solicitado (60 % y 50 %, respectivamente) según lo que efectivamente se puede ejecutar.
+- [ ] Las funciones terminadas corresponden con los requisitos, diagramas y prototipos; se registran las pendientes sin presentarlas como implementadas.
+- [ ] El código presentado es legible, organizado y documentado, y se muestran las pruebas o la demostración del funcionamiento real.
+- [ ] El informe PDF, los ZIP del código y los enlaces de GitHub de backend y frontend están preparados para su entrega.
+- [ ] La presentación recoge el contenido indicado en la consigna. Los cinco integrantes ensayan el lunes 12, participan en la exposición del martes 13, dominan su parte y respetan la duración de 6 a 10 minutos y la vestimenta formal solicitada.
+
+**Cierre de la semana:** Exponer y entregar el martes 13 de octubre; conservar únicamente evidencias de ejecución real y registrar el trabajo que continúe pendiente para la entrega final.
