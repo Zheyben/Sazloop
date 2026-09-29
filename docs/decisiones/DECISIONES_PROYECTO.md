@@ -8,6 +8,9 @@ Este documento registra las decisiones aprobadas durante el desarrollo del proye
 - La indicación de semana 14 presente en el PDF corresponde a un error confirmado.
 - El PDF contiene los requisitos académicos generales.
 - La plantilla DOCX entregada posteriormente será la base estructural y visual del informe.
+- Para el segundo avance, el docente indicó que el 60 % del backend equivale a 16 requisitos funcionales en funcionamiento. No especificó cuáles; el equipo selecciona y registra los 16 que mostrará.
+- El docente indicó que no es necesario implementar JSP ni JSF.
+- El docente aceptó conservar el backend y el frontend dentro del mismo repositorio.
 
 ## DEC-001 — Pagos simulados en V1
 El sistema modelará pagos y estados, pero no moverá dinero real.

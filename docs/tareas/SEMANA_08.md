@@ -4,9 +4,13 @@
 
 **Objetivo:** Iniciar por separado las funciones esenciales del segundo avance y acordar cómo se conectan los módulos.
 
+**Meta confirmada por el docente:** 16 requisitos funcionales operativos equivalen al 60 % del backend; el frontend debe alcanzar el 50 %. No se exige JSP ni JSF y ambos proyectos pueden permanecer en el mismo repositorio.
+
+**Selección propuesta para el equipo en este avance (16):** RF-01, RF-02, RF-04, RF-05, RF-06, RF-07, RF-08, RF-10, RF-11, RF-12, RF-13, RF-14, RF-15, RF-16, RF-20 y RF-21. El docente confirmó la cantidad, pero no eligió estos identificadores. Juntos permiten mostrar registro, afiliación, publicación, búsqueda, compra simulada y recojo.
+
 ## Tareas por integrante
 
-- [ ] **Emanuel —** Desarrollar registro, acceso y perfiles de una misma cuenta (RF-01 a RF-03); preparar las pantallas correspondientes.
+- [ ] **Emanuel —** Desarrollar registro e inicio/cierre de sesión (RF-01 y RF-02); preparar las pantallas correspondientes.
 - [ ] **Daniel —** Desarrollar la presentación de documentos por establecimiento (RF-06) y preparar la revisión manual sin exponer los archivos al consumidor.
 - [ ] **Franco —** Desarrollar el registro del pack y la publicación de su oferta con variantes, precios, stock y horario (RF-11 a RF-13); preparar el formulario del local.
 - [ ] **Piero —** Acordar con Alejandro el recorrido de compra y desarrollar la parte de reserva y control de stock que depende de RF-16 y RF-20.

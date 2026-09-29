@@ -22,10 +22,17 @@ Hay modelo de persistencia y configuración inicial. No hay controllers, service
 
 ## Plan semanal del segundo avance
 
+El docente aclaró que el segundo avance requiere 16 requisitos funcionales
+operativos para representar el 60 % del backend, que JSP y JSF no son
+obligatorios y que backend y frontend pueden estar en un mismo repositorio.
+El 50 % del frontend sigue siendo parte de la consigna.
+
 Las asignaciones propuestas para los cinco integrantes están en
 [`SEMANA_08.md`](SEMANA_08.md), [`SEMANA_09.md`](SEMANA_09.md) y
 [`SEMANA_10.md`](SEMANA_10.md). Incluyen la preparación de la exposición del
-segundo avance. La entrega corresponde a la semana 10, según la fecha confirmada
+segundo avance. La selección propuesta de los 16 requisitos está en la
+semana 08; no fue asignada requisito por requisito por el docente.
+La entrega corresponde a la semana 10, según la fecha confirmada
 en [`PROYECTO.md`](../PROYECTO.md) y por el equipo. Las tareas planificadas no
 acreditan funciones implementadas. El estado del código se actualizará cuando
 los aportes hayan sido incorporados y comprobados.
