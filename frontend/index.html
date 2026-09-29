@@ -64,6 +64,31 @@
           </form>
           <h3>Establecimientos registrados</h3>
           <ul id="locales"></ul>
+          <section id="solicitudPanel" hidden aria-label="Documentos del establecimiento">
+            <h3 id="solicitudTitulo"></h3>
+            <p id="solicitudEstado"></p>
+            <form id="formDocumento">
+              <h4>Adjuntar documento</h4>
+              <label>Tipo de documento
+                <select name="tipo" required>
+                  <option value="LICENCIA_FUNCIONAMIENTO">Licencia de funcionamiento</option>
+                  <option value="CERTIFICADO_SANITARIO">Certificado sanitario</option>
+                  <option value="INSPECCION_SEGURIDAD">Inspección de seguridad</option>
+                  <option value="OTRO">Otro</option>
+                </select>
+              </label>
+              <label>Número del documento <input name="numero" maxlength="80"></label>
+              <label>Fecha de emisión <input name="emision" type="date"></label>
+              <label>Fecha de vencimiento <input name="vencimiento" type="date"></label>
+              <label>Archivo PDF, PNG o JPG (hasta 10 MB)
+                <input name="archivo" type="file" accept=".pdf,.png,.jpg,.jpeg" required>
+              </label>
+              <button type="submit">Adjuntar</button>
+            </form>
+            <h4>Documentos adjuntos</h4>
+            <ul id="documentos"></ul>
+            <button id="enviarSolicitud" type="button" hidden>Enviar solicitud a revisión</button>
+          </section>
         </div>
       </section>
     </section>

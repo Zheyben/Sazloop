@@ -8,8 +8,9 @@ h1 { color: #24653e; }
 form, #cuenta { background: white; padding: 1.25rem; border: 1px solid #d9e4db; border-radius: .75rem; }
 #cuenta form { margin-top: 1.5rem; }
 label { display: block; margin: 1rem 0; }
-input { box-sizing: border-box; display: block; width: 100%; margin-top: .4rem; padding: .7rem; border: 1px solid #849b8b; border-radius: .35rem; font: inherit; }
+input, select { box-sizing: border-box; display: block; width: 100%; margin-top: .4rem; padding: .7rem; border: 1px solid #849b8b; border-radius: .35rem; font: inherit; }
 button { background: #24653e; color: white; border: 0; border-radius: .4rem; padding: .75rem 1rem; font: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible { outline: 3px solid #78b58d; outline-offset: 2px; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #78b58d; outline-offset: 2px; }
 #mensaje { min-height: 1.4rem; }
+#solicitudPanel { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #d9e4db; }
 @media (min-width: 680px) { #acceso { grid-template-columns: 1fr 1fr; align-items: start; } }

@@ -22,3 +22,6 @@ Thumbs.db
 
 # Registros
 *.log
+
+# Documentos privados cargados durante las pruebas locales
+backend/data/
