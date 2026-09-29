@@ -35,6 +35,37 @@
       <h2>Mi cuenta</h2>
       <p id="usuario"></p>
       <button id="salir" type="button">Cerrar sesión</button>
+
+      <section aria-label="Mi empresa y establecimientos">
+        <form id="formEmpresa" hidden>
+          <h2>Registrar empresa</h2>
+          <label>Razón social <input name="razonSocial" maxlength="150" required></label>
+          <label>Nombre comercial <input name="nombreComercial" maxlength="120" required></label>
+          <label>RUC <input name="ruc" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" required></label>
+          <button type="submit">Guardar empresa</button>
+        </form>
+
+        <div id="empresaRegistrada" hidden>
+          <h2>Mi empresa</h2>
+          <p id="empresaDatos"></p>
+          <form id="formLocal">
+            <h3>Registrar establecimiento</h3>
+            <label>Nombre <input name="nombre" maxlength="120" required></label>
+            <label>Descripción <input name="descripcion" maxlength="500"></label>
+            <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
+            <label>Departamento <input name="departamento" maxlength="80" value="Lima" required></label>
+            <label>Provincia <input name="provincia" maxlength="80" value="Lima" required></label>
+            <label>Distrito <input name="distrito" maxlength="80" required></label>
+            <label>Dirección <input name="direccionLinea" maxlength="180" required></label>
+            <label>Número <input name="numero" maxlength="20"></label>
+            <label>Referencia <input name="referencia" maxlength="250"></label>
+            <label>Código postal <input name="codigoPostal" maxlength="10"></label>
+            <button type="submit">Guardar establecimiento</button>
+          </form>
+          <h3>Establecimientos registrados</h3>
+          <ul id="locales"></ul>
+        </div>
+      </section>
     </section>
   </main>
 </body>

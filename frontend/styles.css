@@ -1,10 +1,12 @@
 :root { font-family: system-ui, sans-serif; color: #23352d; background: #f7f9f7; }
 body { margin: 0; }
+[hidden] { display: none !important; }
 main { max-width: 800px; margin: auto; padding: 1.5rem; }
 h1 { color: #24653e; }
 #acceso { display: grid; gap: 1.5rem; }
 #acceso[hidden], #cuenta[hidden] { display: none; }
 form, #cuenta { background: white; padding: 1.25rem; border: 1px solid #d9e4db; border-radius: .75rem; }
+#cuenta form { margin-top: 1.5rem; }
 label { display: block; margin: 1rem 0; }
 input { box-sizing: border-box; display: block; width: 100%; margin-top: .4rem; padding: .7rem; border: 1px solid #849b8b; border-radius: .35rem; font: inherit; }
 button { background: #24653e; color: white; border: 0; border-radius: .4rem; padding: .75rem 1rem; font: inherit; cursor: pointer; }
