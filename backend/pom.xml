@@ -143,6 +143,20 @@
         BUILD: configuracion de construccion del proyecto.
     -->
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/../frontend</directory>
+                <targetPath>static</targetPath>
+                <includes>
+                    <include>index.html</include>
+                    <include>styles.css</include>
+                    <include>app.js</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <!--
                 SPRING BOOT MAVEN PLUGIN

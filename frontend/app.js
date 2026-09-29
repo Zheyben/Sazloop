@@ -1,4 +1,4 @@
-const api = 'http://localhost:8080/api';
+const api = '/api';
 const mensaje = document.querySelector('#mensaje');
 const acceso = document.querySelector('#acceso');
 const cuenta = document.querySelector('#cuenta');
