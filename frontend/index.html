@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Acceso</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>Sazloop</h1>
+    <p id="mensaje" role="status" aria-live="polite"></p>
+
+    <section id="acceso" aria-label="Acceso a la cuenta">
+      <form id="registro">
+        <h2>Crear cuenta</h2>
+        <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
+        <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
+        <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
+        <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
+        <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+        <button type="submit">Registrarme</button>
+      </form>
+
+      <form id="ingreso">
+        <h2>Iniciar sesión</h2>
+        <label>Correo <input name="email" type="email" autocomplete="email" required></label>
+        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
+        <button type="submit">Ingresar</button>
+      </form>
+    </section>
+
+    <section id="cuenta" hidden aria-label="Sesión activa">
+      <h2>Mi cuenta</h2>
+      <p id="usuario"></p>
+      <button id="salir" type="button">Cerrar sesión</button>
+    </section>
+  </main>
+</body>
+</html>
