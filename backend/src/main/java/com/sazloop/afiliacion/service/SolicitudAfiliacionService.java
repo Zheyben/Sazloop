@@ -123,7 +123,8 @@ public class SolicitudAfiliacionService {
                         d.getNumeroDocumento(), d.getFechaEmision(), d.getFechaVencimiento()))
                 .toList();
         return new SolicitudResponse(solicitud.getId(), solicitud.getEstablecimiento().getId(),
-                solicitud.getEstado(), lista);
+                solicitud.getEstado(), lista, solicitud.getEvaluacion() == null
+                        ? null : solicitud.getEvaluacion().getMotivo());
     }
 
     private static String limpiar(String valor) {

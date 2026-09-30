@@ -93,6 +93,9 @@ async function cargarSolicitud() {
       APROBADA: 'Solicitud aprobada.',
       RECHAZADA: 'Solicitud rechazada. Adjunta documentos para presentar una nueva.'
     })[estado] || 'Adjunta los documentos del establecimiento.';
+    if (solicitud?.motivoDecision) {
+      document.querySelector('#solicitudEstado').textContent += ` Motivo: ${solicitud.motivoDecision}`;
+    }
     const lista = document.querySelector('#documentos');
     lista.replaceChildren();
     for (const doc of solicitud?.documentos || []) {

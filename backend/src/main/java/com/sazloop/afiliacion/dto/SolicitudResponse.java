@@ -6,5 +6,5 @@ import java.util.List;
 
 /** Solicitud del local y documentos ya adjuntados. */
 public record SolicitudResponse(Long id, Long establecimientoId, EstadoSolicitud estado,
-                                List<DocumentoResponse> documentos) {
+                                List<DocumentoResponse> documentos, String motivoDecision) {
 }
