@@ -8,6 +8,7 @@
   <script src="app.js" defer></script>
 </head>
 <body>
+  <nav id="nav" aria-label="Principal"></nav>
   <main>
     <h1>Sazloop</h1>
     <p id="mensaje" role="status" aria-live="polite"></p>
@@ -93,5 +94,6 @@
       </section>
     </section>
   </main>
+  <script type="module">import { pintarNav } from "./comun.js"; pintarNav("index.html");</script>
 </body>
 </html>

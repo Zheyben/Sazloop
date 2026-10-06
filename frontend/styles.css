@@ -14,3 +14,27 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
 #mensaje { min-height: 1.4rem; }
 #solicitudPanel { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #d9e4db; }
 @media (min-width: 680px) { #acceso { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+/* ---- Navegación y componentes compartidos (tienda, admin, local) ---- */
+#nav { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; padding: .9rem 1.5rem; background: #24653e; }
+#nav a { color: #e8f3ea; text-decoration: none; }
+#nav a[aria-current="page"] { color: #fff; border-bottom: 2px solid #fff; }
+#nav .marca { font-weight: 700; font-size: 1.15rem; color: #fff; }
+#nav .quien { margin-left: auto; color: #fff; }
+.sub { margin-top: -.5rem; color: #50665a; }
+.ok { color: #24653e; } .error { color: #a3261f; }
+.filtros { display: grid; gap: 0 1rem; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); align-items: end; margin-bottom: 1.5rem; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.tarjeta { display: flex; flex-direction: column; gap: .35rem; background: #fff; border: 1px solid #d9e4db; border-radius: .75rem; padding: 1.1rem; }
+.tarjeta h2 { margin: 0; font-size: 1.15rem; }
+.tarjeta p { margin: 0; }
+.tarjeta button { margin-top: auto; align-self: flex-start; }
+.local, .chico { color: #50665a; } .chico { font-size: .875rem; }
+.precio { font-size: 1.25rem; font-weight: 700; color: #24653e; }
+.codigo { font-family: ui-monospace, monospace; font-size: 1.5rem; letter-spacing: .08em; font-weight: 700; }
+.alerta { color: #8a4b00; font-weight: 600; }
+.vacio { grid-column: 1 / -1; padding: 2rem 0; color: #50665a; }
+.fila { display: grid; grid-template-columns: 1fr 5rem; gap: .75rem; align-items: center; }
+button.secundario { background: transparent; color: #24653e; border: 1px solid #24653e; margin-top: 1rem; }
+dialog { max-width: 560px; width: calc(100% - 2rem); border: 0; border-radius: .9rem; padding: 1.5rem; }
+dialog::backdrop { background: rgba(20, 40, 28, .55); }
