@@ -154,6 +154,11 @@
                     <include>index.html</include>
                     <include>styles.css</include>
                     <include>app.js</include>
+                    <include>catalogo.html</include>
+                    <include>catalogo.js</include>
+                    <include>compras.html</include>
+                    <include>compras.js</include>
+                    <include>comun.js</include>
                 </includes>
             </resource>
         </resources>
