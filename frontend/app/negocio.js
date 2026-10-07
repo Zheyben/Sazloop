@@ -2,7 +2,6 @@ import { solicitar, el, dinero } from './comun.js';
 
 const empresa = document.querySelector('#panelEmpresa');
 const trabajador = document.querySelector('#panelTrabajador');
-const ingreso = document.querySelector('#ingresoLocal');
 const cuenta = document.querySelector('#cuentaLocal');
 const resultado = document.querySelector('#resultadoRecojo');
 let codigoConsultado = null;
@@ -17,40 +16,26 @@ function modo(esTrabajador) {
 }
 
 function mostrarLocal(datos) {
-  ingreso.hidden = Boolean(datos);
   cuenta.hidden = !datos;
   document.querySelector('#datosLocal').textContent = datos
     ? `Cuenta ${datos.nombreUsuario} · Establecimiento ${datos.establecimientoId}` : '';
   if (!datos) { codigoConsultado = null; resultado.replaceChildren(); }
 }
 
-function mensajeLocal(texto, error = false) {
-  const zona = document.querySelector('#mensajeLocal');
-  zona.textContent = texto;
-  zona.className = error ? 'error' : 'ok';
-}
-
 document.querySelector('#modoEmpresa').addEventListener('click', () => {
-  if (!cuenta.hidden) location.href = 'negocio.html';
+  if (!cuenta.hidden) location.href = '../index.html?acceso=empresa';
   else modo(false);
 });
-document.querySelector('#modoTrabajador').addEventListener('click', () => modo(true));
-
-ingreso.addEventListener('submit', async evento => {
-  evento.preventDefault();
-  try {
-    const datos = await solicitar('/local/sesion', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(ingreso))) });
-    ingreso.reset();
-    location.href = 'negocio.html#trabajador';
-  } catch (error) { mensajeLocal(error.message, true); }
+document.querySelector('#modoTrabajador').addEventListener('click', () => {
+  if (cuenta.hidden) location.href = '../index.html?acceso=trabajador';
+  else modo(true);
 });
 
 document.querySelector('#salirLocal').addEventListener('click', async () => {
   try {
     await solicitar('/local/sesion', { method: 'DELETE' });
-    mostrarLocal(null);
-    mensajeLocal('Sesión cerrada.');
-  } catch (error) { mensajeLocal(error.message, true); }
+    location.href = '../index.html?acceso=trabajador';
+  } catch (error) { resultado.textContent = error.message; }
 });
 
 document.querySelector('#consultarRecojo').addEventListener('submit', async evento => {
@@ -87,4 +72,12 @@ try {
   const datos = await solicitar('/local/sesion');
   mostrarLocal(datos);
   modo(true);
-} catch { mostrarLocal(null); }
+} catch {
+  mostrarLocal(null);
+  try {
+    await solicitar('/sesion');
+    modo(false);
+  } catch {
+    location.replace('../index.html?acceso=' + (location.hash === '#trabajador' ? 'trabajador' : 'empresa'));
+  }
+}

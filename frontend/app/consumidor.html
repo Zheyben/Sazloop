@@ -3,44 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sazloop | Acceso del consumidor</title>
+  <title>Sazloop | Mi cuenta</title>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="consumidor.js"></script>
 </head>
 <body>
-  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="index.html">Cambiar acceso</a></header>
+  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="../index.html">Volver al inicio</a></header>
   <main class="pagina-acceso">
-    <p class="etiqueta">PARA QUIENES COMPRAN</p>
-    <h1>Encuentra algo bueno <em>para hoy.</em></h1>
-    <p class="entradilla">Ingresa para comprar packs sorpresa y consultar tus compras.</p>
+    <p class="etiqueta">TU CUENTA</p>
+    <h1>Lo bueno sigue <em>contigo.</em></h1>
     <p id="mensaje" role="status" aria-live="polite"></p>
-    <section id="acceso">
-      <form id="ingreso" class="form-acceso">
-        <h2>Iniciar sesión</h2>
-        <label>Correo <input name="email" type="email" autocomplete="email" required></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Ingresar</button>
-      </form>
-      <details class="registro-desplegable">
-        <summary>¿Aún no tienes cuenta? Regístrate</summary>
-        <form id="registro">
-          <h2>Crear cuenta</h2>
-          <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
-          <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
-          <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
-          <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
-          <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
-          <button type="submit">Registrarme</button>
-        </form>
-      </details>
-    </section>
     <section id="cuenta" class="panel" hidden>
-      <p class="etiqueta">TU CUENTA</p>
       <h2>Bienvenido, <span id="usuario"></span></h2>
       <div class="acciones-cuenta"><a class="boton-app" href="catalogo.html">Explorar ofertas</a><a class="boton-app boton-claro" href="compras.html">Mis compras</a></div>
       <button id="salir" type="button" class="secundario">Cerrar sesión</button>
     </section>
-    <p class="acceso-admin">¿Administras la plataforma? <a href="administrador.html">Acceso de administrador</a></p>
   </main>
 </body>
 </html>

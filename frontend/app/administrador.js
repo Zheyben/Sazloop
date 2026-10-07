@@ -1,6 +1,5 @@
 import { solicitar, el, aviso } from './comun.js';
 
-const ingreso = document.querySelector('#ingresoAdmin');
 const panel = document.querySelector('#panelAdmin');
 const lista = document.querySelector('#solicitudesAdmin');
 const detalle = document.querySelector('#detalleSolicitud');
@@ -88,7 +87,6 @@ async function abrirSolicitud(id) {
 }
 
 async function mostrar(datos) {
-  ingreso.hidden = Boolean(datos);
   panel.hidden = !datos;
   document.querySelector('#nombreAdmin').textContent = datos?.nombre || '';
   detalle.hidden = true;
@@ -99,25 +97,12 @@ async function mostrar(datos) {
   } else lista.replaceChildren();
 }
 
-ingreso.addEventListener('submit', async evento => {
-  evento.preventDefault();
-  try {
-    const datos = await solicitar('/administradores/sesion', {
-      method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(ingreso)))
-    });
-    ingreso.reset();
-    await mostrar(datos);
-    aviso('Sesión iniciada.');
-  } catch (error) { aviso(error.message, true); }
-});
-
 document.querySelector('#salirAdmin').addEventListener('click', async () => {
   try {
     await solicitar('/administradores/sesion', { method: 'DELETE' });
-    await mostrar(null);
-    aviso('Sesión cerrada.');
+    location.href = '../index.html?acceso=administrador';
   } catch (error) { aviso(error.message, true); }
 });
 
 try { await mostrar(await solicitar('/administradores/sesion')); }
-catch { await mostrar(null); }
+catch { location.replace('../index.html?acceso=administrador'); }

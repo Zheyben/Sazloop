@@ -207,6 +207,28 @@ body.modal-abierto { overflow: hidden; }
 .modal-opcion-local .modal-numero { color: var(--menta); }
 .modal-admin { margin: 1.6rem 0 0; color: var(--secundario); font-size: .9rem; }
 .modal-admin a { color: var(--bosque); font-weight: 750; text-underline-offset: .25em; }
+.modal-autenticacion { width: min(590px, calc(100vw - 3rem)); padding-top: 3.25rem; text-align: left; }
+.modal-autenticacion h2 { max-width: none; margin: .35rem 0 1.4rem; font-size: clamp(2.25rem, 4vw, 3.1rem); }
+.modal-autenticacion [hidden] { display: none !important; }
+.modal-volver { min-height: 44px; padding: 0; border: 0; color: var(--bosque); background: transparent; font: 750 .9rem var(--sans); text-decoration: underline; text-underline-offset: .3em; cursor: pointer; }
+.modal-volver:hover { color: var(--hoja); }
+.modal-autenticacion .modal-etiqueta { margin: 1rem 0 .4rem; }
+#mensaje-autenticacion { min-height: 1.4rem; margin: 0 0 .8rem; font-size: .94rem; }
+#mensaje-autenticacion.error { color: #a3261f; }
+#mensaje-autenticacion.ok { color: var(--hoja); }
+.modal-pestanas { display: flex; gap: .6rem; margin-bottom: 1.15rem; }
+.modal-pestanas button { flex: 1; min-height: 44px; padding: .55rem .7rem; border: 1px solid var(--bosque); border-radius: 100px; color: var(--bosque); background: transparent; font: 750 .89rem var(--sans); cursor: pointer; }
+.modal-pestanas button[aria-pressed="true"] { color: #fff; background: var(--bosque); }
+.modal-formulario { display: grid; gap: 1rem; }
+.modal-formulario label { display: block; color: var(--bosque); font-size: .92rem; font-weight: 650; }
+.modal-formulario input { display: block; width: 100%; margin-top: .35rem; padding: .75rem .85rem; border: 1px solid #a9b8a9; border-radius: .55rem; color: var(--tinta); background: #fff; font: inherit; }
+.modal-formulario input:focus-visible, .modal-pestanas button:focus-visible, .modal-volver:focus-visible { outline: 3px solid #be5b25; outline-offset: 3px; }
+.modal-formulario .boton { justify-self: start; min-width: 150px; cursor: pointer; }
+.modal-formulario .boton:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 760px) {
+  .modal-autenticacion { width: calc(100vw - 2rem); padding: 3rem 1.25rem 1.5rem; }
+  .modal-autenticacion h2 { font-size: clamp(2rem, 8vw, 2.7rem); }
+}
 @media (max-width: 760px) {
   .modal-acceso { width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); padding: 3rem 1.2rem 1.5rem; }
   .modal-acceso h2 { font-size: clamp(2.4rem, 9vw, 3.7rem); }

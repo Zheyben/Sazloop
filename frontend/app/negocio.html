@@ -18,28 +18,8 @@
       <button id="modoTrabajador" type="button" aria-pressed="false">Trabajador</button>
     </div>
     <section id="panelEmpresa">
-      <p class="entradilla">Ingresa con tu cuenta personal para gestionar tu empresa y sus establecimientos.</p>
+      <p class="entradilla">Gestiona tu empresa y sus establecimientos.</p>
       <p id="mensaje" role="status" aria-live="polite"></p>
-
-    <section id="acceso" aria-label="Acceso a la cuenta">
-      <details class="registro-desplegable"><summary>¿Aún no tienes cuenta? Regístrate</summary><form id="registro">
-        <h2>Crear cuenta</h2>
-        <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
-        <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
-        <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
-        <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
-        <button type="submit">Registrarme</button>
-      </form></details>
-
-      <form id="ingreso">
-        <h2>Iniciar sesión</h2>
-        <label>Correo <input name="email" type="email" autocomplete="email" required></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Ingresar</button>
-      </form>
-    </section>
-
     <section id="cuenta" hidden aria-label="Sesión activa">
       <h2>Mi cuenta</h2>
       <p id="usuario"></p>
@@ -110,14 +90,8 @@
     </section>
     </section>
     <section id="panelTrabajador" hidden>
-      <p class="entradilla">Ingresa con la cuenta que tu empresa asignó al establecimiento.</p>
+      <p class="entradilla">Gestiona los recojos de tu establecimiento.</p>
       <p id="mensajeLocal" role="status" aria-live="polite"></p>
-      <form id="ingresoLocal" class="form-acceso">
-        <h2>Ingresar al local</h2>
-        <label>Usuario <input name="nombreUsuario" autocomplete="username" maxlength="80" required></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Iniciar sesión</button>
-      </form>
       <section id="cuentaLocal" class="panel" hidden>
         <h2>Mi establecimiento</h2>
         <p id="datosLocal"></p>
@@ -130,7 +104,6 @@
         <section id="resultadoRecojo" role="status" aria-live="polite"></section>
       </section>
     </section>
-    <p class="acceso-admin">¿Administras la plataforma? <a href="administrador.html">Acceso de administrador</a></p>
   </main>
 </body>
 </html>

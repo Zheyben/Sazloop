@@ -1,6 +1,5 @@
 const api = "/api";
 const mensaje = document.querySelector("#mensaje");
-const acceso = document.querySelector("#acceso");
 const cuenta = document.querySelector("#cuenta");
 const usuario = document.querySelector("#usuario");
 let localActivoId = null;
@@ -41,7 +40,6 @@ async function solicitar(ruta, opciones = {}) {
 }
 
 function mostrarSesion(datos) {
-  acceso.hidden = Boolean(datos);
   cuenta.hidden = !datos;
   usuario.textContent = datos
     ? `${datos.nombres} ${datos.apellidos} (${datos.email})`
@@ -138,49 +136,10 @@ async function cargarSolicitud() {
   }
 }
 
-document
-  .querySelector("#registro")
-  .addEventListener("submit", async (evento) => {
-    evento.preventDefault();
-    const formulario = evento.currentTarget;
-    const datos = Object.fromEntries(new FormData(formulario));
-    try {
-      await solicitar("/usuarios", {
-        method: "POST",
-        body: JSON.stringify(datos),
-      });
-      formulario.reset();
-      mensaje.textContent = "Cuenta creada. Ya puedes iniciar sesión.";
-    } catch (error) {
-      mensaje.textContent = error.message;
-    }
-  });
-
-document
-  .querySelector("#ingreso")
-  .addEventListener("submit", async (evento) => {
-    evento.preventDefault();
-    const formulario = evento.currentTarget;
-    const datos = Object.fromEntries(new FormData(formulario));
-    try {
-      mostrarSesion(
-        await solicitar("/sesion", {
-          method: "POST",
-          body: JSON.stringify(datos),
-        }),
-      );
-      formulario.reset();
-      mensaje.textContent = "Sesión iniciada.";
-    } catch (error) {
-      mensaje.textContent = error.message;
-    }
-  });
-
 document.querySelector("#salir").addEventListener("click", async () => {
   try {
     await solicitar("/sesion", { method: "DELETE" });
-    mostrarSesion(null);
-    mensaje.textContent = "Sesión cerrada.";
+    location.href = "../index.html?acceso=empresa";
   } catch (error) {
     mensaje.textContent = error.message;
   }
