@@ -46,15 +46,15 @@ export function aviso(texto, esError = false) {
 // Barra de navegación: muestra al usuario si hay sesión.
 export async function pintarNav(activa) {
   const nav = document.querySelector('#nav');
-  const enlaces = [['catalogo.html', 'Ofertas'], ['compras.html', 'Mis compras'], ['index.html', 'Mi cuenta']];
+  const enlaces = [['catalogo.html', 'Explorar ofertas'], ['compras.html', 'Mis compras'], ['consumidor.html', 'Mi cuenta']];
   nav.replaceChildren(
-    el('a', { href: 'catalogo.html', className: 'marca', textContent: 'Sazloop' }),
+    el('a', { href: '../index.html', className: 'marca', textContent: '✳ Sazloop.' }),
     ...enlaces.map(([href, texto]) => el('a', { href, textContent: texto, ariaCurrent: href === activa ? 'page' : null }))
   );
   try {
     const u = await solicitar('/sesion');
     nav.append(el('span', { className: 'quien', textContent: u.nombres }));
   } catch {
-    nav.append(el('a', { href: 'index.html', className: 'quien', textContent: 'Ingresar' }));
+    nav.append(el('a', { href: 'consumidor.html', className: 'quien', textContent: 'Ingresar' }));
   }
 }

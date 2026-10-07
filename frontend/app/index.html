@@ -3,97 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sazloop | Acceso</title>
+  <title>Sazloop | Elige cómo ingresar</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="app.js" defer></script>
 </head>
 <body>
-  <nav id="nav" aria-label="Principal"></nav>
-  <main>
-    <h1>Sazloop</h1>
-    <p id="mensaje" role="status" aria-live="polite"></p>
-
-    <section id="acceso" aria-label="Acceso a la cuenta">
-      <form id="registro">
-        <h2>Crear cuenta</h2>
-        <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
-        <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
-        <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
-        <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
-        <button type="submit">Registrarme</button>
-      </form>
-
-      <form id="ingreso">
-        <h2>Iniciar sesión</h2>
-        <label>Correo <input name="email" type="email" autocomplete="email" required></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Ingresar</button>
-      </form>
-    </section>
-
-    <section id="cuenta" hidden aria-label="Sesión activa">
-      <h2>Mi cuenta</h2>
-      <p id="usuario"></p>
-      <button id="salir" type="button">Cerrar sesión</button>
-
-      <section aria-label="Mi empresa y establecimientos">
-        <form id="formEmpresa" hidden>
-          <h2>Registrar empresa</h2>
-          <label>Razón social <input name="razonSocial" maxlength="150" required></label>
-          <label>Nombre comercial <input name="nombreComercial" maxlength="120" required></label>
-          <label>RUC <input name="ruc" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" required></label>
-          <button type="submit">Guardar empresa</button>
-        </form>
-
-        <div id="empresaRegistrada" hidden>
-          <h2>Mi empresa</h2>
-          <p id="empresaDatos"></p>
-          <form id="formLocal">
-            <h3>Registrar establecimiento</h3>
-            <label>Nombre <input name="nombre" maxlength="120" required></label>
-            <label>Descripción <input name="descripcion" maxlength="500"></label>
-            <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
-            <label>Departamento <input name="departamento" maxlength="80" value="Lima" required></label>
-            <label>Provincia <input name="provincia" maxlength="80" value="Lima" required></label>
-            <label>Distrito <input name="distrito" maxlength="80" required></label>
-            <label>Dirección <input name="direccionLinea" maxlength="180" required></label>
-            <label>Número <input name="numero" maxlength="20"></label>
-            <label>Referencia <input name="referencia" maxlength="250"></label>
-            <label>Código postal <input name="codigoPostal" maxlength="10"></label>
-            <button type="submit">Guardar establecimiento</button>
-          </form>
-          <h3>Establecimientos registrados</h3>
-          <ul id="locales"></ul>
-          <section id="solicitudPanel" hidden aria-label="Documentos del establecimiento">
-            <h3 id="solicitudTitulo"></h3>
-            <p id="solicitudEstado"></p>
-            <form id="formDocumento">
-              <h4>Adjuntar documento</h4>
-              <label>Tipo de documento
-                <select name="tipo" required>
-                  <option value="LICENCIA_FUNCIONAMIENTO">Licencia de funcionamiento</option>
-                  <option value="CERTIFICADO_SANITARIO">Certificado sanitario</option>
-                  <option value="INSPECCION_SEGURIDAD">Inspección de seguridad</option>
-                  <option value="OTRO">Otro</option>
-                </select>
-              </label>
-              <label>Número del documento <input name="numero" maxlength="80"></label>
-              <label>Fecha de emisión <input name="emision" type="date"></label>
-              <label>Fecha de vencimiento <input name="vencimiento" type="date"></label>
-              <label>Archivo PDF, PNG o JPG (hasta 10 MB)
-                <input name="archivo" type="file" accept=".pdf,.png,.jpg,.jpeg" required>
-              </label>
-              <button type="submit">Adjuntar</button>
-            </form>
-            <h4>Documentos adjuntos</h4>
-            <ul id="documentos"></ul>
-            <button id="enviarSolicitud" type="button" hidden>Enviar solicitud a revisión</button>
-          </section>
-        </div>
-      </section>
-    </section>
+  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="../index.html">Volver al inicio</a></header>
+  <main class="acceso-portada">
+    <p class="etiqueta">BIENVENIDO A SAZLOOP</p>
+    <h1>Lo bueno sigue <em>fluyendo.</em></h1>
+    <p class="entradilla">Elige cómo quieres ingresar a la plataforma.</p>
+    <div class="opciones-acceso">
+      <a class="opcion-acceso" href="consumidor.html">
+        <span class="opcion-numero">01 / PARA COMPRAR</span>
+        <strong>Soy consumidor</strong>
+        <span>Explora ofertas, compra packs sorpresa y consulta tus compras.</span>
+        <span class="opcion-accion">Ingresar como consumidor</span>
+      </a>
+      <a class="opcion-acceso opcion-negocio" href="negocio.html">
+        <span class="opcion-numero">02 / PARA LOCALES</span>
+        <strong>Empresa o trabajador</strong>
+        <span>Gestiona tu empresa y sus establecimientos, o ingresa con la cuenta de tu local.</span>
+        <span class="opcion-accion">Ingresar al espacio de locales</span>
+      </a>
+    </div>
+    <p class="acceso-admin">¿Administras la plataforma? <a href="administrador.html">Acceso de administrador</a></p>
   </main>
-  <script type="module">import { pintarNav } from "./comun.js"; pintarNav("index.html");</script>
 </body>
 </html>

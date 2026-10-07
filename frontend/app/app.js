@@ -92,6 +92,7 @@ async function cargarLocales() {
 async function abrirSolicitud(local) {
   localActivoId = local.id;
   document.querySelector("#solicitudPanel").hidden = false;
+  document.querySelector("#formCuentaLocal").hidden = local.estado !== "ACTIVO";
   document.querySelector("#solicitudTitulo").textContent =
     `Documentos de ${local.nombre}`;
   await cargarSolicitud();
@@ -278,6 +279,22 @@ document
       mensaje.textContent = error.message;
     }
   });
+
+document.querySelector("#formCuentaLocal").addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  const formulario = evento.currentTarget;
+  try {
+    await solicitar(`/establecimientos/${localActivoId}/cuenta`, {
+      method: "POST",
+      body: JSON.stringify(Object.fromEntries(new FormData(formulario))),
+    });
+    formulario.reset();
+    formulario.hidden = true;
+    mensaje.textContent = "Cuenta del local creada. Comparte sus credenciales con el trabajador.";
+  } catch (error) {
+    mensaje.textContent = error.message;
+  }
+});
 
 solicitar("/sesion")
   .then(mostrarSesion)
