@@ -47,6 +47,15 @@ export function guardarCarrito(usuarioId, carrito) {
   }
 }
 
+export function actualizarNav(activa) {
+  document.querySelectorAll('.portal-enlaces a').forEach(enlace => {
+    if (new URL(enlace.href).pathname.endsWith('/' + activa)) enlace.setAttribute('aria-current', 'page');
+    else enlace.removeAttribute('aria-current');
+  });
+  const perfil = document.querySelector('.portal-perfil');
+  if (perfil) perfil.open = false;
+}
+
 export async function iniciarPortal(activa) {
   let usuario;
   try { usuario = await solicitar('/sesion'); }

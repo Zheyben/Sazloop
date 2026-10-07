@@ -1,12 +1,13 @@
 import { solicitar, el, dinero, fechaHora, aviso, tamanios } from './comun.js';
-import { iniciarPortal, leerCarrito, guardarCarrito } from './portal.js';
+import { leerCarrito, guardarCarrito } from './portal.js';
 
 const estados = {
   PENDIENTE_PAGO: 'Pendiente de pago', CONFIRMADA: 'Lista para recoger',
   RECOGIDA: 'Recogida', CANCELADA: 'Cancelada', EXPIRADA: 'Expirada'
 };
-const usuario = await iniciarPortal('compras.html');
-if (usuario) {
+let usuario;
+export function montarCompras(usuarioActual) {
+  usuario = usuarioActual;
   mostrarCarrito();
   mostrarHistorial();
 }
@@ -24,6 +25,7 @@ async function mostrarCarrito() {
   zona.replaceChildren(el('p', { className: 'estado-vacio', textContent: 'Revisando disponibilidad…' }));
   try {
     const oferta = await solicitar(`/ofertas/${carrito.ofertaId}`);
+    if (!zona.isConnected) return;
     const variantes = carrito.lineas.map(linea => ({
       ...oferta.variantes.find(v => v.id === linea.varianteId), cantidad: linea.cantidad
     })).filter(v => v.id);
@@ -86,6 +88,7 @@ async function mostrarCarrito() {
           ofertaId: oferta.id, medioPago: pago.value, lineas: lineasElegidas()
         }) });
         guardarCarrito(usuario.id, null);
+        if (!zona.isConnected) return;
         zona.replaceChildren(el('div', { className: 'compra-confirmada' },
           el('p', { className: 'etiqueta', textContent: 'COMPRA CONFIRMADA' }),
           el('h3', { textContent: 'Tu pack ya está reservado.' }),
@@ -95,6 +98,7 @@ async function mostrarCarrito() {
           el('p', { className: 'chico', textContent: compra.avisoBoleta || '' })));
         mostrarHistorial();
       } catch (error) {
+        if (!zona.isConnected) return;
         mensajeCarrito.textContent = error.message;
         confirmar.disabled = false;
       }
@@ -107,6 +111,7 @@ async function mostrarCarrito() {
       form));
     actualizar();
   } catch (error) {
+    if (!zona.isConnected) return;
     zona.replaceChildren(el('div', { className: 'estado-vacio' },
       el('p', { textContent: 'No se pudo consultar el pack de tu carrito.' }),
       el('button', { type: 'button', className: 'secundario', textContent: 'Quitar del carrito', onclick: () => { guardarCarrito(usuario.id, null); mostrarCarrito(); } })));
@@ -117,6 +122,7 @@ async function mostrarHistorial() {
   const lista = document.querySelector('#lista');
   try {
     const compras = await solicitar('/compras/mias');
+    if (!lista.isConnected) return;
     lista.replaceChildren(...(compras.length
       ? compras.map(c => el('article', { className: 'tarjeta-compra' },
         el('p', { className: 'etiqueta', textContent: estados[c.estado] || c.estado }),
@@ -126,5 +132,5 @@ async function mostrarHistorial() {
         el('p', { className: 'chico', textContent: `Boleta ${c.numeroBoleta} · Recojo ${fechaHora(c.inicioRecojo)} a ${fechaHora(c.finRecojo)}` })))
       : [el('div', { className: 'estado-vacio', textContent: 'Aún no tienes compras realizadas.' })]));
     aviso('');
-  } catch (error) { aviso(error.message, true); }
+  } catch (error) { if (lista.isConnected) aviso(error.message, true); }
 }

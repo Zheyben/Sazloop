@@ -6,7 +6,7 @@
   <title>Sazloop | Inicio</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="portal.css">
-  <script type="module" src="consumidor.js"></script>
+  <script type="module" src="portal-main.js"></script>
 </head>
 <body>
   <header id="portal-nav" class="portal-cabecera"></header>
@@ -19,19 +19,9 @@
       </div>
       <span class="bienvenida-marca" aria-hidden="true">✳</span>
     </section>
-    <section class="seccion-busqueda" aria-labelledby="titulo-busqueda">
-      <div class="seccion-encabezado"><div><p class="etiqueta">EXPLORA</p><h2 id="titulo-busqueda">Encuentra tu próximo pack</h2></div></div>
-      <form id="filtros" class="filtros-portal">
-        <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
-        <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
-        <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
-        <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
-        <button type="submit">Buscar packs</button>
-      </form>
-    </section>
     <section class="seccion-resultados" aria-labelledby="titulo-packs">
       <div class="seccion-encabezado">
-        <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Disponibles ahora</h2></div>
+        <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Tendencias</h2></div>
         <a id="ver-todas" class="enlace-ver-todas" href="catalogo.html">Ver todas</a>
       </div>
       <p id="mensaje" role="status" aria-live="polite"></p>

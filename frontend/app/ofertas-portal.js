@@ -7,18 +7,20 @@ export function iniciarOfertas(usuario, limite = null) {
   const formulario = document.querySelector('#filtros');
   const lista = document.querySelector('#lista');
   const detalle = document.querySelector('#detalle');
+  let busquedaActual = 0;
   const valoresIniciales = new URLSearchParams(location.search);
-  for (const nombre of filtrosPermitidos) {
-    if (valoresIniciales.has(nombre)) formulario.elements[nombre].value = valoresIniciales.get(nombre);
+  if (formulario) {
+    for (const nombre of filtrosPermitidos) {
+      if (valoresIniciales.has(nombre)) formulario.elements[nombre].value = valoresIniciales.get(nombre);
+    }
+    formulario.addEventListener('submit', e => {
+      e.preventDefault();
+      const params = parametros();
+      history.replaceState(null, '', `${location.pathname}${params.size ? '?' + params : ''}`);
+      buscar(params);
+    });
   }
-
-  formulario.addEventListener('submit', e => {
-    e.preventDefault();
-    const params = parametros();
-    if (!limite) history.replaceState(null, '', `${location.pathname}${params.size ? '?' + params : ''}`);
-    buscar(params);
-  });
-  buscar(parametros());
+  buscar(formulario ? parametros() : new URLSearchParams());
 
   function parametros() {
     const params = new URLSearchParams();
@@ -30,15 +32,17 @@ export function iniciarOfertas(usuario, limite = null) {
   }
 
   async function buscar(params) {
+    const turno = ++busquedaActual;
     lista.replaceChildren(el('p', { className: 'estado-vacio', textContent: 'Buscando packs disponibles…' }));
-    if (limite) document.querySelector('#ver-todas').href = `catalogo.html${params.size ? '?' + params : ''}`;
     try {
       const ofertas = await solicitar(`/ofertas${params.size ? '?' + params : ''}`);
+      if (!lista.isConnected || turno !== busquedaActual) return;
       lista.replaceChildren(...(ofertas.length
         ? (limite ? ofertas.slice(0, limite) : ofertas).map(tarjeta)
         : [el('p', { className: 'estado-vacio', textContent: 'No hay packs con esos filtros. Prueba cambiando la búsqueda.' })]));
       aviso('');
     } catch (error) {
+      if (!lista.isConnected || turno !== busquedaActual) return;
       lista.replaceChildren();
       aviso(error.message, true);
     }
@@ -63,6 +67,7 @@ export function iniciarOfertas(usuario, limite = null) {
   async function abrirDetalle(id) {
     try {
       const o = await solicitar(`/ofertas/${id}`);
+      if (!detalle.isConnected) return;
       const avisoDetalle = el('p', { className: 'detalle-aviso', role: 'status', ariaLive: 'polite' });
       const filas = o.variantes.map(v => el('label', { className: 'detalle-variante' },
         el('span', {}, el('strong', { textContent: tamanios[v.tamanio] || v.tamanio }),
@@ -104,6 +109,6 @@ export function iniciarOfertas(usuario, limite = null) {
         el('p', { className: 'detalle-horario', textContent: `Recojo: ${fechaHora(o.inicioRecojo)} a ${fechaHora(o.finRecojo)}` }),
         form);
       detalle.showModal();
-    } catch (error) { aviso(error.message, true); }
+    } catch (error) { if (detalle.isConnected) aviso(error.message, true); }
   }
 }
