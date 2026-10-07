@@ -3,97 +3,158 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sazloop | Acceso</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="app.js" defer></script>
+  <meta name="theme-color" content="#183a2b">
+  <meta name="description" content="Descubre packs sorpresa de comida preparada con descuento en Lima Metropolitana. Elige recojo en el local o entrega por delivery.">
+  <title>Sazloop | Lo bueno sigue fluyendo</title>
+  <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-  <nav id="nav" aria-label="Principal"></nav>
-  <main>
-    <h1>Sazloop</h1>
-    <p id="mensaje" role="status" aria-live="polite"></p>
+  <a class="salto" href="#contenido">Saltar al contenido</a>
 
-    <section id="acceso" aria-label="Acceso a la cuenta">
-      <form id="registro">
-        <h2>Crear cuenta</h2>
-        <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
-        <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
-        <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
-        <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
-        <button type="submit">Registrarme</button>
-      </form>
+  <header class="cabecera">
+    <div class="contenedor barra">
+      <a class="marca" href="#inicio" aria-label="Sazloop, ir al inicio">
+        <span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span>
+      </a>
 
-      <form id="ingreso">
-        <h2>Iniciar sesión</h2>
-        <label>Correo <input name="email" type="email" autocomplete="email" required></label>
-        <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
-        <button type="submit">Ingresar</button>
-      </form>
+      <nav class="menu-escritorio" aria-label="Navegación principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#como-funciona">¿Cómo funciona?</a>
+        <a href="#afiliados">Deliverys</a>
+        <a href="#sobre-los-packs">Productos</a>
+        <a href="#para-locales">Afíliate</a>
+      </nav>
+
+      <a class="boton boton-contorno ingreso-escritorio" href="app/index.html">Iniciar sesión</a>
+
+      <details class="menu-movil">
+        <summary><span>Menú</span><span class="menu-icono" aria-hidden="true">☰</span></summary>
+        <nav aria-label="Navegación móvil">
+          <a href="#inicio">Inicio</a>
+          <a href="#como-funciona">¿Cómo funciona?</a>
+          <a href="#afiliados">Deliverys</a>
+          <a href="#sobre-los-packs">Productos</a>
+          <a href="#para-locales">Afíliate</a>
+          <a href="app/index.html">Iniciar sesión</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="portada" id="inicio" aria-labelledby="titulo-principal">
+      <div class="contenedor portada-interior">
+        <div class="portada-texto">
+          <h1 id="titulo-principal">Lo bueno sigue <em>fluyendo.</em></h1>
+          <p class="portada-descripcion">Descubre excedentes de comida preparada aptos para consumo en packs sorpresa con descuento.</p>
+          <div class="acciones">
+            <a class="boton boton-principal" href="app/catalogo.html">Explorar ofertas</a>
+            <a class="enlace-texto" href="#como-funciona">Descubre cómo funciona</a>
+          </div>
+          <div class="portada-nota"><span class="nota-icono" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.7"/></svg></span> Recojo en el local · Entrega por delivery</div>
+        </div>
+
+        <figure class="portada-arte">
+          <div class="arte-sol" aria-hidden="true"></div>
+          <svg class="ilustracion" viewBox="0 0 580 520" role="img" aria-labelledby="arte-titulo arte-descripcion" xmlns="http://www.w3.org/2000/svg">
+            <title id="arte-titulo">Ilustración de un pack sorpresa</title>
+            <desc id="arte-descripcion">Bolsa de papel con pan y vegetales. El contenido es ilustrativo y varía según la oferta.</desc>
+            <ellipse cx="292" cy="458" rx="210" ry="27" fill="#85492f" opacity=".16"/>
+            <path d="M140 297c-44-58-16-133 63-158 99-31 126 62 217 38 77-20 118 42 102 113-19 85-117 123-219 119-89-3-129-59-163-112Z" fill="#f4aa73"/>
+            <path d="M106 310c-34-14-47-51-35-85 29 8 55 33 60 65" fill="#386a48"/>
+            <path d="M112 304c-11-35-4-69 20-91 19 18 25 50 10 80" fill="#4d8657"/>
+            <path d="M132 286c8-35 31-57 61-60 2 28-13 52-44 70" fill="#27623d"/>
+            <path d="M138 310c-7-31-23-58-42-77" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
+            <path d="M378 287c7-53 29-86 67-101 12 38-1 72-43 108" fill="#497c4a"/>
+            <path d="M396 287c28-46 66-63 100-51-2 39-33 64-91 67" fill="#2f6c43"/>
+            <path d="M400 306c13-42 38-72 69-90" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
+            <g transform="translate(161 100) rotate(-13 130 170)">
+              <path d="M66 189C31 148 44 74 95 54c54-20 120 12 128 65 9 55-46 129-95 131-22 1-47-28-62-61Z" fill="#bc642d"/>
+              <path d="M70 174c-24-38-18-92 23-109 43-18 108 11 116 57 6 41-36 100-82 113-20 5-44-36-57-61Z" fill="#e9a45c"/>
+              <path d="M95 78c-5 10-7 22-5 34m48-38c0 10 3 22 9 32m41-11c-1 11-5 22-11 31" fill="none" stroke="#a04c24" stroke-width="7" stroke-linecap="round"/>
+            </g>
+            <g transform="translate(263 72) rotate(25 70 140)">
+              <path d="M62 6c25-5 45 11 49 34l30 175c5 28-3 43-25 46-21 3-34-11-39-37L47 49C42 26 43 10 62 6Z" fill="#c8783d"/>
+              <path d="M63 11c17-4 33 10 37 31l29 173c4 21-1 33-15 35-14 2-22-10-26-29L58 47c-4-20-8-33 5-36Z" fill="#efb66d"/>
+              <path d="M79 58l17 20m-7 32 18 20m-11 32 17 20" fill="none" stroke="#b96d37" stroke-width="7" stroke-linecap="round"/>
+            </g>
+            <path d="M183 248h219l-17 193c-2 17-13 25-29 25H229c-16 0-27-8-29-25l-17-193Z" fill="#d6a676"/>
+            <path d="M183 248h219l-8 44H191l-8-44Z" fill="#e9c7a0"/>
+            <path d="M197 289h194l-13 143c-2 15-9 23-24 23H232c-15 0-22-8-24-23l-11-143Z" fill="#e8bd8d"/>
+            <path d="M231 251c1-49 24-74 62-74s61 25 62 74" fill="none" stroke="#aa744d" stroke-width="12" stroke-linecap="round"/>
+            <circle cx="292" cy="366" r="49" fill="#faf1df"/>
+            <path d="M266 372c16-26 28-30 47-20-4 15-20 28-43 27" fill="#2e6343"/>
+            <path d="M276 380c14-25 25-38 42-46" fill="none" stroke="#2e6343" stroke-width="5" stroke-linecap="round"/>
+            <path d="M337 428h25" stroke="#bc9268" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="466" cy="172" r="5" fill="#fff2dc"/>
+            <circle cx="105" cy="166" r="7" fill="#fff2dc"/>
+            <path d="m440 110 7 15 15 7-15 7-7 15-7-15-15-7 15-7 7-15Z" fill="#fff2dc"/>
+          </svg>
+          <div class="arte-etiqueta"><span class="arte-etiqueta-icono" aria-hidden="true">✳</span><span>Un pack.<br><strong>Otra oportunidad.</strong></span></div>
+        </figure>
+      </div>
     </section>
 
-    <section id="cuenta" hidden aria-label="Sesión activa">
-      <h2>Mi cuenta</h2>
-      <p id="usuario"></p>
-      <button id="salir" type="button">Cerrar sesión</button>
+    <section class="seccion pasos-seccion" id="como-funciona" aria-labelledby="pasos-titulo">
+      <div class="contenedor">
+        <div class="encabezado-seccion"><p class="eyebrow">PARA QUIENES COMPRAN</p><h2 id="pasos-titulo">Así de simple es <em>sumarte.</em></h2></div>
+        <ol class="pasos">
+          <li><span class="paso-numero">01 / DESCUBRE</span><span class="paso-dibujo" aria-hidden="true">⌕</span><h3>Encuentra un pack</h3><p>Explora ofertas disponibles y revisa el local, el precio y los detalles antes de elegir.</p></li>
+          <li><span class="paso-numero">02 / ELIGE</span><span class="paso-dibujo" aria-hidden="true">◒</span><h3>Haz tu compra</h3><p>Selecciona el tamaño y la cantidad. Al confirmar, recibes un código único de recojo.</p></li>
+          <li><span class="paso-numero">03 / RECOGE</span><span class="paso-dibujo" aria-hidden="true">⌂</span><h3>Recoge o recibe</h3><p>Recoge tu pack en el local con tu código o recíbelo mediante delivery.</p></li>
+        </ol>
+        <p class="pasos-remate">Del hallazgo al recojo: tú eliges el pack, el establecimiento prepara la sorpresa.</p>
+      </div>
+    </section>
 
-      <section aria-label="Mi empresa y establecimientos">
-        <form id="formEmpresa" hidden>
-          <h2>Registrar empresa</h2>
-          <label>Razón social <input name="razonSocial" maxlength="150" required></label>
-          <label>Nombre comercial <input name="nombreComercial" maxlength="120" required></label>
-          <label>RUC <input name="ruc" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" required></label>
-          <button type="submit">Guardar empresa</button>
-        </form>
-
-        <div id="empresaRegistrada" hidden>
-          <h2>Mi empresa</h2>
-          <p id="empresaDatos"></p>
-          <form id="formLocal">
-            <h3>Registrar establecimiento</h3>
-            <label>Nombre <input name="nombre" maxlength="120" required></label>
-            <label>Descripción <input name="descripcion" maxlength="500"></label>
-            <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
-            <label>Departamento <input name="departamento" maxlength="80" value="Lima" required></label>
-            <label>Provincia <input name="provincia" maxlength="80" value="Lima" required></label>
-            <label>Distrito <input name="distrito" maxlength="80" required></label>
-            <label>Dirección <input name="direccionLinea" maxlength="180" required></label>
-            <label>Número <input name="numero" maxlength="20"></label>
-            <label>Referencia <input name="referencia" maxlength="250"></label>
-            <label>Código postal <input name="codigoPostal" maxlength="10"></label>
-            <button type="submit">Guardar establecimiento</button>
-          </form>
-          <h3>Establecimientos registrados</h3>
-          <ul id="locales"></ul>
-          <section id="solicitudPanel" hidden aria-label="Documentos del establecimiento">
-            <h3 id="solicitudTitulo"></h3>
-            <p id="solicitudEstado"></p>
-            <form id="formDocumento">
-              <h4>Adjuntar documento</h4>
-              <label>Tipo de documento
-                <select name="tipo" required>
-                  <option value="LICENCIA_FUNCIONAMIENTO">Licencia de funcionamiento</option>
-                  <option value="CERTIFICADO_SANITARIO">Certificado sanitario</option>
-                  <option value="INSPECCION_SEGURIDAD">Inspección de seguridad</option>
-                  <option value="OTRO">Otro</option>
-                </select>
-              </label>
-              <label>Número del documento <input name="numero" maxlength="80"></label>
-              <label>Fecha de emisión <input name="emision" type="date"></label>
-              <label>Fecha de vencimiento <input name="vencimiento" type="date"></label>
-              <label>Archivo PDF, PNG o JPG (hasta 10 MB)
-                <input name="archivo" type="file" accept=".pdf,.png,.jpg,.jpeg" required>
-              </label>
-              <button type="submit">Adjuntar</button>
-            </form>
-            <h4>Documentos adjuntos</h4>
-            <ul id="documentos"></ul>
-            <button id="enviarSolicitud" type="button" hidden>Enviar solicitud a revisión</button>
-          </section>
+    <section class="seccion delivery-seccion" id="afiliados" aria-labelledby="delivery-titulo">
+      <div class="contenedor delivery-interior">
+        <div class="delivery-texto">
+          <p class="eyebrow">ENTREGA A DOMICILIO</p>
+          <h2 id="delivery-titulo">Lo bueno también <em>llega a ti.</em></h2>
+          <p>Además del recojo en el local, puedes recibir tu pack por delivery con PedidosYa, Rappi o inDrive. Elige la modalidad que prefieras al comprar.</p>
         </div>
-      </section>
+        <div class="delivery-marcas" aria-label="Servicios de delivery afiliados">
+          <p>Servicios de delivery afiliados</p>
+          <div class="delivery-logos">
+            <div class="delivery-logo"><img src="img/pedidosya.svg" alt="PedidosYa" loading="lazy" width="166" height="48"></div>
+            <div class="delivery-logo"><img src="img/rappi.svg" alt="Rappi" loading="lazy" width="140" height="58"></div>
+            <div class="delivery-logo"><img src="img/indrive.svg" alt="inDrive" loading="lazy" width="166" height="55"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion detalle-seccion" id="sobre-los-packs" aria-labelledby="detalle-titulo">
+      <div class="contenedor detalle-interior">
+        <div class="detalle-tarjeta" aria-hidden="true">
+          <div class="detalle-trazo detalle-trazo-uno"></div><div class="detalle-trazo detalle-trazo-dos"></div>
+          <div class="detalle-tarjeta-contenido"><span class="detalle-sello">PACK SORPRESA</span><span class="detalle-circulo">?</span><span class="detalle-pie">Algo bueno te espera.</span></div>
+        </div>
+        <div class="detalle-texto">
+          <p class="eyebrow">LA SORPRESA ESTÁ EN EL CONTENIDO</p>
+          <h2 id="detalle-titulo">Sorpresa sí.<br><em>Información también.</em></h2>
+          <p>No sabrás exactamente qué alimentos habrá en el pack. Antes de comprar podrás consultar sus posibles productos, alérgenos, restricciones alimentarias y horario de recojo.</p>
+          <a class="enlace-texto" href="app/catalogo.html">Ver ofertas disponibles</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion locales-seccion" id="para-locales" aria-labelledby="locales-titulo">
+      <div class="contenedor locales-interior">
+        <div class="locales-texto">
+          <p class="eyebrow eyebrow-claro">PARA LOS ESTABLECIMIENTOS</p>
+          <h2 id="locales-titulo">Tu excedente todavía tiene <em>valor.</em></h2>
+          <p>Registra tu empresa y cada local, presenta sus documentos para revisión y, una vez aprobado, publica packs con tamaños, precios, existencias y horario de recojo.</p>
+          <a class="boton boton-menta" href="app/index.html">Registrar mi local</a>
+        </div>
+        <div class="locales-visual" aria-hidden="true"><span class="locales-visual-orbita"></span><div class="locales-tarjeta"><span class="locales-icono">✳</span><span class="locales-tarjeta-titulo">De tu local<br>para alguien más.</span><span class="locales-tarjeta-linea"></span><span class="locales-tarjeta-pie">Lo bueno sigue fluyendo</span></div></div>
+      </div>
     </section>
   </main>
-  <script type="module">import { pintarNav } from "./comun.js"; pintarNav("index.html");</script>
+
+  <footer class="pie">
+    <div class="contenedor pie-interior"><div><a class="marca marca-pie" href="#inicio"><span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span></a><p>Lo bueno sigue fluyendo.</p></div><p>Lima Metropolitana · Proyecto académico</p><a href="#inicio">Volver arriba</a></div>
+  </footer>
 </body>
 </html>

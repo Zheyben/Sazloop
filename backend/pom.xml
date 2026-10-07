@@ -152,13 +152,11 @@
                 <targetPath>static</targetPath>
                 <includes>
                     <include>index.html</include>
-                    <include>styles.css</include>
-                    <include>app.js</include>
-                    <include>catalogo.html</include>
-                    <include>catalogo.js</include>
-                    <include>compras.html</include>
-                    <include>compras.js</include>
-                    <include>comun.js</include>
+                    <include>css/estilos.css</include>
+                    <include>img/*.svg</include>
+                    <include>app/*.html</include>
+                    <include>app/*.css</include>
+                    <include>app/*.js</include>
                 </includes>
             </resource>
         </resources>
