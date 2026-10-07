@@ -8,7 +8,7 @@ const rutas = [
 const trazos = {
   inicio: 'M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3z',
   productos: 'M4 8h16v13H4z M3 8l2-5h14l2 5 M12 8v13',
-  compras: 'M4 4h2l2 11h11l2-8H7 M9 20h.01 M18 20h.01',
+  compras: 'M3 10h18l-2 10H5L3 10Z M7 10l4-7 M17 10l-4-7 M8 14v3 M12 14v3 M16 14v3',
   perfil: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21v-2a8 8 0 0 1 16 0v2',
   salir: 'M10 4H5v16h5 M14 7l5 5-5 5 M19 12H9',
   flecha: 'M5 12h14m-6-6 6 6-6 6'

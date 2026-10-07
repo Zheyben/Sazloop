@@ -7,6 +7,9 @@ export function iniciarOfertas(usuario, limite = null) {
   const formulario = document.querySelector('#filtros');
   const lista = document.querySelector('#lista');
   const detalle = document.querySelector('#detalle');
+  const panelFiltros = document.querySelector('#panel-filtros');
+  const alternarFiltros = document.querySelector('#alternar-filtros');
+  const contadorFiltros = document.querySelector('#contador-filtros');
   let busquedaActual = 0;
   const valoresIniciales = new URLSearchParams(location.search);
   if (formulario) {
@@ -17,8 +20,18 @@ export function iniciarOfertas(usuario, limite = null) {
       e.preventDefault();
       const params = parametros();
       history.replaceState(null, '', `${location.pathname}${params.size ? '?' + params : ''}`);
+      panelFiltros.hidden = true;
+      alternarFiltros.setAttribute('aria-expanded', 'false');
+      actualizarContador(params);
       buscar(params);
     });
+    alternarFiltros.addEventListener('click', () => {
+      const abrir = panelFiltros.hidden;
+      panelFiltros.hidden = !abrir;
+      alternarFiltros.setAttribute('aria-expanded', String(abrir));
+      if (abrir) formulario.elements.distrito.focus();
+    });
+    actualizarContador(parametros());
   }
   buscar(formulario ? parametros() : new URLSearchParams());
 
@@ -31,6 +44,11 @@ export function iniciarOfertas(usuario, limite = null) {
     return params;
   }
 
+  function actualizarContador(params) {
+    contadorFiltros.textContent = params.size ? String(params.size) : '';
+    contadorFiltros.hidden = !params.size;
+  }
+
   async function buscar(params) {
     const turno = ++busquedaActual;
     lista.replaceChildren(el('p', { className: 'estado-vacio', textContent: 'Buscando packs disponibles…' }));
@@ -39,7 +57,7 @@ export function iniciarOfertas(usuario, limite = null) {
       if (!lista.isConnected || turno !== busquedaActual) return;
       lista.replaceChildren(...(ofertas.length
         ? (limite ? ofertas.slice(0, limite) : ofertas).map(tarjeta)
-        : [el('p', { className: 'estado-vacio', textContent: 'No hay packs con esos filtros. Prueba cambiando la búsqueda.' })]));
+        : [el('p', { className: 'estado-vacio', textContent: limite ? 'No tenemos productos por el momento.' : 'No hay packs con esos filtros. Prueba cambiando la búsqueda.' })]));
       aviso('');
     } catch (error) {
       if (!lista.isConnected || turno !== busquedaActual) return;

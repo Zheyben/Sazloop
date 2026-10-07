@@ -16,18 +16,24 @@
       <h1>Todos los <em>packs sorpresa.</em></h1>
       <p>Consulta las ofertas disponibles y elige la que prefieras.</p>
     </section>
-    <section class="seccion-busqueda" aria-labelledby="titulo-filtros">
-      <h2 id="titulo-filtros">Filtrar ofertas</h2>
-      <form id="filtros" class="filtros-portal">
-        <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
-        <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
-        <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
-        <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
-        <button type="submit">Buscar packs</button>
-      </form>
-    </section>
     <section class="seccion-resultados" aria-labelledby="titulo-resultados">
-      <div class="seccion-encabezado"><div><p class="etiqueta">OFERTAS</p><h2 id="titulo-resultados">Packs disponibles</h2></div></div>
+      <div class="seccion-encabezado">
+        <div><p class="etiqueta">OFERTAS</p><h2 id="titulo-resultados">Packs disponibles</h2></div>
+        <button id="alternar-filtros" class="boton-filtros" type="button" aria-expanded="false" aria-controls="panel-filtros">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6m6 4v6"/></svg>
+          Filtros <span id="contador-filtros" hidden></span>
+        </button>
+      </div>
+      <div id="panel-filtros" class="panel-filtros" hidden>
+        <form id="filtros" class="filtros-portal">
+          <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
+          <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
+          <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
+          <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
+          <label class="filtro-cercania"><input type="checkbox" disabled> Cerca de mí <small>Próximamente</small></label>
+          <button type="submit">Aplicar filtros</button>
+        </form>
+      </div>
       <p id="mensaje" role="status" aria-live="polite"></p>
       <div id="lista" class="grid-packs" aria-label="Ofertas disponibles"></div>
     </section>
