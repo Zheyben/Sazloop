@@ -7,6 +7,7 @@
   <meta name="description" content="Descubre packs sorpresa de comida preparada con descuento en Lima Metropolitana. Elige recojo en el local o entrega por delivery.">
   <title>Sazloop | Lo bueno sigue fluyendo</title>
   <link rel="stylesheet" href="css/estilos.css">
+  <script src="js/acceso.js" defer></script>
 </head>
 <body>
   <a class="salto" href="#contenido">Saltar al contenido</a>
@@ -25,7 +26,7 @@
         <a href="#para-locales">Afíliate</a>
       </nav>
 
-      <a class="boton boton-contorno ingreso-escritorio" href="app/index.html">Iniciar sesión</a>
+      <a class="boton boton-contorno ingreso-escritorio" href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
 
       <details class="menu-movil">
         <summary><span>Menú</span><span class="menu-icono" aria-hidden="true">☰</span></summary>
@@ -35,7 +36,7 @@
           <a href="#afiliados">Deliverys</a>
           <a href="#sobre-los-packs">Productos</a>
           <a href="#para-locales">Afíliate</a>
-          <a href="app/index.html">Iniciar sesión</a>
+          <a href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
         </nav>
       </details>
     </div>
@@ -156,5 +157,26 @@
   <footer class="pie">
     <div class="contenedor pie-interior"><div><a class="marca marca-pie" href="#inicio"><span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span></a><p>Lo bueno sigue fluyendo.</p></div><p>Lima Metropolitana · Proyecto académico</p><a href="#inicio">Volver arriba</a></div>
   </footer>
+  <dialog id="modal-acceso" class="modal-acceso" aria-labelledby="modal-acceso-titulo">
+    <button class="modal-cerrar" type="button" aria-label="Cerrar acceso">×</button>
+    <p class="modal-etiqueta">BIENVENIDO A SAZLOOP</p>
+    <h2 id="modal-acceso-titulo">Lo bueno sigue <em>fluyendo.</em></h2>
+    <p class="modal-intro">Elige cómo quieres ingresar a la plataforma.</p>
+    <div class="modal-opciones">
+      <a class="modal-opcion" href="app/consumidor.html">
+        <span class="modal-numero">01 / PARA COMPRAR</span>
+        <strong>Soy consumidor</strong>
+        <span>Explora ofertas, compra packs sorpresa y consulta tus compras.</span>
+        <span class="modal-accion">Ingresar como consumidor</span>
+      </a>
+      <a class="modal-opcion modal-opcion-local" href="app/negocio.html">
+        <span class="modal-numero">02 / PARA LOCALES</span>
+        <strong>Empresa o trabajador</strong>
+        <span>Gestiona tu empresa y sus establecimientos, o ingresa con la cuenta de tu local.</span>
+        <span class="modal-accion">Ingresar al espacio de locales</span>
+      </a>
+    </div>
+    <p class="modal-admin">¿Administras la plataforma? <a href="app/administrador.html">Acceso de administrador</a></p>
+  </dialog>
 </body>
 </html>

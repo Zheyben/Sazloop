@@ -153,6 +153,7 @@
                 <includes>
                     <include>index.html</include>
                     <include>css/estilos.css</include>
+                    <include>js/acceso.js</include>
                     <include>img/*.svg</include>
                     <include>app/*.html</include>
                     <include>app/*.css</include>

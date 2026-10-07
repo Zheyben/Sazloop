@@ -130,6 +130,91 @@ h2 { font-size: clamp(2.8rem, 4.5vw, 4.6rem); }
 .pie p { margin: 0; font-size: .88rem; color: var(--secundario); }
 .pie a:not(.marca) { font-size: .88rem; font-weight: 700; text-underline-offset: .3em; color: var(--bosque); }
 
+/* Acceso sobre el sitio público */
+body.modal-abierto { overflow: hidden; }
+.modal-acceso {
+  width: min(1100px, calc(100vw - 3rem));
+  max-width: none;
+  max-height: calc(100dvh - 3rem);
+  margin: auto;
+  padding: clamp(2.25rem, 4vw, 3.75rem);
+  overflow-y: auto;
+  border: 1px solid var(--borde);
+  border-radius: 1.6rem;
+  color: var(--tinta);
+  background: var(--crema);
+  box-shadow: 0 30px 80px rgba(16, 41, 31, .27);
+  text-align: center;
+}
+.modal-acceso::backdrop {
+  background: rgba(16, 41, 31, .38);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.modal-cerrar {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.25rem;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  color: var(--bosque);
+  background: var(--marfil);
+  font: 400 1.8rem/1 var(--sans);
+  cursor: pointer;
+}
+.modal-cerrar:hover { background: var(--menta); }
+.modal-cerrar:focus-visible { outline: 3px solid #be5b25; outline-offset: 3px; }
+.modal-etiqueta, .modal-numero {
+  color: var(--hoja);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.modal-etiqueta { margin-bottom: .75rem; }
+.modal-acceso h2 {
+  max-width: 16ch;
+  margin: 0 auto .85rem;
+  color: var(--bosque-oscuro);
+  font-size: clamp(3rem, 5.5vw, 5.3rem);
+  line-height: 1.02;
+}
+.modal-intro { margin-bottom: 2rem; color: var(--secundario); font-size: 1.05rem; }
+.modal-opciones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.35rem; text-align: left; }
+.modal-opcion {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  min-height: 230px;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  border: 1px solid var(--borde);
+  border-radius: 1.35rem;
+  color: var(--tinta);
+  background: var(--marfil);
+  text-decoration: none;
+  box-shadow: 0 10px 28px rgba(24, 58, 43, .07);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.modal-opcion:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(24, 58, 43, .13); }
+.modal-opcion strong { font: 400 clamp(1.7rem, 3vw, 2.4rem)/1.15 var(--serif); letter-spacing: -.045em; }
+.modal-opcion > span:nth-child(3) { max-width: 36ch; }
+.modal-accion { margin-top: auto; font-size: .93rem; font-weight: 800; text-decoration: underline; text-underline-offset: .3em; }
+.modal-opcion-local { color: #fff; background: var(--bosque); border-color: var(--bosque); }
+.modal-opcion-local .modal-numero { color: var(--menta); }
+.modal-admin { margin: 1.6rem 0 0; color: var(--secundario); font-size: .9rem; }
+.modal-admin a { color: var(--bosque); font-weight: 750; text-underline-offset: .25em; }
+@media (max-width: 760px) {
+  .modal-acceso { width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); padding: 3rem 1.2rem 1.5rem; }
+  .modal-acceso h2 { font-size: clamp(2.4rem, 9vw, 3.7rem); }
+  .modal-opciones { grid-template-columns: 1fr; gap: .8rem; }
+  .modal-opcion { min-height: 175px; }
+  .modal-cerrar { top: .65rem; right: .65rem; }
+}
+
 @media (max-width: 1020px) {
   .barra { min-height: 74px; grid-template-columns: 1fr auto; }
   .menu-escritorio, .ingreso-escritorio { display: none; }
