@@ -27,7 +27,8 @@
   font-weight: 800;
   letter-spacing: -.06em;
 }
-.portal-marca .marca-icono { margin-right: .15rem; }
+.portal-marca .marca-icono { display: grid; place-items: center; flex: none; width: 1.18em; height: 1.18em; margin-right: .15rem; line-height: 0; }
+.portal-marca .marca-icono svg { display: block; width: 65%; height: 65%; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
 .portal-marca .marca-punto { margin-left: -.35rem; }
 .portal-enlaces { display: flex; justify-content: center; align-items: center; gap: .3rem; }
 .portal-enlaces a {

@@ -3,7 +3,7 @@ import { solicitar, el } from './comun.js';
 const rutas = [
   ['consumidor.html', 'Inicio', 'inicio'],
   ['catalogo.html', 'Productos', 'productos'],
-  ['compras.html', 'Mis compras', 'compras']
+  ['compras.html', 'Mi carrito', 'compras']
 ];
 const trazos = {
   inicio: 'M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3z',
@@ -21,6 +21,16 @@ export function icono(nombre) {
   svg.setAttribute('class', 'icono-portal');
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('d', trazos[nombre]);
+  svg.append(path);
+  return svg;
+}
+
+function simboloMarca() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M12 2v20 M2 12h20 M4.9 4.9l14.2 14.2 M19.1 4.9 4.9 19.1');
   svg.append(path);
   return svg;
 }
@@ -81,7 +91,7 @@ export async function iniciarPortal(activa) {
       el('button', { type: 'button', id: 'salir' }, icono('salir'), 'Cerrar sesión')));
   nav.replaceChildren(el('div', { className: 'portal-barra' },
     el('a', { href: 'consumidor.html', className: 'portal-marca', ariaLabel: 'Sazloop, ir al inicio' },
-      el('span', { className: 'marca-icono', textContent: '✳' }), 'Sazloop', el('span', { className: 'marca-punto', textContent: '.' })),
+      el('span', { className: 'marca-icono' }, simboloMarca()), 'Sazloop', el('span', { className: 'marca-punto', textContent: '.' })),
     enlaces, perfil));
   perfil.querySelector('#salir').addEventListener('click', async () => {
     try {
