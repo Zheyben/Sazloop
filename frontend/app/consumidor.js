@@ -5,7 +5,7 @@ const cuenta = document.querySelector('#cuenta');
 document.querySelector('#salir').addEventListener('click', async () => {
   try {
     await solicitar('/sesion', { method: 'DELETE' });
-    location.href = '../index.html?acceso=consumidor';
+    location.href = 'acceso-consumidor.html';
   } catch (error) { aviso(error.message, true); }
 });
 
@@ -14,5 +14,5 @@ try {
   document.querySelector('#usuario').textContent = datos.nombres;
   cuenta.hidden = false;
 } catch {
-  location.replace('../index.html?acceso=consumidor');
+  location.replace('acceso-consumidor.html');
 }

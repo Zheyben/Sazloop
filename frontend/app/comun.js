@@ -55,6 +55,6 @@ export async function pintarNav(activa) {
     const u = await solicitar('/sesion');
     nav.append(el('span', { className: 'quien', textContent: u.nombres }));
   } catch {
-    nav.append(el('a', { href: 'consumidor.html', className: 'quien', textContent: 'Ingresar' }));
+    nav.append(el('a', { href: 'acceso-consumidor.html', className: 'quien', textContent: 'Ingresar' }));
   }
 }

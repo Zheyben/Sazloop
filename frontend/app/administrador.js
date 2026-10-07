@@ -100,9 +100,9 @@ async function mostrar(datos) {
 document.querySelector('#salirAdmin').addEventListener('click', async () => {
   try {
     await solicitar('/administradores/sesion', { method: 'DELETE' });
-    location.href = '../index.html?acceso=administrador';
+    location.href = 'acceso-administrador.html';
   } catch (error) { aviso(error.message, true); }
 });
 
 try { await mostrar(await solicitar('/administradores/sesion')); }
-catch { location.replace('../index.html?acceso=administrador'); }
+catch { location.replace('acceso-administrador.html'); }

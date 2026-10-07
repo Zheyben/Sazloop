@@ -23,18 +23,18 @@ function mostrarLocal(datos) {
 }
 
 document.querySelector('#modoEmpresa').addEventListener('click', () => {
-  if (!cuenta.hidden) location.href = '../index.html?acceso=empresa';
+  if (!cuenta.hidden) location.href = 'acceso-locales.html#empresa';
   else modo(false);
 });
 document.querySelector('#modoTrabajador').addEventListener('click', () => {
-  if (cuenta.hidden) location.href = '../index.html?acceso=trabajador';
+  if (cuenta.hidden) location.href = 'acceso-locales.html#trabajador';
   else modo(true);
 });
 
 document.querySelector('#salirLocal').addEventListener('click', async () => {
   try {
     await solicitar('/local/sesion', { method: 'DELETE' });
-    location.href = '../index.html?acceso=trabajador';
+    location.href = 'acceso-locales.html#trabajador';
   } catch (error) { resultado.textContent = error.message; }
 });
 
@@ -78,6 +78,6 @@ try {
     await solicitar('/sesion');
     modo(false);
   } catch {
-    location.replace('../index.html?acceso=' + (location.hash === '#trabajador' ? 'trabajador' : 'empresa'));
+    location.replace('acceso-locales.html#' + (location.hash === '#trabajador' ? 'trabajador' : 'empresa'));
   }
 }

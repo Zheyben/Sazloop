@@ -139,7 +139,7 @@ async function cargarSolicitud() {
 document.querySelector("#salir").addEventListener("click", async () => {
   try {
     await solicitar("/sesion", { method: "DELETE" });
-    location.href = "../index.html?acceso=empresa";
+    location.href = "acceso-locales.html#empresa";
   } catch (error) {
     mensaje.textContent = error.message;
   }

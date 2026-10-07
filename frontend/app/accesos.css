@@ -1,0 +1,70 @@
+.marco-acceso {
+  width: min(100% - 3rem, 1200px);
+  min-height: calc(100dvh - 78px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .95fr);
+  gap: 0;
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+.panel-historia, .panel-formulario { min-width: 0; min-height: 610px; padding: clamp(2rem, 5vw, 4.5rem); }
+.panel-historia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.5rem 0 0 1.5rem;
+  background: #e9f0dc;
+  color: var(--bosque);
+  transition: background-color .35s ease, color .35s ease;
+}
+.panel-historia .etiqueta { color: var(--hoja); }
+.panel-historia h1 { max-width: 12ch; margin: 1.2rem 0 1.5rem; font-size: clamp(3rem, 5vw, 5rem); }
+.panel-historia h1 em { color: var(--hoja); transition: color .35s ease; }
+.panel-historia > p:not(.etiqueta) { max-width: 35ch; font-size: 1.08rem; }
+.historia-marca { position: absolute; right: -1.3rem; bottom: -5.5rem; color: rgba(49, 92, 61, .13); font: 400 clamp(15rem, 27vw, 26rem)/1 var(--sans); user-select: none; }
+.modo-empresa .panel-historia { color: #fff; background: var(--bosque); }
+.modo-empresa .panel-historia h1, .modo-empresa .panel-historia .etiqueta { color: #fff; }
+.modo-empresa .panel-historia h1 em { color: var(--menta); }
+.modo-empresa .historia-marca { color: rgba(217, 236, 171, .12); }
+.modo-administrador .panel-historia { background: #f1e4cf; }
+.modo-administrador .historia-marca { color: rgba(185, 110, 65, .15); }
+.panel-formulario {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--borde);
+  border-radius: 0 1.5rem 1.5rem 0;
+  background: var(--marfil);
+  box-shadow: 0 18px 36px rgba(24, 58, 43, .07);
+}
+.formulario-contenido { width: min(100%, 390px); }
+.formulario-contenido h2 { margin: .5rem 0 1.4rem; }
+#mensaje-acceso { min-height: 1.4rem; margin-bottom: .7rem; font-size: .9rem; }
+#mensaje-acceso.error { color: #a3261f; }
+#mensaje-acceso.ok { color: var(--hoja); }
+.formulario-acceso { display: grid; gap: 1.1rem; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.formulario-acceso label { display: block; margin: 0; color: var(--bosque); font-size: .94rem; font-weight: 650; }
+.formulario-acceso input { width: 100%; margin-top: .4rem; padding: .78rem .9rem; }
+.formulario-acceso button { width: 100%; margin-top: .35rem; min-height: 50px; }
+.formulario-acceso button:disabled { opacity: .6; cursor: wait; }
+.alternar-formulario { margin: 1.25rem 0 0; color: var(--secundario); text-align: center; font-size: .93rem; }
+.alternar-formulario a { color: var(--bosque); font-weight: 800; }
+.ayuda-acceso { margin-top: 1.2rem; color: var(--secundario); font-size: .9rem; }
+.selector-rol { display: flex; gap: .35rem; margin: 1.1rem 0 2rem; padding: .3rem; border: 1px solid var(--borde); border-radius: 100px; background: #f1f2e8; }
+.selector-rol button { flex: 1; min-height: 43px; border: 0; border-radius: 100px; color: var(--bosque); background: transparent; font-weight: 750; }
+.selector-rol button[aria-pressed="true"] { color: #fff; background: var(--bosque); box-shadow: 0 3px 10px rgba(24, 58, 43, .15); }
+@media (max-width: 800px) {
+  .marco-acceso { grid-template-columns: 1fr; }
+  .panel-historia { min-height: 280px; border-radius: 1.5rem 1.5rem 0 0; }
+  .panel-historia h1 { max-width: 20ch; margin: .5rem 0 1rem; font-size: clamp(2.7rem, 8vw, 4rem); }
+  .historia-marca { bottom: -5rem; right: 0; font-size: 18rem; }
+  .panel-formulario { min-height: 400px; border-radius: 0 0 1.5rem 1.5rem; }
+}
+@media (max-width: 450px) {
+  .marco-acceso { width: min(100% - 2rem, 1200px); padding-block: 1rem 2rem; }
+  .panel-historia, .panel-formulario { padding: 1.5rem; }
+  .panel-historia { min-height: 260px; }
+  .panel-historia h1 { font-size: 2.65rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-historia, .panel-historia h1 em { transition: none; }
+}

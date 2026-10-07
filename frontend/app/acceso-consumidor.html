@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Ingreso de consumidores</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="accesos.css">
+  <script type="module" src="accesos.js"></script>
+</head>
+<body data-acceso="consumidor">
+  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="../index.html">Volver al sitio público</a></header>
+  <main class="marco-acceso">
+    <section class="panel-historia" aria-labelledby="titulo-historia">
+      <p class="etiqueta">PARA QUIENES COMPRAN</p>
+      <h1 id="titulo-historia">Una buena sorpresa <em>te espera.</em></h1>
+      <p>Explora packs sorpresa, elige el que prefieras y consulta tus compras desde tu cuenta.</p>
+      <span class="historia-marca" aria-hidden="true">✳</span>
+    </section>
+    <section class="panel-formulario" aria-labelledby="titulo-formulario">
+      <div class="formulario-contenido">
+        <p class="etiqueta">ACCESO DEL CONSUMIDOR</p>
+        <h2 id="titulo-formulario">Iniciar sesión</h2>
+        <p id="mensaje-acceso" role="status" aria-live="polite"></p>
+        <form id="ingreso-personal" class="formulario-acceso">
+          <label>Correo <input name="email" type="email" autocomplete="email" required></label>
+          <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
+          <button type="submit">Ingresar</button>
+        </form>
+        <p id="ir-registro" class="alternar-formulario">¿No tienes una cuenta? <a href="#registro">Regístrate aquí</a></p>
+        <form id="registro-personal" class="formulario-acceso" hidden>
+          <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
+          <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
+          <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
+          <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
+          <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+          <button type="submit">Crear cuenta</button>
+        </form>
+        <p id="ir-ingreso" class="alternar-formulario" hidden>¿Ya tienes una cuenta? <a href="#ingreso">Inicia sesión aquí</a></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
