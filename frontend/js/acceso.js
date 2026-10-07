@@ -1,17 +1,15 @@
 const modalAcceso = document.querySelector('#modal-acceso');
 const menuMovil = document.querySelector('.menu-movil');
 let cerrando = false;
-let destino = null;
 let cierreDeRespaldo;
 
 function finalizarCierre() {
   if (modalAcceso.open) modalAcceso.close();
 }
 
-function cerrarModal(url = null) {
+function cerrarModal() {
   if (!modalAcceso.open || cerrando) return;
   cerrando = true;
-  destino = url;
   modalAcceso.classList.add('cerrando');
   cierreDeRespaldo = setTimeout(finalizarCierre, 380);
 }
@@ -27,12 +25,6 @@ document.querySelectorAll('[data-abrir-acceso]').forEach(enlace => {
 });
 
 modalAcceso.querySelector('.modal-cerrar').addEventListener('click', () => cerrarModal());
-modalAcceso.querySelectorAll('a[href]').forEach(enlace => {
-  enlace.addEventListener('click', evento => {
-    evento.preventDefault();
-    cerrarModal(enlace.href);
-  });
-});
 
 modalAcceso.addEventListener('click', evento => {
   if (evento.target !== modalAcceso) return;
@@ -55,7 +47,4 @@ modalAcceso.addEventListener('close', () => {
   modalAcceso.classList.remove('cerrando');
   document.body.classList.remove('modal-abierto');
   cerrando = false;
-  const pagina = destino;
-  destino = null;
-  if (pagina) location.assign(pagina);
 });

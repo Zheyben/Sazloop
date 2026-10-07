@@ -9,21 +9,25 @@
   <script type="module" src="accesos.js"></script>
 </head>
 <body data-acceso="locales">
-  <a class="volver-publico" href="../index.html" aria-label="Volver al sitio público">&lt;</a>
+  <a class="volver-publico" href="../index.html" aria-label="Volver al sitio público"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5m7 7-7-7 7-7"/></svg></a>
   <main class="marco-acceso modo-trabajador" id="marco-local">
     <section class="panel-historia" aria-labelledby="titulo-historia">
-      <p class="etiqueta" id="etiqueta-historia">PARA EL TRABAJADOR</p>
-      <h1 id="titulo-historia">Tu local, <em>en marcha.</em></h1>
-      <p id="descripcion-historia">Ingresa con la cuenta de tu establecimiento para consultar y confirmar los recojos.</p>
-      <span class="historia-marca" aria-hidden="true">✳</span>
-    </section>
-    <section class="panel-formulario" aria-labelledby="titulo-formulario">
-      <div class="formulario-contenido">
+      <div class="historia-contenido">
+        <p class="etiqueta" id="etiqueta-historia">PARA EL TRABAJADOR</p>
+        <h1 id="titulo-historia">Tu local, <em>en marcha.</em></h1>
+        <p id="descripcion-historia">Ingresa con la cuenta de tu establecimiento para consultar y confirmar los recojos.</p>
+      </div>
+      <div class="selector-acceso">
         <p class="etiqueta">ESPACIO DE LOCALES</p>
         <div class="selector-rol" role="group" aria-label="Tipo de acceso">
           <button type="button" data-rol="trabajador" aria-pressed="true">Trabajador</button>
           <button type="button" data-rol="empresa" aria-pressed="false">Empresa</button>
         </div>
+      </div>
+      <span class="historia-marca" aria-hidden="true">✳</span>
+    </section>
+    <section class="panel-formulario" aria-labelledby="titulo-formulario">
+      <div class="formulario-contenido">
         <h2 id="titulo-formulario">Ingresar como trabajador</h2>
         <p id="mensaje-acceso" role="status" aria-live="polite"></p>
         <form id="ingreso-trabajador" class="formulario-acceso">
