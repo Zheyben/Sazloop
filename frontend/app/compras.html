@@ -5,14 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sazloop | Mis compras</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal.css">
   <script type="module" src="compras.js"></script>
 </head>
 <body>
-  <nav id="nav" aria-label="Principal"></nav>
-  <main>
-    <h1>Mis compras</h1>
+  <header id="portal-nav" class="portal-cabecera"></header>
+  <main class="portal-principal">
+    <section class="titulo-pagina">
+      <p class="etiqueta">TU ESPACIO</p>
+      <h1>Mis <em>compras.</em></h1>
+      <p>Revisa lo que elegiste y tus compras anteriores en un mismo lugar.</p>
+    </section>
     <p id="mensaje" role="status" aria-live="polite"></p>
-    <section id="lista" class="grid" aria-label="Compras realizadas"></section>
+    <section class="seccion-carrito" aria-labelledby="titulo-carrito">
+      <div class="seccion-encabezado"><div><p class="etiqueta">ANTES DE COMPRAR</p><h2 id="titulo-carrito">Mi carrito</h2></div></div>
+      <div id="carrito" aria-live="polite"></div>
+    </section>
+    <section class="seccion-historial" aria-labelledby="titulo-historial">
+      <div class="seccion-encabezado"><div><p class="etiqueta">TUS PEDIDOS</p><h2 id="titulo-historial">Historial de compras</h2></div></div>
+      <div id="lista" class="grid-compras" aria-label="Compras realizadas"></div>
+    </section>
   </main>
 </body>
 </html>

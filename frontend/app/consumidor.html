@@ -3,21 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sazloop | Mi cuenta</title>
+  <title>Sazloop | Inicio</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal.css">
   <script type="module" src="consumidor.js"></script>
 </head>
 <body>
-  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="../index.html">Volver al inicio</a></header>
-  <main class="pagina-acceso">
-    <p class="etiqueta">TU CUENTA</p>
-    <h1>Lo bueno sigue <em>contigo.</em></h1>
-    <p id="mensaje" role="status" aria-live="polite"></p>
-    <section id="cuenta" class="panel" hidden>
-      <h2>Bienvenido, <span id="usuario"></span></h2>
-      <div class="acciones-cuenta"><a class="boton-app" href="catalogo.html">Explorar ofertas</a><a class="boton-app boton-claro" href="compras.html">Mis compras</a></div>
-      <button id="salir" type="button" class="secundario">Cerrar sesión</button>
+  <header id="portal-nav" class="portal-cabecera"></header>
+  <main class="portal-principal">
+    <section class="bienvenida" aria-labelledby="titulo-inicio">
+      <div>
+        <p class="etiqueta">TU ESPACIO SAZLOOP</p>
+        <h1 id="titulo-inicio">Hola, <span id="usuario"></span><em>.</em></h1>
+        <p>Encuentra un pack sorpresa disponible para ti.</p>
+      </div>
+      <span class="bienvenida-marca" aria-hidden="true">✳</span>
+    </section>
+    <section class="seccion-busqueda" aria-labelledby="titulo-busqueda">
+      <div class="seccion-encabezado"><div><p class="etiqueta">EXPLORA</p><h2 id="titulo-busqueda">Encuentra tu próximo pack</h2></div></div>
+      <form id="filtros" class="filtros-portal">
+        <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
+        <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
+        <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
+        <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
+        <button type="submit">Buscar packs</button>
+      </form>
+    </section>
+    <section class="seccion-resultados" aria-labelledby="titulo-packs">
+      <div class="seccion-encabezado">
+        <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Disponibles ahora</h2></div>
+        <a id="ver-todas" class="enlace-ver-todas" href="catalogo.html">Ver todas</a>
+      </div>
+      <p id="mensaje" role="status" aria-live="polite"></p>
+      <div id="lista" class="grid-packs" aria-label="Packs disponibles"></div>
     </section>
   </main>
+  <dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
 </body>
 </html>
