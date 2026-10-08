@@ -1,7 +1,48 @@
-import { solicitar, el, dinero, fechaHora, tamanios, aviso } from './comun.js';
+import { solicitar, el, dinero, tamanios, aviso } from './comun.js';
 import { leerCarrito, guardarCarrito } from './portal.js';
 
 const filtrosPermitidos = ['distrito', 'direccion', 'precioMaximo', 'calificacionMinima'];
+
+function hora(s) {
+  return new Date(s).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function fechaBreve(s) {
+  const fecha = new Date(s);
+  const hoy = new Date();
+  return fecha.toDateString() === hoy.toDateString()
+    ? 'hoy'
+    : fecha.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
+}
+
+function horarioRecojo(o) {
+  const inicio = new Date(o.inicioRecojo);
+  const fin = new Date(o.finRecojo);
+  const otroDia = inicio.toDateString() !== fin.toDateString();
+  return `Recojo ${fechaBreve(o.inicioRecojo)} · ${hora(o.inicioRecojo)} – ${otroDia ? `${fechaBreve(o.finRecojo)} · ` : ''}${hora(o.finRecojo)}`;
+}
+
+function nombreDestacado(nombre) {
+  const espacio = nombre.indexOf(' ');
+  return espacio < 0 ? [nombre] : [nombre.slice(0, espacio), ' ', el('em', { textContent: nombre.slice(espacio + 1) })];
+}
+
+function iconoDato(tipo) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('class', 'pack-icono-dato');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', tipo === 'ubicacion'
+    ? 'M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Zm-8 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z'
+    : 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-16v6l4 2');
+  svg.append(path);
+  return svg;
+}
+
+function descuento(v) {
+  return Math.round((1 - Number(v.precioDescuento) / Number(v.precioReferencial)) * 100);
+}
 
 export function iniciarOfertas(usuario, limite = null) {
   const formulario = document.querySelector('#filtros');
@@ -68,17 +109,28 @@ export function iniciarOfertas(usuario, limite = null) {
 
   function tarjeta(o) {
     const disponibles = o.variantes.filter(v => v.stockDisponible > 0);
-    const desde = disponibles.length ? Math.min(...disponibles.map(v => Number(v.precioDescuento))) : null;
+    const masBarata = disponibles.reduce((menor, v) => !menor || Number(v.precioDescuento) < Number(menor.precioDescuento) ? v : menor, null);
     const stock = disponibles.reduce((s, v) => s + v.stockDisponible, 0);
     return el('article', { className: 'tarjeta-pack' },
-      el('div', { className: 'pack-visual', ariaHidden: 'true' }, el('span', { textContent: '✳' })),
+      el('div', { className: 'pack-visual' },
+        el('span', { className: 'pack-visual-marca', ariaHidden: 'true', textContent: '✳' }),
+        el('span', { className: 'pack-visual-stock', textContent: `${stock} uds.` }),
+        o.calificacion != null ? el('span', { className: 'pack-visual-calificacion', textContent: `★  ${Number(o.calificacion).toFixed(1)}` }) : null),
       el('div', { className: 'pack-contenido' },
-        el('p', { className: 'pack-local', textContent: `${o.establecimiento} · ${o.distrito}` }),
-        el('h3', { textContent: o.pack }),
-        el('p', { className: 'pack-calificacion', textContent: o.calificacion != null ? `★ ${Number(o.calificacion).toFixed(1)}` : 'Aún sin calificaciones' }),
+        el('p', { className: 'pack-local' }, iconoDato('ubicacion'), `${o.establecimiento} · ${o.distrito}`),
+        el('h3', {}, ...nombreDestacado(o.pack)),
+        el('p', { className: 'pack-horario' }, iconoDato('reloj'), horarioRecojo(o)),
+        el('div', { className: 'pack-posibles' },
+          el('span', { className: 'pack-dato-etiqueta', textContent: 'PODRÍA INCLUIR' }),
+          el('p', { textContent: o.posiblesProductos })),
         el('div', { className: 'pack-pie' },
-          el('div', {}, el('strong', { textContent: desde == null ? 'Sin stock' : `Desde ${dinero(desde)}` }),
-            el('small', { textContent: `Recojo hasta ${fechaHora(o.finRecojo)} · ${stock} disponibles` })),
+          el('div', { className: 'pack-precio' },
+            el('div', { className: 'pack-precio-encabezado' },
+              el('span', { className: 'pack-dato-etiqueta', textContent: 'DESDE' }),
+              masBarata ? el('span', { className: 'pack-descuento', textContent: `−${descuento(masBarata)} %` }) : null),
+            el('div', { className: 'pack-precio-cifras' },
+              el('strong', { textContent: masBarata ? dinero(masBarata.precioDescuento) : 'Sin stock' }),
+              masBarata ? el('s', { textContent: dinero(masBarata.precioReferencial) }) : null)),
           el('button', { type: 'button', className: 'pack-accion', textContent: 'Ver pack', onclick: () => abrirDetalle(o.id) }))));
   }
 
@@ -87,14 +139,39 @@ export function iniciarOfertas(usuario, limite = null) {
       const o = await solicitar(`/ofertas/${id}`);
       if (!detalle.isConnected) return;
       const avisoDetalle = el('p', { className: 'detalle-aviso', role: 'status', ariaLive: 'polite' });
-      const filas = o.variantes.map(v => el('label', { className: 'detalle-variante' },
-        el('span', {}, el('strong', { textContent: tamanios[v.tamanio] || v.tamanio }),
-          el('small', { textContent: `${dinero(v.precioDescuento)} · antes ${dinero(v.precioReferencial)} · quedan ${v.stockDisponible}` })),
-        el('input', { type: 'number', min: 0, max: v.stockDisponible, value: 0, name: 'v' + v.id, disabled: v.stockDisponible === 0, ariaLabel: `Cantidad de ${tamanios[v.tamanio] || v.tamanio}` })));
-      const form = el('form', { className: 'detalle-formulario' }, ...filas,
-        el('button', { type: 'submit', textContent: 'Añadir al carrito' }), avisoDetalle);
+      const total = el('strong', { className: 'detalle-total', ariaLive: 'polite' });
+      const primerDisponible = o.variantes.find(v => v.stockDisponible > 0);
+      const filas = o.variantes.map(v => {
+        const campo = el('input', { type: 'number', min: 0, max: v.stockDisponible,
+          value: v.id === primerDisponible?.id ? 1 : 0, name: 'v' + v.id,
+          disabled: v.stockDisponible === 0, ariaLabel: `Cantidad de ${tamanios[v.tamanio] || v.tamanio}` });
+        const fila = el('div', { className: 'detalle-variante' },
+          el('div', { className: 'detalle-variante-info' },
+            el('strong', { textContent: tamanios[v.tamanio] || v.tamanio }),
+            el('span', {}, el('span', { className: 'detalle-variante-precio', textContent: dinero(v.precioDescuento) }),
+              ' ', el('s', { textContent: dinero(v.precioReferencial) })),
+            el('small', { textContent: `${v.stockDisponible} disponibles` })),
+          el('div', { className: 'detalle-cantidad' },
+            el('button', { type: 'button', className: 'detalle-cantidad-boton', ariaLabel: `Quitar una unidad de ${tamanios[v.tamanio] || v.tamanio}`, textContent: '−', disabled: v.stockDisponible === 0,
+              onclick: () => { campo.value = Math.max(0, Math.min(v.stockDisponible, Math.trunc(Number(campo.value) || 0) - 1)); actualizarTotal(); } }),
+            campo,
+            el('button', { type: 'button', className: 'detalle-cantidad-boton', ariaLabel: `Añadir una unidad de ${tamanios[v.tamanio] || v.tamanio}`, textContent: '+', disabled: v.stockDisponible === 0,
+              onclick: () => { campo.value = Math.min(v.stockDisponible, Math.max(0, Math.trunc(Number(campo.value) || 0)) + 1); actualizarTotal(); } })));
+        return fila;
+      });
+      const form = el('form', { id: 'formulario-detalle-pack', className: 'detalle-formulario' }, ...filas);
+      function actualizarTotal() {
+        const lineas = o.variantes.map(v => ({ variante: v, cantidad: Number(form.elements['v' + v.id].value) }));
+        const valido = lineas.every(l => Number.isInteger(l.cantidad) && l.cantidad >= 0 && l.cantidad <= l.variante.stockDisponible);
+        total.textContent = valido ? dinero(lineas.reduce((s, l) => s + l.cantidad * Number(l.variante.precioDescuento), 0)) : 'Revisa las cantidades';
+        filas.forEach((fila, i) => fila.classList.toggle('seleccionada', lineas[i].cantidad > 0));
+        return valido;
+      }
+      form.addEventListener('input', actualizarTotal);
+      actualizarTotal();
       form.addEventListener('submit', e => {
         e.preventDefault();
+        if (!actualizarTotal()) { avisoDetalle.textContent = 'Revisa las cantidades disponibles.'; return; }
         const lineas = o.variantes.map(v => ({ varianteId: v.id, cantidad: Number(form.elements['v' + v.id].value) }))
           .filter(l => l.cantidad > 0);
         if (!lineas.length || lineas.some(l => !Number.isInteger(l.cantidad))) {
@@ -102,7 +179,7 @@ export function iniciarOfertas(usuario, limite = null) {
         }
         const previo = leerCarrito(usuario.id);
         if (previo && previo.ofertaId !== o.id) {
-          avisoDetalle.replaceChildren('Tu carrito ya contiene otro pack. ', el('a', { href: 'compras.html', textContent: 'Revisa Mis compras' }));
+          avisoDetalle.replaceChildren('Tu carrito ya contiene otro pack. ', el('a', { href: 'compras.html', textContent: 'Revisar mi carrito' }));
           return;
         }
         const acumuladas = new Map(previo?.lineas.map(l => [l.varianteId, l.cantidad]) || []);
@@ -111,21 +188,48 @@ export function iniciarOfertas(usuario, limite = null) {
           avisoDetalle.textContent = 'La cantidad supera las unidades disponibles.'; return;
         }
         guardarCarrito(usuario.id, { ofertaId: o.id, lineas: [...acumuladas].map(([varianteId, cantidad]) => ({ varianteId, cantidad })) });
-        avisoDetalle.replaceChildren('Pack añadido. ', el('a', { href: 'compras.html', textContent: 'Ir a Mis compras' }));
-        form.reset();
+        avisoDetalle.replaceChildren('Pack añadido. ', el('a', { href: 'compras.html', textContent: 'Ir a mi carrito' }));
+        form.reset(); actualizarTotal();
       });
+      const restricciones = o.restricciones || [];
+      const opcionesDieta = [
+        ['vegetarianos', 'Apto para vegetarianos', 'No apto para vegetarianos'],
+        ['veganos', 'Apto para veganos', 'No apto para veganos'],
+        ['personas con celiaquía', 'Apto para personas con celiaquía', 'No apto para personas con celiaquía']
+      ];
+      const estadosDieta = opcionesDieta.map(([nombre, positivo, negativo]) => restricciones.includes(positivo)
+        ? [true, positivo] : restricciones.includes(negativo) ? [false, negativo] : null).filter(Boolean);
+      const otrasRestricciones = restricciones.filter(r => !opcionesDieta.some(([, positivo, negativo]) => r === positivo || r === negativo));
+      const botonAgregar = el('button', { type: 'submit', className: 'detalle-agregar', textContent: 'Añadir al carrito' });
+      botonAgregar.setAttribute('form', form.id);
       detalle.replaceChildren(
-        el('div', { className: 'detalle-cabecera' },
-          el('p', { className: 'etiqueta', textContent: 'PACK SORPRESA' }),
+        el('div', { className: 'detalle-visual' },
+          el('span', { className: 'detalle-etiqueta', textContent: 'PACK SORPRESA' }),
+          el('span', { className: 'detalle-visual-marca', ariaHidden: 'true', textContent: '✳' }),
           el('button', { type: 'button', className: 'detalle-cerrar', ariaLabel: 'Cerrar detalle', textContent: '×', onclick: () => detalle.close() })),
-        el('h2', { textContent: o.pack }),
-        el('p', { className: 'pack-local', textContent: `${o.establecimiento} · ${o.direccion}, ${o.distrito}` }),
-        el('p', { textContent: o.descripcion }),
-        el('p', { textContent: `Podría incluir: ${o.posiblesProductos}` }),
-        o.alergenos.length ? el('p', { className: 'alerta', textContent: `Alérgenos: ${o.alergenos.join(', ')}` }) : null,
-        o.restricciones.length ? el('p', { textContent: `Restricciones: ${o.restricciones.join(', ')}` }) : null,
-        el('p', { className: 'detalle-horario', textContent: `Recojo: ${fechaHora(o.inicioRecojo)} a ${fechaHora(o.finRecojo)}` }),
-        form);
+        el('div', { className: 'detalle-cuerpo' },
+          el('h2', { id: 'detalle-titulo' }, ...nombreDestacado(o.pack)),
+          el('p', { className: 'detalle-meta' }, iconoDato('ubicacion'), el('strong', { textContent: o.establecimiento }), ` · ${o.direccion}, ${o.distrito}`),
+          el('p', { className: 'detalle-meta' }, iconoDato('reloj'), horarioRecojo(o)),
+          o.descripcion ? el('p', { className: 'detalle-descripcion', textContent: o.descripcion }) : null,
+          el('section', { className: 'detalle-posibles' },
+            el('span', { className: 'pack-dato-etiqueta', textContent: 'LA SORPRESA DEL DÍA · PODRÍA INCLUIR' }),
+            el('p', { textContent: o.posiblesProductos })),
+          o.alergenos.length ? el('section', { className: 'detalle-alergenos' },
+            el('h3', { textContent: 'ALÉRGENOS' }),
+            el('div', { className: 'detalle-chips' }, ...o.alergenos.map(nombre => el('span', { className: 'detalle-chip', textContent: nombre }))),
+            el('p', { textContent: 'Si tienes alergia o intolerancia a alguno de estos alérgenos, este pack no es para ti.' })) : null,
+          estadosDieta.length || otrasRestricciones.length ? el('section', { className: 'detalle-dieta' },
+            el('h3', { textContent: 'DIETA' }),
+            ...estadosDieta.map(([apto, texto]) => el('p', {},
+              el('span', { className: `detalle-estado ${apto ? 'apto' : 'no-apto'}`, ariaHidden: 'true', textContent: apto ? '✓' : '×' }), texto)),
+            otrasRestricciones.length ? el('p', { textContent: otrasRestricciones.join(' · ') }) : null) : null,
+          el('section', { className: 'detalle-seleccion' },
+            el('h3', { textContent: 'Elige tu tamaño' }), form)),
+        el('div', { className: 'detalle-pie' },
+          el('div', { className: 'detalle-pie-total' }, el('span', { textContent: 'Total' }), total),
+          el('div', { className: 'detalle-pie-accion' }, botonAgregar, avisoDetalle)));
+      detalle.setAttribute('aria-labelledby', 'detalle-titulo');
       detalle.showModal();
     } catch (error) { if (detalle.isConnected) aviso(error.message, true); }
   }

@@ -1,0 +1,37 @@
+.gestion-ofertas { padding-top: 2rem; }
+.gestion-ofertas > h3 { margin: 0; font: 400 clamp(2rem, 4vw, 2.8rem)/1.15 var(--serif); }
+.gestion-ofertas > h3 em { color: var(--hoja); font-weight: 400; }
+.gestion-ofertas > p { margin: .45rem 0 1.4rem; }
+.gestion-ofertas form { border-color: #dbe3cf; background: var(--marfil); }
+.gestion-ofertas form h4 { margin: 0 0 1rem; color: var(--bosque); font: 400 1.55rem/1.2 var(--serif); }
+.gestion-ofertas form label { margin-block: 1rem; }
+.gestion-ofertas form input, .gestion-ofertas form textarea { border-color: #c5d2ba; }
+.pack-grupo { min-width: 0; margin-top: 1.5rem; padding: 1.5rem 0 0; border: 0; border-top: 1px solid var(--borde); }
+.pack-grupo legend { float: left; width: 100%; margin-bottom: .3rem; color: var(--bosque); font-weight: 750; }
+.pack-grupo > p { clear: both; margin: .3rem 0 1rem; color: var(--secundario); font-size: .9rem; }
+.pack-alergenos { clear: both; display: flex; flex-wrap: wrap; gap: .5rem; }
+.pack-alergenos label { margin: 0 !important; cursor: pointer; }
+.pack-alergenos input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.pack-alergenos label span, .pack-otro { display: inline-flex; align-items: center; min-height: 38px; padding: .45rem .85rem; border: 1px solid #cbd8c1; border-radius: 100px; background: var(--crema); color: var(--bosque); font-size: .85rem; font-weight: 650; }
+.pack-alergenos input:checked + span { border-color: #efbf9f; background: #fce9d9; }
+.pack-alergenos input:focus-visible + span { outline: 3px solid #bc642d; outline-offset: 3px; }
+.pack-otro { border-style: dashed; }
+.pack-otro:hover { border-color: var(--bosque); background: var(--menta); color: var(--bosque); }
+#otroAlergenoCampo { max-width: 330px; margin-top: 1rem; }
+.pack-dietas { clear: both; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+.pack-dietas label { display: flex; align-items: center; gap: .55rem; margin: 0 !important; padding: .7rem .85rem; border: 1px solid #dbe3cf; border-radius: .8rem; font-size: .87rem; }
+.pack-dietas input { width: 20px; height: 20px; flex: none; margin: 0 !important; accent-color: var(--bosque); }
+.variantes-oferta { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.variante-oferta { border-color: #dbe3cf; background: #fff; }
+.variante-oferta:has([name="activo"]:checked) { border-color: var(--hoja); }
+.variante-oferta legend { font: 400 1.3rem/1.2 var(--serif); }
+.variante-oferta label { font-size: .82rem; }
+.pack-horario-publicacion { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
+.pack-horario-publicacion label { min-width: 0; font-size: .83rem; }
+.pack-horario-publicacion input { min-width: 0; }
+@media (max-width: 850px) {
+  .variantes-oferta, .pack-horario-publicacion { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .pack-dietas { grid-template-columns: 1fr; }
+}

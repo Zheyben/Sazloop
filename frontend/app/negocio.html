@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sazloop | Empresas y trabajadores</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pack-form.css">
   <script src="app.js" defer></script>
   <script src="negocio.js" type="module"></script>
 </head>
@@ -96,26 +97,46 @@
         <p id="datosLocal"></p>
         <button id="salirLocal" type="button" class="secundario">Cerrar sesión</button>
         <section class="gestion-ofertas" aria-labelledby="tituloPublicacion">
-          <h3 id="tituloPublicacion">Packs y ofertas</h3>
-          <p>Primero registra un pack. Después selecciona su número y publica una oferta con horario, precio y stock.</p>
+          <h3 id="tituloPublicacion">Nuevo <em>pack</em></h3>
+          <p>Ponle un nombre claro y cuenta qué productos suelen incluirse.</p>
           <form id="formPack">
-            <h4>Registrar pack sorpresa</h4>
-            <label>Nombre <input name="nombre" maxlength="120" required></label>
+            <h4>Datos del pack</h4>
+            <label>Nombre del pack <input name="nombre" maxlength="120" required></label>
             <label>Descripción <textarea name="descripcion" rows="3" maxlength="500" required></textarea></label>
-            <label>Posibles productos <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
-            <label>Alérgenos, separados por comas <input name="alergenos" placeholder="Ej.: gluten, lácteos"></label>
-            <label>Restricciones alimentarias, separadas por comas <input name="restricciones" placeholder="Ej.: contiene carne"></label>
+            <label>Podría incluir <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
+            <fieldset class="pack-grupo">
+              <legend>Alérgenos</legend>
+              <p>Toca los que apliquen. Si falta uno, agrégalo con «Otro».</p>
+              <div class="pack-alergenos">
+                <label><input type="checkbox" name="alergeno" value="Trigo (gluten)"><span>Trigo (gluten)</span></label>
+                <label><input type="checkbox" name="alergeno" value="Huevo"><span>Huevo</span></label>
+                <label><input type="checkbox" name="alergeno" value="Leche"><span>Leche</span></label>
+                <label><input type="checkbox" name="alergeno" value="Almendras"><span>Almendras</span></label>
+                <label><input type="checkbox" name="alergeno" value="Soya"><span>Soya</span></label>
+                <label><input type="checkbox" name="alergeno" value="Maní"><span>Maní</span></label>
+                <label><input type="checkbox" name="alergeno" value="Pescado"><span>Pescado</span></label>
+                <label><input type="checkbox" name="alergeno" value="Mariscos"><span>Mariscos</span></label>
+                <button id="agregarAlergeno" type="button" class="pack-otro">+ Otro</button>
+              </div>
+              <label id="otroAlergenoCampo" hidden>Otro alérgeno <input name="otroAlergeno" maxlength="80"></label>
+            </fieldset>
+            <fieldset class="pack-grupo">
+              <legend>Este pack es apto para…</legend>
+              <p>Lo que no marques se mostrará como «No apto» en el detalle del pack.</p>
+              <div class="pack-dietas">
+                <label><input type="checkbox" name="aptoVegetarianos"> Vegetarianos</label>
+                <label><input type="checkbox" name="aptoVeganos"> Veganos</label>
+                <label><input type="checkbox" name="aptoCeliacos"> Celíacos</label>
+              </div>
+              <label>Otras restricciones, separadas por comas <input name="restricciones" placeholder="Si corresponde"></label>
+            </fieldset>
             <button type="submit">Registrar pack</button>
             <p id="resultadoPack" role="status" aria-live="polite"></p>
           </form>
           <form id="formOferta">
-            <h4>Publicar oferta</h4>
+            <h4>Tamaños y precios</h4>
             <p class="ayuda-formulario">Puedes usar el número del pack recién creado o el de uno registrado antes en este establecimiento.</p>
             <label>Número del pack <input name="packId" type="number" min="1" step="1" required></label>
-            <label>Inicio del recojo <input name="inicioRecojo" type="datetime-local" required></label>
-            <label>Fin del recojo <input name="finRecojo" type="datetime-local" required></label>
-            <label>Límite definitivo de recojo <input name="limiteDefinitivo" type="datetime-local" required></label>
-            <p class="ayuda-formulario">El inicio debe ser futuro; el fin debe ser posterior al inicio y el límite definitivo posterior al fin. Solo puede haber una oferta activa por local.</p>
             <div class="variantes-oferta" aria-label="Tamaños, precios y stock">
               <fieldset class="variante-oferta" data-tamanio="PEQUENO">
                 <legend>Pequeño</legend>
@@ -139,6 +160,13 @@
                 <label>Unidades disponibles <input name="stock" type="number" min="1" step="1" disabled></label>
               </fieldset>
             </div>
+            <h4>Horario de recojo</h4>
+            <div class="pack-horario-publicacion">
+              <label>Inicio del recojo <input name="inicioRecojo" type="datetime-local" required></label>
+              <label>Fin del recojo <input name="finRecojo" type="datetime-local" required></label>
+              <label>Límite definitivo de recojo <input name="limiteDefinitivo" type="datetime-local" required></label>
+            </div>
+            <p class="ayuda-formulario">El inicio debe ser futuro; el fin debe ser posterior al inicio y el límite definitivo posterior al fin. Solo puede haber una oferta activa por local.</p>
             <button type="submit">Publicar oferta</button>
             <p id="resultadoOferta" role="status" aria-live="polite"></p>
           </form>

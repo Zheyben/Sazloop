@@ -8,6 +8,14 @@ let codigoConsultado = null;
 const formPack = document.querySelector('#formPack');
 const formOferta = document.querySelector('#formOferta');
 
+document.querySelector('#agregarAlergeno').addEventListener('click', () => {
+  const campo = document.querySelector('#otroAlergenoCampo');
+  campo.hidden = !campo.hidden;
+  campo.querySelector('input').required = !campo.hidden;
+  if (campo.hidden) campo.querySelector('input').value = '';
+  else campo.querySelector('input').focus();
+});
+
 function estado(zona, mensaje, esError = false) {
   zona.textContent = mensaje;
   zona.className = esError ? 'error' : 'ok';
@@ -30,17 +38,29 @@ formPack.addEventListener('submit', async evento => {
   try {
     const datos = new FormData(formPack);
     const nombre = datos.get('nombre').trim();
+    const alergenos = [...new Set([
+      ...datos.getAll('alergeno'),
+      ...listaSeparada(datos.get('otroAlergeno'), 80)
+    ])];
+    const restricciones = [
+      datos.has('aptoVegetarianos') ? 'Apto para vegetarianos' : 'No apto para vegetarianos',
+      datos.has('aptoVeganos') ? 'Apto para veganos' : 'No apto para veganos',
+      datos.has('aptoCeliacos') ? 'Apto para personas con celiaquía' : 'No apto para personas con celiaquía',
+      ...listaSeparada(datos.get('restricciones'), 100)
+    ];
     const pack = await solicitar('/local/packs', {
       method: 'POST',
       body: JSON.stringify({
         nombre,
         descripcion: datos.get('descripcion').trim(),
         posiblesProductos: datos.get('posiblesProductos').trim(),
-        alergenos: listaSeparada(datos.get('alergenos'), 80),
-        restricciones: listaSeparada(datos.get('restricciones'), 100)
+        alergenos,
+        restricciones
       })
     });
     formPack.reset();
+    document.querySelector('#otroAlergenoCampo').hidden = true;
+    document.querySelector('#otroAlergenoCampo input').required = false;
     formOferta.elements.packId.value = pack.id;
     estado(resultadoPack, `Pack «${nombre}» registrado con el número ${pack.id}. Ya puedes publicar su oferta.`);
   } catch (error) { estado(resultadoPack, error.message, true); }
