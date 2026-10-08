@@ -91,17 +91,20 @@
     </section>
     </section>
     <section id="panelTrabajador" hidden>
-      <p class="entradilla">Publica packs y gestiona los recojos de tu establecimiento.</p>
       <p id="mensajeLocal" role="status" aria-live="polite"></p>
       <section id="cuentaLocal" class="panel" hidden>
-        <h2>Mi establecimiento</h2>
-        <p id="datosLocal"></p>
-        <button id="salirLocal" type="button" class="secundario">Cerrar sesión</button>
+        <div class="trabajador-cabecera">
+          <div>
+            <p class="etiqueta">PORTAL DEL TRABAJADOR</p>
+            <h2>Mi establecimiento<span>.</span></h2>
+            <p id="datosLocal"></p>
+          </div>
+          <button id="salirLocal" type="button" class="secundario">Cerrar sesión</button>
+        </div>
         <section class="gestion-ofertas" aria-labelledby="tituloPublicacion">
           <h3 id="tituloPublicacion">Nuevo <em>pack</em></h3>
           <p>Ponle un nombre claro y cuenta qué productos suelen incluirse.</p>
           <form id="formPack">
-            <h4>Datos del pack</h4>
             <label>Nombre del pack <input name="nombre" maxlength="120" required></label>
             <label>Descripción <textarea name="descripcion" rows="3" maxlength="500" required></textarea></label>
             <label>Podría incluir <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
@@ -131,7 +134,7 @@
               </div>
               <label>Otras restricciones, separadas por comas <input name="restricciones" placeholder="Si corresponde"></label>
             </fieldset>
-            <button type="submit">Registrar pack</button>
+            <button type="submit">Guardar datos del pack</button>
             <p id="resultadoPack" role="status" aria-live="polite"></p>
           </form>
           <form id="formOferta">

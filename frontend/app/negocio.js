@@ -131,6 +131,7 @@ formOferta.addEventListener('submit', async evento => {
 });
 
 function modo(esTrabajador) {
+  document.body.classList.toggle('vista-trabajador', esTrabajador);
   empresa.hidden = esTrabajador;
   trabajador.hidden = !esTrabajador;
   document.querySelector('#modoEmpresa').setAttribute('aria-pressed', String(!esTrabajador));

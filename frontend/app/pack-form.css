@@ -1,8 +1,22 @@
-.gestion-ofertas { padding-top: 2rem; }
+body.vista-trabajador .pagina-acceso { max-width: 1120px; padding-top: clamp(1.5rem, 4vw, 3rem); }
+body.vista-trabajador .pagina-acceso > .etiqueta,
+body.vista-trabajador .pagina-acceso > h1,
+body.vista-trabajador .pagina-acceso > .pestanas-rol { display: none; }
+body.vista-trabajador #mensajeLocal:empty { display: none; }
+body.vista-trabajador #cuentaLocal { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+.trabajador-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: 1.35rem; background: var(--bosque); color: #fff; }
+.trabajador-cabecera .etiqueta { margin: 0 0 .5rem; color: var(--menta); }
+.trabajador-cabecera h2 { margin: 0 0 .5rem; color: #fff; font-size: clamp(2rem, 4vw, 3rem); }
+.trabajador-cabecera h2 span { color: var(--menta); }
+.trabajador-cabecera p:last-child { margin: 0; color: #dfebd9; font-size: .9rem; }
+.trabajador-cabecera .secundario { flex: none; border-color: rgba(255,255,255,.65); color: #fff; }
+.trabajador-cabecera .secundario:hover { border-color: var(--menta); background: var(--menta); color: var(--bosque); }
+.gestion-ofertas { max-width: 880px; margin: 1.5rem auto 0; padding: clamp(1.5rem, 4vw, 2.6rem); border: 1px solid #dbe3cf; border-radius: 1.35rem; background: var(--marfil); }
 .gestion-ofertas > h3 { margin: 0; font: 400 clamp(2rem, 4vw, 2.8rem)/1.15 var(--serif); }
 .gestion-ofertas > h3 em { color: var(--hoja); font-weight: 400; }
 .gestion-ofertas > p { margin: .45rem 0 1.4rem; }
-.gestion-ofertas form { border-color: #dbe3cf; background: var(--marfil); }
+body.vista-trabajador .gestion-ofertas form { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+body.vista-trabajador .gestion-ofertas #formOferta { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 1px solid var(--borde); }
 .gestion-ofertas form h4 { margin: 0 0 1rem; color: var(--bosque); font: 400 1.55rem/1.2 var(--serif); }
 .gestion-ofertas form label { margin-block: 1rem; }
 .gestion-ofertas form input, .gestion-ofertas form textarea { border-color: #c5d2ba; }
@@ -29,9 +43,12 @@
 .pack-horario-publicacion { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
 .pack-horario-publicacion label { min-width: 0; font-size: .83rem; }
 .pack-horario-publicacion input { min-width: 0; }
+body.vista-trabajador #consultarRecojo { max-width: 880px; margin: 1.5rem auto 0; border-color: #dbe3cf; }
+body.vista-trabajador #resultadoRecojo { max-width: 880px; margin-inline: auto; }
 @media (max-width: 850px) {
   .variantes-oferta, .pack-horario-publicacion { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
   .pack-dietas { grid-template-columns: 1fr; }
+  .trabajador-cabecera { align-items: flex-start; flex-direction: column; }
 }
