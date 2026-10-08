@@ -6,7 +6,7 @@
   <title>Sazloop | Empresas y trabajadores</title>
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
-  <script src="negocio.js" defer></script>
+  <script src="negocio.js" type="module"></script>
 </head>
 <body>
   <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="index.html">Cambiar acceso</a></header>
@@ -88,14 +88,61 @@
         </div>
       </section>
     </section>
-    </section>
     <section id="panelTrabajador" hidden>
-      <p class="entradilla">Gestiona los recojos de tu establecimiento.</p>
+      <p class="entradilla">Publica packs y gestiona los recojos de tu establecimiento.</p>
       <p id="mensajeLocal" role="status" aria-live="polite"></p>
       <section id="cuentaLocal" class="panel" hidden>
         <h2>Mi establecimiento</h2>
         <p id="datosLocal"></p>
         <button id="salirLocal" type="button" class="secundario">Cerrar sesión</button>
+        <section class="gestion-ofertas" aria-labelledby="tituloPublicacion">
+          <h3 id="tituloPublicacion">Packs y ofertas</h3>
+          <p>Primero registra un pack. Después selecciona su número y publica una oferta con horario, precio y stock.</p>
+          <form id="formPack">
+            <h4>Registrar pack sorpresa</h4>
+            <label>Nombre <input name="nombre" maxlength="120" required></label>
+            <label>Descripción <textarea name="descripcion" rows="3" maxlength="500" required></textarea></label>
+            <label>Posibles productos <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
+            <label>Alérgenos, separados por comas <input name="alergenos" placeholder="Ej.: gluten, lácteos"></label>
+            <label>Restricciones alimentarias, separadas por comas <input name="restricciones" placeholder="Ej.: contiene carne"></label>
+            <button type="submit">Registrar pack</button>
+            <p id="resultadoPack" role="status" aria-live="polite"></p>
+          </form>
+          <form id="formOferta">
+            <h4>Publicar oferta</h4>
+            <p class="ayuda-formulario">Puedes usar el número del pack recién creado o el de uno registrado antes en este establecimiento.</p>
+            <label>Número del pack <input name="packId" type="number" min="1" step="1" required></label>
+            <label>Inicio del recojo <input name="inicioRecojo" type="datetime-local" required></label>
+            <label>Fin del recojo <input name="finRecojo" type="datetime-local" required></label>
+            <label>Límite definitivo de recojo <input name="limiteDefinitivo" type="datetime-local" required></label>
+            <p class="ayuda-formulario">El inicio debe ser futuro; el fin debe ser posterior al inicio y el límite definitivo posterior al fin. Solo puede haber una oferta activa por local.</p>
+            <div class="variantes-oferta" aria-label="Tamaños, precios y stock">
+              <fieldset class="variante-oferta" data-tamanio="PEQUENO">
+                <legend>Pequeño</legend>
+                <label class="seleccion-variante"><input name="activo" type="checkbox" checked> Incluir este tamaño</label>
+                <label>Precio referencial (S/) <input name="precioReferencial" type="number" min="0.01" step="0.01" required></label>
+                <label>Precio con descuento (S/) <input name="precioDescuento" type="number" min="0.01" step="0.01" required></label>
+                <label>Unidades disponibles <input name="stock" type="number" min="1" step="1" required></label>
+              </fieldset>
+              <fieldset class="variante-oferta" data-tamanio="MEDIANO">
+                <legend>Mediano</legend>
+                <label class="seleccion-variante"><input name="activo" type="checkbox"> Incluir este tamaño</label>
+                <label>Precio referencial (S/) <input name="precioReferencial" type="number" min="0.01" step="0.01" disabled></label>
+                <label>Precio con descuento (S/) <input name="precioDescuento" type="number" min="0.01" step="0.01" disabled></label>
+                <label>Unidades disponibles <input name="stock" type="number" min="1" step="1" disabled></label>
+              </fieldset>
+              <fieldset class="variante-oferta" data-tamanio="GRANDE">
+                <legend>Grande</legend>
+                <label class="seleccion-variante"><input name="activo" type="checkbox"> Incluir este tamaño</label>
+                <label>Precio referencial (S/) <input name="precioReferencial" type="number" min="0.01" step="0.01" disabled></label>
+                <label>Precio con descuento (S/) <input name="precioDescuento" type="number" min="0.01" step="0.01" disabled></label>
+                <label>Unidades disponibles <input name="stock" type="number" min="1" step="1" disabled></label>
+              </fieldset>
+            </div>
+            <button type="submit">Publicar oferta</button>
+            <p id="resultadoOferta" role="status" aria-live="polite"></p>
+          </form>
+        </section>
         <form id="consultarRecojo">
           <h3>Verificar un código de recojo</h3>
           <label>Código <input name="codigo" required></label>

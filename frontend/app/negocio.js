@@ -1,10 +1,114 @@
-import { solicitar, el, dinero } from './comun.js';
+import { solicitar, el, dinero, fechaHora } from './comun.js';
 
 const empresa = document.querySelector('#panelEmpresa');
 const trabajador = document.querySelector('#panelTrabajador');
 const cuenta = document.querySelector('#cuentaLocal');
 const resultado = document.querySelector('#resultadoRecojo');
 let codigoConsultado = null;
+const formPack = document.querySelector('#formPack');
+const formOferta = document.querySelector('#formOferta');
+
+function estado(zona, mensaje, esError = false) {
+  zona.textContent = mensaje;
+  zona.className = esError ? 'error' : 'ok';
+}
+
+function listaSeparada(valor, maximo) {
+  const nombres = valor.split(',').map(nombre => nombre.trim()).filter(Boolean);
+  if (nombres.some(nombre => nombre.length > maximo)) {
+    throw new Error(`Cada nombre de esta lista debe tener como máximo ${maximo} caracteres.`);
+  }
+  return nombres;
+}
+
+formPack.addEventListener('submit', async evento => {
+  evento.preventDefault();
+  const boton = formPack.querySelector('button[type="submit"]');
+  const resultadoPack = document.querySelector('#resultadoPack');
+  boton.disabled = true;
+  estado(resultadoPack, '');
+  try {
+    const datos = new FormData(formPack);
+    const nombre = datos.get('nombre').trim();
+    const pack = await solicitar('/local/packs', {
+      method: 'POST',
+      body: JSON.stringify({
+        nombre,
+        descripcion: datos.get('descripcion').trim(),
+        posiblesProductos: datos.get('posiblesProductos').trim(),
+        alergenos: listaSeparada(datos.get('alergenos'), 80),
+        restricciones: listaSeparada(datos.get('restricciones'), 100)
+      })
+    });
+    formPack.reset();
+    formOferta.elements.packId.value = pack.id;
+    estado(resultadoPack, `Pack «${nombre}» registrado con el número ${pack.id}. Ya puedes publicar su oferta.`);
+  } catch (error) { estado(resultadoPack, error.message, true); }
+  finally { boton.disabled = false; }
+});
+
+for (const grupo of formOferta.querySelectorAll('.variante-oferta')) {
+  const incluir = grupo.querySelector('[name="activo"]');
+  incluir.addEventListener('change', () => {
+    for (const campo of grupo.querySelectorAll('input:not([name="activo"])')) {
+      campo.disabled = !incluir.checked;
+      campo.required = incluir.checked;
+    }
+  });
+}
+
+formOferta.addEventListener('submit', async evento => {
+  evento.preventDefault();
+  const boton = formOferta.querySelector('button[type="submit"]');
+  const resultadoOferta = document.querySelector('#resultadoOferta');
+  estado(resultadoOferta, '');
+  const datos = new FormData(formOferta);
+  const inicioRecojo = datos.get('inicioRecojo');
+  const finRecojo = datos.get('finRecojo');
+  const limiteDefinitivo = datos.get('limiteDefinitivo');
+  const variantes = [...formOferta.querySelectorAll('.variante-oferta')]
+    .filter(grupo => grupo.querySelector('[name="activo"]').checked)
+    .map(grupo => ({
+      tamanio: grupo.dataset.tamanio,
+      precioReferencial: grupo.querySelector('[name="precioReferencial"]').value,
+      precioDescuento: grupo.querySelector('[name="precioDescuento"]').value,
+      stock: Number(grupo.querySelector('[name="stock"]').value)
+    }));
+  if (!variantes.length) {
+    estado(resultadoOferta, 'Selecciona al menos un tamaño para publicar.', true);
+    return;
+  }
+  if (variantes.some(v => Number(v.precioDescuento) >= Number(v.precioReferencial))) {
+    estado(resultadoOferta, 'El precio con descuento debe ser menor que el referencial en cada tamaño.', true);
+    return;
+  }
+  if (!(new Date(inicioRecojo) > new Date() &&
+        new Date(finRecojo) > new Date(inicioRecojo) &&
+        new Date(limiteDefinitivo) > new Date(finRecojo))) {
+    estado(resultadoOferta, 'Revisa el horario: inicio futuro, fin posterior y límite definitivo después del fin.', true);
+    return;
+  }
+  boton.disabled = true;
+  try {
+    const oferta = await solicitar('/local/ofertas', {
+      method: 'POST',
+      body: JSON.stringify({
+        packId: Number(datos.get('packId')),
+        inicioRecojo, finRecojo, limiteDefinitivo, variantes
+      })
+    });
+    resultadoOferta.className = 'ok';
+    resultadoOferta.replaceChildren(
+      `Oferta ${oferta.id} publicada. `,
+      el('a', { href: 'catalogo.html', textContent: 'Ver catálogo para comprar con una cuenta de consumidor' })
+    );
+  } catch (error) {
+    const mensaje = error.status === 409 ? 'Este local ya tiene una oferta activa. Espera a que termine antes de publicar otra.'
+      : error.status === 404 ? 'No se encontró ese pack en este establecimiento. Revisa el número.'
+      : error.message;
+    estado(resultadoOferta, mensaje, true);
+  } finally { boton.disabled = false; }
+});
 
 function modo(esTrabajador) {
   empresa.hidden = esTrabajador;
@@ -49,7 +153,10 @@ document.querySelector('#consultarRecojo').addEventListener('submit', async even
     resultado.append(
       el('h4', { textContent: 'Compra encontrada' }),
       el('p', { textContent: `Estado: ${compra.estado} · Total: ${dinero(compra.total)}` }),
-      el('button', { type: 'button', textContent: 'Confirmar recojo', onclick: confirmarRecojo })
+      el('p', { textContent: `Recojo: ${fechaHora(compra.inicioRecojo)} a ${fechaHora(compra.finRecojo)}` }),
+      ...(compra.estado === 'CONFIRMADA'
+        ? [el('button', { type: 'button', textContent: 'Confirmar recojo', onclick: confirmarRecojo })]
+        : [el('p', { textContent: 'Esta compra no tiene un recojo pendiente.' })])
     );
   } catch (error) { resultado.textContent = error.message; }
 });
