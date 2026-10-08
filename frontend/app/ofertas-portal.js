@@ -22,6 +22,12 @@ function horarioRecojo(o) {
   return `Recojo ${fechaBreve(o.inicioRecojo)} · ${hora(o.inicioRecojo)} – ${otroDia ? `${fechaBreve(o.finRecojo)} · ` : ''}${hora(o.finRecojo)}`;
 }
 
+function horarioRecojoDestacado(o) {
+  const texto = horarioRecojo(o);
+  const separador = texto.indexOf(' · ');
+  return [el('strong', { textContent: texto.slice(0, separador) }), texto.slice(separador)];
+}
+
 function nombreDestacado(nombre) {
   const espacio = nombre.indexOf(' ');
   return espacio < 0 ? [nombre] : [nombre.slice(0, espacio), ' ', el('em', { textContent: nombre.slice(espacio + 1) })];
@@ -152,10 +158,10 @@ export function iniciarOfertas(usuario, limite = null) {
               ' ', el('s', { textContent: dinero(v.precioReferencial) })),
             el('small', { textContent: `${v.stockDisponible} disponibles` })),
           el('div', { className: 'detalle-cantidad' },
-            el('button', { type: 'button', className: 'detalle-cantidad-boton', ariaLabel: `Quitar una unidad de ${tamanios[v.tamanio] || v.tamanio}`, textContent: '−', disabled: v.stockDisponible === 0,
+            el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-menos', ariaLabel: `Quitar una unidad de ${tamanios[v.tamanio] || v.tamanio}`, disabled: v.stockDisponible === 0,
               onclick: () => { campo.value = Math.max(0, Math.min(v.stockDisponible, Math.trunc(Number(campo.value) || 0) - 1)); actualizarTotal(); } }),
             campo,
-            el('button', { type: 'button', className: 'detalle-cantidad-boton', ariaLabel: `Añadir una unidad de ${tamanios[v.tamanio] || v.tamanio}`, textContent: '+', disabled: v.stockDisponible === 0,
+            el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-mas', ariaLabel: `Añadir una unidad de ${tamanios[v.tamanio] || v.tamanio}`, disabled: v.stockDisponible === 0,
               onclick: () => { campo.value = Math.min(v.stockDisponible, Math.max(0, Math.trunc(Number(campo.value) || 0)) + 1); actualizarTotal(); } })));
         return fila;
       });
@@ -204,21 +210,23 @@ export function iniciarOfertas(usuario, limite = null) {
       botonAgregar.setAttribute('form', form.id);
       detalle.replaceChildren(
         el('div', { className: 'detalle-visual' },
-          el('span', { className: 'detalle-etiqueta', textContent: 'PACK SORPRESA' }),
+          el('span', { className: 'detalle-etiqueta', textContent: o.calificacion != null ? `★  ${Number(o.calificacion).toFixed(1)}` : 'Sin calificaciones' }),
           el('span', { className: 'detalle-visual-marca', ariaHidden: 'true', textContent: '✳' }),
-          el('button', { type: 'button', className: 'detalle-cerrar', ariaLabel: 'Cerrar detalle', textContent: '×', onclick: () => detalle.close() })),
+          el('button', { type: 'button', className: 'detalle-cerrar', ariaLabel: 'Cerrar detalle', onclick: () => detalle.close() })),
         el('div', { className: 'detalle-cuerpo' },
           el('h2', { id: 'detalle-titulo' }, ...nombreDestacado(o.pack)),
-          el('p', { className: 'detalle-meta' }, iconoDato('ubicacion'), el('strong', { textContent: o.establecimiento }), ` · ${o.direccion}, ${o.distrito}`),
-          el('p', { className: 'detalle-meta' }, iconoDato('reloj'), horarioRecojo(o)),
           o.descripcion ? el('p', { className: 'detalle-descripcion', textContent: o.descripcion }) : null,
+          el('p', { className: 'detalle-meta' }, iconoDato('ubicacion'), el('strong', { textContent: o.establecimiento }), ` · ${o.direccion}, ${o.distrito}`),
+          el('p', { className: 'detalle-meta' }, iconoDato('reloj'), ...horarioRecojoDestacado(o)),
           el('section', { className: 'detalle-posibles' },
             el('span', { className: 'pack-dato-etiqueta', textContent: 'LA SORPRESA DEL DÍA · PODRÍA INCLUIR' }),
             el('p', { textContent: o.posiblesProductos })),
           o.alergenos.length ? el('section', { className: 'detalle-alergenos' },
             el('h3', { textContent: 'ALÉRGENOS' }),
             el('div', { className: 'detalle-chips' }, ...o.alergenos.map(nombre => el('span', { className: 'detalle-chip', textContent: nombre }))),
-            el('p', { textContent: 'Si tienes alergia o intolerancia a alguno de estos alérgenos, este pack no es para ti.' })) : null,
+            el('p', { className: 'detalle-aviso-alergenos' },
+              el('span', { className: 'detalle-info-icono', ariaHidden: 'true', textContent: 'i' }),
+              'Si tienes alergia o intolerancia a alguno de estos alérgenos, este pack no es para ti.')) : null,
           estadosDieta.length || otrasRestricciones.length ? el('section', { className: 'detalle-dieta' },
             el('h3', { textContent: 'DIETA' }),
             ...estadosDieta.map(([apto, texto]) => el('p', {},
