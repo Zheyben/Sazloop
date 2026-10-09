@@ -1,25 +1,40 @@
-import { solicitar, el } from './comun.js';
+import { solicitar, el, aviso } from './comun.js';
+import { actualizarCampana } from './portal.js';
 
-const volver = document.querySelector('#volver');
-const params = new URLSearchParams(location.search);
-if (params.get('origen') === 'empresa') volver.href = 'negocio.html#empresa';
-const lista = document.querySelector('#avisos');
-const mensaje = document.querySelector('#mensaje');
-try {
-  const avisos = await solicitar('/notificaciones');
-  if (!avisos.length) mensaje.textContent = 'No tienes notificaciones.';
-  for (const aviso of avisos) {
-    const boton = el('button', { type: 'button', textContent: 'Marcar como leída' });
-    boton.hidden = aviso.leida;
-    boton.addEventListener('click', async () => {
-      try {
-        await solicitar(`/notificaciones/${aviso.id}/leer`, { method: 'POST' });
-        boton.hidden = true;
-      } catch (error) { mensaje.textContent = error.message; }
-    });
-    lista.append(el('li', {},
-      el('strong', { textContent: aviso.titulo }),
-      el('p', { textContent: aviso.mensaje }),
-      el('small', { textContent: new Date(aviso.fecha).toLocaleString('es-PE') }), boton));
-  }
-} catch { location.replace('acceso.html'); }
+export function montarNotificaciones() {
+  cargar();
+}
+
+async function cargar() {
+  const zona = document.querySelector('#avisos-consumidor');
+  try {
+    const avisos = await solicitar('/notificaciones');
+    if (!zona.isConnected) return;
+    actualizarCampana(avisos);
+    if (!avisos.length) {
+      zona.replaceChildren(el('div', { className: 'estado-vacio' },
+        el('p', { textContent: 'No tienes notificaciones.' }),
+        el('p', { textContent: 'Al confirmar una compra recibirás aquí el recordatorio de recojo con tu código.' })));
+      return;
+    }
+    zona.replaceChildren(
+      avisos.some(a => !a.leida) ? el('div', { className: 'avisos-acciones' },
+        el('button', { type: 'button', className: 'secundario', textContent: 'Marcar todas como leídas',
+          onclick: () => marcar('/notificaciones/leer-todas') })) : null,
+      el('ul', { className: 'lista-avisos' }, ...avisos.map(a => el('li', { className: `aviso-item${a.leida ? '' : ' no-leida'}` },
+        el('strong', { textContent: a.titulo }),
+        el('p', { textContent: a.mensaje }),
+        el('div', { className: 'pie-aviso' },
+          el('span', { textContent: new Date(a.fecha).toLocaleString('es-PE', { dateStyle: 'medium', timeStyle: 'short' }) }),
+          a.leida ? null : el('button', { type: 'button', className: 'secundario', textContent: 'Marcar como leída',
+            onclick: () => marcar(`/notificaciones/${a.id}/leer`) }))))));
+    aviso('');
+  } catch (error) { if (zona.isConnected) aviso(error.message, true); }
+}
+
+async function marcar(ruta) {
+  try {
+    await solicitar(ruta, { method: 'POST' });
+    await cargar();
+  } catch (error) { aviso(error.message, true); }
+}

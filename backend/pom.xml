@@ -108,6 +108,17 @@
         </dependency>
 
         <!--
+            CONSOLA WEB DE H2 (solo perfil dev)
+            Desde Spring Boot 4 la consola es un módulo aparte; habilita
+            http://localhost:8080/h2-console para revisar los datos en memoria.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
             SPRING BOOT STARTER TEST
             Herramientas de prueba: JUnit 5, Mockito, AssertJ.
             scope test: solo se usa al ejecutar pruebas.

@@ -10,6 +10,7 @@ const trazos = {
   productos: 'M4 8h16v13H4z M3 8l2-5h14l2 5 M12 8v13',
   compras: 'M3 10h18l-2 10H5L3 10Z M7 10l4-7 M17 10l-4-7 M8 14v3 M12 14v3 M16 14v3',
   perfil: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M4 21v-2a8 8 0 0 1 16 0v2',
+  campana: 'M6 16V11a6 6 0 1 1 12 0v5l2 2H4z M10 20a2 2 0 0 0 4 0',
   salir: 'M10 4H5v16h5 M14 7l5 5-5 5 M19 12H9',
   flecha: 'M5 12h14m-6-6 6 6-6 6'
 };
@@ -61,8 +62,17 @@ export function guardarCarrito(usuarioId, pedidos) {
   }
 }
 
+/** Muestra en la campana cuántas notificaciones siguen sin leer. */
+export function actualizarCampana(avisos) {
+  const contador = document.querySelector('#contador-avisos');
+  if (!contador) return;
+  const pendientes = avisos.filter(aviso => !aviso.leida).length;
+  contador.textContent = pendientes ? String(pendientes) : '';
+  contador.hidden = !pendientes;
+}
+
 export function actualizarNav(activa) {
-  document.querySelectorAll('.portal-enlaces a').forEach(enlace => {
+  document.querySelectorAll('.portal-enlaces a, .portal-campana').forEach(enlace => {
     if (new URL(enlace.href).pathname.endsWith('/' + activa)) enlace.setAttribute('aria-current', 'page');
     else enlace.removeAttribute('aria-current');
   });
@@ -96,10 +106,14 @@ export async function iniciarPortal(activa) {
     el('div', { className: 'menu-perfil' },
       el('a', { href: 'perfil.html' }, icono('perfil'), 'Mi perfil'),
       el('button', { type: 'button', id: 'salir' }, icono('salir'), 'Cerrar sesión')));
+  const campana = el('a', { href: 'notificaciones.html', className: 'portal-campana', ariaLabel: 'Notificaciones', title: 'Notificaciones' },
+    icono('campana'), el('span', { id: 'contador-avisos', className: 'contador-carrito', hidden: true }));
+  if (activa === 'notificaciones.html') campana.setAttribute('aria-current', 'page');
   nav.replaceChildren(el('div', { className: 'portal-barra' },
     el('a', { href: 'consumidor.html', className: 'portal-marca', ariaLabel: 'Sazloop, ir al inicio' },
       el('span', { className: 'marca-icono' }, simboloMarca()), 'Sazloop', el('span', { className: 'marca-punto', textContent: '.' })),
-    enlaces, perfil));
+    enlaces, el('div', { className: 'portal-derecha' }, campana, perfil)));
+  solicitar('/notificaciones').then(actualizarCampana).catch(() => { /* el contador es informativo */ });
   perfil.querySelector('#salir').addEventListener('click', async () => {
     try {
       await solicitar('/sesion', { method: 'DELETE' });

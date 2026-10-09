@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Portal del trabajador</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="panel.css">
+  <script type="module" src="trabajador.js"></script>
+</head>
+<body class="panel-app">
+  <header class="panel-barra">
+    <a class="panel-marca" href="../index.html" aria-label="Sazloop, ir al sitio público"><span class="marca-icono" data-icono="marca"></span>Sazloop<span class="marca-punto">.</span></a>
+    <div class="panel-titulo">
+      <p class="etiqueta">PORTAL DEL TRABAJADOR</p>
+      <h1 id="titulo-panel">Cargando establecimiento…</h1>
+    </div>
+    <div class="panel-acciones">
+      <button id="salir" type="button" class="secundario boton-salir" data-icono="salir"><span>Cerrar sesión</span></button>
+    </div>
+  </header>
+
+  <div class="panel-estructura">
+    <nav class="panel-lateral" aria-label="Secciones del trabajador">
+      <button type="button" data-vista="vigente" data-icono="pack" aria-current="page">Pack sorpresa</button>
+      <button type="button" data-vista="crear" data-icono="crear">Crear nuevo pack</button>
+      <button type="button" data-vista="validar" data-icono="validar">Validar código</button>
+    </nav>
+
+    <main class="panel-contenido">
+      <p id="mensaje" role="status" aria-live="polite"></p>
+      <div id="aviso-suspension"></div>
+
+      <section data-panel-vista="vigente" aria-labelledby="titulo-vigente">
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">TU LOCAL HOY</p>
+            <h2 id="titulo-vigente">Pack <em>sorpresa.</em></h2>
+            <p>Consulta el pack publicado, el stock disponible y lo que va ganando el local.</p>
+          </div>
+        </div>
+        <div class="cifras" id="cifras-stock"></div>
+        <div class="seccion-panel">
+          <h3>Ganancias y unidades sin vender</h3>
+          <div class="periodos" id="periodos"></div>
+          <p class="nota">Ganancia neta: pedidos entregados menos la comisión de Sazloop (10 %). Unidades sin vender: lo que quedó al cerrar cada oferta. Se calcula con la hora de Perú; la semana va de lunes a domingo.</p>
+        </div>
+        <div class="seccion-panel" id="pack-vigente"></div>
+      </section>
+
+      <section data-panel-vista="crear" aria-labelledby="titulo-crear" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">PUBLICAR</p>
+            <h2 id="titulo-crear">Crear nuevo <em>pack.</em></h2>
+            <p>Completa los tres pasos. El pack se publica al final y queda visible para los consumidores.</p>
+          </div>
+        </div>
+        <div id="aviso-publicacion"></div>
+        <ol class="pasos" aria-label="Pasos para publicar">
+          <li data-paso="0" aria-current="step"><span>Contenido</span></li>
+          <li data-paso="1"><span>Tamaños y precios</span></li>
+          <li data-paso="2"><span>Horario y revisión</span></li>
+        </ol>
+        <form id="form-pack" class="formulario-panel" novalidate>
+          <fieldset class="paso-formulario" data-paso="0">
+            <fieldset class="opciones-radio" id="origen-pack">
+              <legend>¿Qué pack vas a publicar?</legend>
+              <label class="opcion"><input type="radio" name="origen" value="nuevo" checked> Un pack nuevo</label>
+              <label class="opcion"><input type="radio" name="origen" value="existente"> Un pack ya registrado</label>
+            </fieldset>
+            <div id="pack-existente" hidden>
+              <div class="campos" style="margin-top:1rem">
+                <label>Pack registrado <select name="packId"></select>
+                  <span class="ayuda">Se reutilizan su descripción, alérgenos y opciones de dieta.</span></label>
+              </div>
+            </div>
+            <div id="pack-nuevo">
+              <div class="campos" style="margin-top:1rem">
+                <label class="ancho-completo">Nombre del pack <input name="nombre" maxlength="120" required placeholder="Ej.: Pack panadería del día"></label>
+                <label class="ancho-completo">Descripción <textarea name="descripcion" rows="2" maxlength="500" required placeholder="Cuenta brevemente qué tipo de excedentes ofreces"></textarea></label>
+                <label class="ancho-completo">Podría incluir <textarea name="posiblesProductos" rows="2" maxlength="1000" required placeholder="Ej.: pan de molde, croissants, empanadas"></textarea>
+                  <span class="ayuda">El contenido exacto sigue siendo sorpresa.</span></label>
+              </div>
+              <fieldset class="grupo">
+                <legend>Alérgenos</legend>
+                <p class="ayuda">Marca solo los que pueden estar presentes; el consumidor verá únicamente estos.</p>
+                <div class="chips" id="alergenos"></div>
+                <label style="margin-top:.8rem; max-width:340px">Otro alérgeno (opcional) <input name="otroAlergeno" maxlength="80"></label>
+              </fieldset>
+              <fieldset class="grupo">
+                <legend>Dieta</legend>
+                <p class="ayuda">Si no marcas una opción, se mostrará como «No apto».</p>
+                <div class="opciones-dieta">
+                  <label class="opcion"><input type="checkbox" name="aptoVegetarianos"> Apto para vegetarianos</label>
+                  <label class="opcion"><input type="checkbox" name="aptoVeganos"> Apto para veganos</label>
+                  <label class="opcion"><input type="checkbox" name="aptoCeliacos"> Apto para personas con celiaquía</label>
+                </div>
+              </fieldset>
+            </div>
+          </fieldset>
+
+          <fieldset class="paso-formulario" data-paso="1" hidden>
+            <p class="ayuda" style="margin:0 0 1rem">Incluye al menos un tamaño. El precio con descuento debe ser menor que el regular.</p>
+            <div class="variantes" id="variantes"></div>
+          </fieldset>
+
+          <fieldset class="paso-formulario" data-paso="2" hidden>
+            <div class="campos">
+              <label>Inicio del recojo <input name="inicioRecojo" type="datetime-local" required></label>
+              <label>Fin del recojo <input name="finRecojo" type="datetime-local" required>
+                <span class="ayuda">Es el único límite: después ya no se entrega ni se cancela.</span></label>
+            </div>
+            <div class="tarjeta-panel" style="margin-top:1.2rem" id="resumen-publicacion"></div>
+          </fieldset>
+
+          <p id="estado-pack" class="estado-formulario" role="status" aria-live="polite"></p>
+          <div class="acciones-formulario">
+            <button type="button" class="secundario izquierda" id="paso-anterior" hidden>Atrás</button>
+            <button type="button" id="paso-siguiente">Siguiente</button>
+            <button type="submit" id="publicar" hidden>Publicar pack</button>
+          </div>
+        </form>
+      </section>
+
+      <section data-panel-vista="validar" aria-labelledby="titulo-validar" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">ENTREGAS</p>
+            <h2 id="titulo-validar">Validar <em>código.</em></h2>
+            <p>Escribe el código que te dicta el cliente para ver su pedido y confirmar la entrega o el cobro en efectivo.</p>
+          </div>
+        </div>
+        <form id="form-codigo" class="tarjeta-panel buscador-codigo">
+          <label>Código de recojo <input name="codigo" autocomplete="off" required maxlength="20" placeholder="Ej.: 3F9A1C2B7D4E5A6F"></label>
+          <button type="submit">Consultar</button>
+        </form>
+        <div id="resultado-codigo" class="resultado-codigo" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

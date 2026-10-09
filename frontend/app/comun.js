@@ -10,15 +10,20 @@ export async function solicitar(ruta, opciones = {}) {
     headers: { ...(esFormData || !opciones.body ? {} : { 'Content-Type': 'application/json' }), ...opciones.headers }
   });
   if (!r.ok) {
-    // El backend no envía mensaje de error, así que traducimos por código HTTP.
+    // Se muestra el motivo de negocio que envía el backend; si no hay uno útil, se traduce el código HTTP.
     const textos = {
       400: 'Revisa los datos ingresados.',
       401: 'Necesitas iniciar sesión para hacer esto.',
       403: 'No tienes permiso para esta acción.',
       404: 'No se encontró lo que buscabas.',
-      409: 'La operación no se pudo completar (por ejemplo, sin stock o ya existe).'
+      409: 'La operación no se pudo completar (por ejemplo, sin stock o ya existe).',
+      413: 'El archivo supera el tamaño permitido.'
     };
-    const error = new Error(textos[r.status] || 'Ocurrió un error inesperado. Intenta de nuevo.');
+    let motivo = '';
+    try { motivo = (await r.json())?.message || ''; } catch { /* respuesta sin cuerpo JSON */ }
+    const util = motivo && r.status < 500 && motivo !== 'No message available'
+      && !/^(\d{3} [A-Z_]+$|Validation failed|Bad Request|Not Found|Conflict|Unauthorized|Forbidden|Required)/i.test(motivo);
+    const error = new Error(util ? motivo : textos[r.status] || 'Ocurrió un error inesperado. Intenta de nuevo.');
     error.status = r.status;
     throw error;
   }

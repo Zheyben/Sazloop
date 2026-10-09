@@ -87,7 +87,7 @@ ingresoPersonal?.addEventListener('submit', evento => {
     const url = new URL(continuar, location.origin);
     if (url.origin === location.origin && url.pathname === '/app/qr.html') destino = url.pathname + url.search;
   }
-  enviar(ingresoPersonal, '/api/sesion', rol === 'empresa' ? 'negocio.html#empresa' : destino);
+  enviar(ingresoPersonal, '/api/sesion', rol === 'empresa' ? 'empresa.html' : destino);
 });
 registroPersonal?.addEventListener('submit', evento => {
   evento.preventDefault();
@@ -95,7 +95,7 @@ registroPersonal?.addEventListener('submit', evento => {
 });
 ingresoTrabajador?.addEventListener('submit', evento => {
   evento.preventDefault();
-  enviar(ingresoTrabajador, '/api/local/sesion', 'negocio.html#trabajador');
+  enviar(ingresoTrabajador, '/api/local/sesion', 'trabajador.html');
 });
 ingresoAdmin?.addEventListener('submit', evento => {
   evento.preventDefault();

@@ -4,12 +4,14 @@ import { montarCatalogo } from './catalogo.js';
 import { montarCompras } from './compras.js';
 import { avisarResenasPendientes } from './resenas-portal.js';
 import { montarPerfil } from './perfil.js';
+import { montarNotificaciones } from './notificaciones.js';
 
 const vistas = new Map([
   ['consumidor.html', montarInicio],
   ['catalogo.html', montarCatalogo],
   ['compras.html', montarCompras],
-  ['perfil.html', montarPerfil]
+  ['perfil.html', montarPerfil],
+  ['notificaciones.html', montarNotificaciones]
 ]);
 const paginaInicial = location.pathname.split('/').pop();
 const usuario = await iniciarPortal(paginaInicial);

@@ -1,9 +1,23 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sazloop | Notificaciones</title><script type="module" src="notificaciones.js"></script></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Notificaciones</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal.css">
+  <script type="module" src="portal-main.js"></script>
+</head>
 <body>
-  <header><a id="volver" href="consumidor.html">Volver</a></header>
-  <main><h1>Notificaciones</h1><p id="mensaje" role="status"></p><ul id="avisos"></ul></main>
+  <header id="portal-nav" class="portal-cabecera"></header>
+  <main class="portal-principal">
+    <section class="titulo-pagina">
+      <p class="etiqueta">TU ESPACIO</p>
+      <h1>Mis <em>notificaciones.</em></h1>
+      <p>Recordatorios de recojo de cada compra y cambios en tus pedidos.</p>
+    </section>
+    <p id="mensaje" role="status" aria-live="polite"></p>
+    <div id="avisos-consumidor" aria-live="polite"></div>
+  </main>
 </body>
 </html>

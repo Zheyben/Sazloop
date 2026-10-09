@@ -214,6 +214,18 @@
 .perfil-datos dl div { padding: .8rem 0; border-top: 1px solid var(--borde); }
 .perfil-datos dt { color: var(--secundario); font-size: .83rem; }
 .perfil-datos dd { margin: .2rem 0 0; color: var(--bosque); font-weight: 700; overflow-wrap: anywhere; }
+.portal-derecha { display: flex; align-items: center; gap: .45rem; justify-self: end; }
+.portal-campana { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--bosque); }
+.portal-campana:hover, .portal-campana[aria-current="page"] { background: var(--menta); }
+.portal-campana .contador-carrito { position: absolute; top: 1px; right: -2px; }
+.avisos-acciones { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
+.lista-avisos { display: grid; gap: .8rem; margin: 0; padding: 0; list-style: none; }
+.aviso-item { display: grid; gap: .35rem; padding: 1.15rem 1.3rem; border: 1px solid var(--borde); border-radius: 1.1rem; background: var(--marfil); }
+.aviso-item.no-leida { border-color: #c9d9b3; background: #f6faef; box-shadow: inset 4px 0 0 var(--hoja); }
+.aviso-item strong { color: var(--bosque); font: 400 1.3rem/1.25 var(--serif); }
+.aviso-item p { margin: 0; overflow-wrap: anywhere; }
+.pie-aviso { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; color: var(--secundario); font-size: .82rem; }
+.pie-aviso button, .avisos-acciones button { min-height: 38px; padding: .4rem .9rem; font-size: .84rem; }
 @media (max-width: 1000px) {
   .filtros-portal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .filtros-portal .filtro-cercania { grid-column: 1; }

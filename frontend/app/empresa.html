@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Portal de empresa</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="panel.css">
+  <script type="module" src="empresa.js"></script>
+</head>
+<body class="panel-app">
+  <header class="panel-barra">
+    <a class="panel-marca" href="../index.html" aria-label="Sazloop, ir al sitio público"><span class="marca-icono" data-icono="marca"></span>Sazloop<span class="marca-punto">.</span></a>
+    <div class="panel-titulo">
+      <p class="etiqueta">PORTAL DE EMPRESA</p>
+      <h1 id="titulo-panel">Tu empresa</h1>
+    </div>
+    <div class="panel-acciones">
+      <a href="consumidor.html" title="Usa la misma cuenta para comprar packs">Comprar packs</a>
+      <span id="nombre-usuario" class="panel-usuario"></span>
+      <button id="salir" type="button" class="secundario boton-salir" data-icono="salir"><span>Cerrar sesión</span></button>
+    </div>
+  </header>
+
+  <div class="panel-estructura">
+    <nav class="panel-lateral" aria-label="Secciones de la empresa" hidden>
+      <button type="button" data-vista="resumen" data-icono="resumen" aria-current="page">Resumen</button>
+      <button type="button" data-vista="locales" data-icono="locales">Mis locales</button>
+      <button type="button" data-vista="avisos" data-icono="campana">Notificaciones <span class="contador" id="contador-avisos"></span></button>
+    </nav>
+
+    <main class="panel-contenido">
+      <p id="mensaje" role="status" aria-live="polite"></p>
+
+      <section data-panel-vista="registro" aria-labelledby="titulo-registro" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">PRIMER PASO</p>
+            <h2 id="titulo-registro">Registra tu <em>empresa.</em></h2>
+            <p>Con tu misma cuenta puedes administrar una empresa y sus establecimientos. Después registrarás cada local y presentarás sus documentos.</p>
+          </div>
+        </div>
+        <form id="form-empresa" class="formulario-panel">
+          <div class="campos">
+            <label>Razón social <input name="razonSocial" maxlength="150" required autocomplete="organization"></label>
+            <label>Nombre comercial <input name="nombreComercial" maxlength="120" required></label>
+            <label>RUC <input name="ruc" inputmode="numeric" pattern="[0-9]{11}" maxlength="11" required>
+              <span class="ayuda">Once dígitos, sin espacios.</span></label>
+          </div>
+          <p class="estado-formulario" role="status"></p>
+          <div class="acciones-formulario"><button type="submit">Registrar empresa</button></div>
+        </form>
+      </section>
+
+      <section data-panel-vista="resumen" aria-labelledby="titulo-resumen" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">TU EMPRESA</p>
+            <h2 id="titulo-resumen">Resumen <em>general.</em></h2>
+            <p>Ventas, comisiones, ingresos e impacto de todos tus locales, con el detalle de cada uno.</p>
+          </div>
+          <button type="button" class="secundario" id="actualizar-resumen">Actualizar</button>
+        </div>
+        <div id="alertas-resumen"></div>
+        <div class="cifras" id="cifras-empresa"></div>
+        <div class="seccion-panel">
+          <h3>Detalle por establecimiento</h3>
+          <div id="tabla-indicadores"></div>
+          <p class="nota">Ventas: reservas pagadas (incluye las que aún no se recogen); las cancelaciones se informan aparte. Comisión de Sazloop: 10 % de lo que queda cobrado; en una cancelación se calcula sobre el 50 % retenido. Impacto: número de packs efectivamente entregados; los kilos de alimento y el CO₂ evitado se mostrarán cuando se apruebe una fórmula de cálculo.</p>
+        </div>
+      </section>
+
+      <section data-panel-vista="locales" aria-labelledby="titulo-locales" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">ESTABLECIMIENTOS</p>
+            <h2 id="titulo-locales">Mis <em>locales.</em></h2>
+            <p>Cada local se aprueba por separado y tiene su propia cuenta para el personal.</p>
+          </div>
+          <button type="button" id="nuevo-local">Agregar local</button>
+        </div>
+        <form id="form-local" class="formulario-panel" hidden>
+          <h3 style="margin-top:0">Nuevo establecimiento</h3>
+          <div class="campos">
+            <label>Nombre del local <input name="nombre" maxlength="120" required></label>
+            <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
+            <label class="ancho-completo">Descripción <input name="descripcion" maxlength="500" placeholder="Opcional"></label>
+            <label>Distrito <input name="distrito" maxlength="80" required placeholder="Ej.: Miraflores"></label>
+            <label>Dirección <input name="direccionLinea" maxlength="180" required placeholder="Ej.: Av. Larco"></label>
+            <label>Número <input name="numero" maxlength="20"></label>
+            <label>Referencia <input name="referencia" maxlength="250"></label>
+            <label>Provincia <input name="provincia" maxlength="80" value="Lima" required></label>
+            <label>Departamento <input name="departamento" maxlength="80" value="Lima" required></label>
+            <label>Código postal <input name="codigoPostal" maxlength="10"></label>
+          </div>
+          <p class="estado-formulario" role="status"></p>
+          <div class="acciones-formulario">
+            <button type="button" class="secundario" id="cancelar-local">Cancelar</button>
+            <button type="submit">Guardar local</button>
+          </div>
+        </form>
+        <div id="lista-locales" class="lista-tarjetas" style="margin-top:1rem"></div>
+      </section>
+
+      <section data-panel-vista="locales:detalle" aria-live="polite" hidden></section>
+
+      <section data-panel-vista="avisos" aria-labelledby="titulo-avisos" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">AVISOS</p>
+            <h2 id="titulo-avisos">Tus <em>notificaciones.</em></h2>
+            <p>Resultados de tus solicitudes, documentos por vencer y suspensiones.</p>
+          </div>
+        </div>
+        <div id="lista-avisos"></div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

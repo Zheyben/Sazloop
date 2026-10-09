@@ -5,21 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sazloop | Administración</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="panel.css">
   <script type="module" src="administrador.js"></script>
 </head>
-<body>
-  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="index.html">Cambiar acceso</a></header>
-  <main class="pagina-acceso">
-    <p class="etiqueta">ACCESO DE ADMINISTRACIÓN</p>
-    <h1>Solicitudes <em>de los locales.</em></h1>
-    <p id="mensaje" role="status" aria-live="polite"></p>
-    <section id="panelAdmin" class="panel" hidden>
-      <h2>Bienvenido, <span id="nombreAdmin"></span></h2>
-      <button id="salirAdmin" type="button" class="secundario">Cerrar sesión</button>
-      <h3>Solicitudes pendientes</h3>
-      <div id="solicitudesAdmin" class="grid" aria-live="polite"></div>
-      <section id="detalleSolicitud" hidden aria-live="polite"></section>
-    </section>
-  </main>
+<body class="panel-app">
+  <header class="panel-barra">
+    <a class="panel-marca" href="../index.html" aria-label="Sazloop, ir al sitio público"><span class="marca-icono" data-icono="marca"></span>Sazloop<span class="marca-punto">.</span></a>
+    <div class="panel-titulo">
+      <p class="etiqueta">ADMINISTRACIÓN DE LA PLATAFORMA</p>
+      <h1>Revisión de locales</h1>
+    </div>
+    <div class="panel-acciones">
+      <span id="nombre-admin" class="panel-usuario"></span>
+      <button id="salir" type="button" class="secundario boton-salir" data-icono="salir"><span>Cerrar sesión</span></button>
+    </div>
+  </header>
+
+  <div class="panel-estructura">
+    <nav class="panel-lateral" aria-label="Secciones de administración">
+      <button type="button" data-vista="solicitudes" data-icono="solicitudes" aria-current="page">Solicitudes <span class="contador" id="contador-solicitudes"></span></button>
+      <button type="button" data-vista="establecimientos" data-icono="edificio">Establecimientos</button>
+    </nav>
+
+    <main class="panel-contenido">
+      <p id="mensaje" role="status" aria-live="polite"></p>
+
+      <section data-panel-vista="solicitudes" aria-labelledby="titulo-solicitudes">
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">POR REVISAR</p>
+            <h2 id="titulo-solicitudes">Solicitudes <em>pendientes.</em></h2>
+            <p>Afiliaciones de locales nuevos y renovaciones de documentos vencidos o por vencer. Revisa cada documento antes de decidir.</p>
+          </div>
+        </div>
+        <div id="lista-solicitudes" class="lista-tarjetas"></div>
+      </section>
+
+      <section data-panel-vista="solicitudes:detalle" aria-live="polite" hidden></section>
+
+      <section data-panel-vista="establecimientos" aria-labelledby="titulo-establecimientos" hidden>
+        <div class="vista-encabezado">
+          <div>
+            <p class="etiqueta">PLATAFORMA</p>
+            <h2 id="titulo-establecimientos">Todos los <em>locales.</em></h2>
+            <p>Estado de cada local. Los suspendidos muestran el documento vencido que originó la suspensión.</p>
+          </div>
+        </div>
+        <fieldset class="opciones-radio" id="filtro-estado" style="margin:0 0 1rem">
+          <legend>Mostrar</legend>
+          <label class="opcion"><input type="radio" name="estado" value="" checked> Todos</label>
+          <label class="opcion"><input type="radio" name="estado" value="ACTIVO"> Activos</label>
+          <label class="opcion"><input type="radio" name="estado" value="SUSPENDIDO"> Suspendidos</label>
+          <label class="opcion"><input type="radio" name="estado" value="PENDIENTE_APROBACION"> Pendientes</label>
+        </fieldset>
+        <div id="tabla-establecimientos"></div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
