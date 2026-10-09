@@ -4,6 +4,7 @@ import com.sazloop.afiliacion.domain.DocumentoEstablecimiento;
 import com.sazloop.afiliacion.domain.DocumentoEstablecimiento.TipoDocumento;
 import com.sazloop.afiliacion.domain.SolicitudAfiliacion;
 import com.sazloop.afiliacion.domain.SolicitudAfiliacion.EstadoSolicitud;
+import com.sazloop.afiliacion.dto.DocumentacionResponse;
 import com.sazloop.afiliacion.dto.DocumentoResponse;
 import com.sazloop.afiliacion.dto.SolicitudResponse;
 import com.sazloop.afiliacion.repository.DocumentoEstablecimientoRepository;
@@ -27,15 +28,18 @@ public class SolicitudAfiliacionService {
     private final SolicitudAfiliacionRepository solicitudes;
     private final DocumentoEstablecimientoRepository documentos;
     private final AlmacenDocumentoService almacen;
+    private final VigenciaDocumentosService vigencia;
 
     public SolicitudAfiliacionService(EstablecimientoRepository establecimientos,
                                      SolicitudAfiliacionRepository solicitudes,
                                      DocumentoEstablecimientoRepository documentos,
-                                     AlmacenDocumentoService almacen) {
+                                     AlmacenDocumentoService almacen,
+                                     VigenciaDocumentosService vigencia) {
         this.establecimientos = establecimientos;
         this.solicitudes = solicitudes;
         this.documentos = documentos;
         this.almacen = almacen;
+        this.vigencia = vigencia;
     }
 
     @Transactional(readOnly = true)
@@ -44,23 +48,50 @@ public class SolicitudAfiliacionService {
         return solicitudes.findFirstByEstablecimiento_IdOrderByIdDesc(localId).map(this::respuesta);
     }
 
+    /** Documentos en vigor, suspensión y tipos que el propietario debe renovar (RF-09). */
+    @Transactional(readOnly = true)
+    public DocumentacionResponse documentacion(Long usuarioId, Long localId) {
+        Establecimiento local = localPropio(usuarioId, localId);
+        LocalDate hoy = VigenciaDocumentosService.hoy();
+        var suspension = vigencia.suspensionActiva(localId).orElse(null);
+        List<DocumentacionResponse.DocumentoVigente> vigentes = vigencia.enVigor(localId).stream()
+                .map(d -> new DocumentacionResponse.DocumentoVigente(d.getId(), d.getTipoDocumento(),
+                        d.getNumeroDocumento(), d.getFechaVencimiento(), VigenciaDocumentosService.estado(d, hoy)))
+                .toList();
+        return new DocumentacionResponse(local.getId(), local.getNombre(), local.getEstado(),
+                suspension == null ? null : suspension.getMotivo(),
+                suspension == null ? null : suspension.getFechaInicio(), vigentes,
+                vigencia.tiposVencidos(localId, hoy), vigencia.tiposRenovables(localId, hoy),
+                solicitudes.findFirstByEstablecimiento_IdOrderByIdDesc(localId).map(this::respuesta).orElse(null));
+    }
+
     @Transactional
     public SolicitudResponse adjuntar(Long usuarioId, Long localId, TipoDocumento tipo,
                                      String numero, LocalDate emision, LocalDate vencimiento,
                                      MultipartFile archivo) {
         Establecimiento local = localPropio(usuarioId, localId);
-        if (local.getEstado() != Establecimiento.EstadoEstablecimiento.PENDIENTE_APROBACION) {
+        boolean renovacion = esLocalAprobado(local);
+        if (!renovacion && local.getEstado() != Establecimiento.EstadoEstablecimiento.PENDIENTE_APROBACION) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El local no admite una solicitud nueva");
+        }
+        if (renovacion && !vigencia.tiposRenovables(localId, VigenciaDocumentosService.hoy()).contains(tipo)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Solo puedes renovar documentos vencidos o que vencen en los próximos 7 días");
         }
         SolicitudAfiliacion solicitud = solicitudes.findFirstByEstablecimiento_IdOrderByIdDesc(localId)
                 .orElse(null);
-        if (solicitud == null || solicitud.getEstado() == EstadoSolicitud.RECHAZADA) {
+        if (solicitud == null || solicitud.getEstado() == EstadoSolicitud.RECHAZADA
+                || solicitud.getEstado() == EstadoSolicitud.APROBADA) {
             solicitud = solicitudes.save(SolicitudAfiliacion.builder().establecimiento(local).build());
         } else if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "La solicitud ya fue enviada");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "La solicitud ya fue enviada; espera la revisión del administrador");
         }
         if (emision != null && vencimiento != null && vencimiento.isBefore(emision)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha de vencimiento precede a la emisión");
+        }
+        if (vencimiento != null && vencimiento.isBefore(VigenciaDocumentosService.hoy())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El documento ya está vencido");
         }
 
         String nombre = almacen.guardar(archivo);
@@ -83,12 +114,20 @@ public class SolicitudAfiliacionService {
 
     @Transactional
     public SolicitudResponse enviar(Long usuarioId, Long localId) {
-        localPropio(usuarioId, localId);
+        Establecimiento local = localPropio(usuarioId, localId);
         SolicitudAfiliacion solicitud = solicitudes.findFirstByEstablecimiento_IdOrderByIdDesc(localId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Adjunta documentos primero"));
-        if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE ||
-                documentos.findBySolicitudAfiliacion_IdOrderByIdAsc(solicitud.getId()).isEmpty()) {
+        List<DocumentoEstablecimiento> adjuntos = documentos.findBySolicitudAfiliacion_IdOrderByIdAsc(solicitud.getId());
+        if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE || adjuntos.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La solicitud no está lista para enviarse");
+        }
+        if (local.getEstado() == Establecimiento.EstadoEstablecimiento.SUSPENDIDO) {
+            List<String> faltantes = vigencia.tiposVencidos(localId, VigenciaDocumentosService.hoy()).stream()
+                    .filter(tipo -> adjuntos.stream().noneMatch(d -> d.getTipoDocumento() == tipo))
+                    .map(TipoDocumento::etiqueta).toList();
+            if (!faltantes.isEmpty())
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Adjunta la renovación de: " + String.join(", ", faltantes));
         }
         solicitud.setEstado(EstadoSolicitud.EN_REVISION);
         return respuesta(solicitud);
@@ -122,9 +161,19 @@ public class SolicitudAfiliacionService {
                 .stream().map(d -> new DocumentoResponse(d.getId(), d.getTipoDocumento(),
                         d.getNumeroDocumento(), d.getFechaEmision(), d.getFechaVencimiento()))
                 .toList();
-        return new SolicitudResponse(solicitud.getId(), solicitud.getEstablecimiento().getId(),
+        Long localId = solicitud.getEstablecimiento().getId();
+        return new SolicitudResponse(solicitud.getId(), localId,
                 solicitud.getEstado(), lista, solicitud.getEvaluacion() == null
-                        ? null : solicitud.getEvaluacion().getMotivo());
+                        ? null : solicitud.getEvaluacion().getMotivo(),
+                solicitudes.existsByEstablecimiento_IdAndEstadoAndIdLessThan(
+                        localId, EstadoSolicitud.APROBADA, solicitud.getId()),
+                solicitud.getFechaSolicitud());
+    }
+
+    /** Un local aprobado (activo o suspendido) solo presenta renovaciones. */
+    private static boolean esLocalAprobado(Establecimiento local) {
+        return local.getEstado() == Establecimiento.EstadoEstablecimiento.ACTIVO
+                || local.getEstado() == Establecimiento.EstadoEstablecimiento.SUSPENDIDO;
     }
 
     private static String limpiar(String valor) {

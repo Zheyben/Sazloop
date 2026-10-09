@@ -19,8 +19,13 @@ public class NotificacionService {
     public void crear(Usuario destinatario, Notificacion.TipoNotificacion tipo,
             String titulo, String mensaje, String referencia, Long referenciaId) {
         avisos.save(Notificacion.builder().destinatario(destinatario).tipo(tipo)
-                .titulo(titulo).mensaje(mensaje).tipoReferencia(referencia)
+                .titulo(recortar(titulo, 120)).mensaje(recortar(mensaje, 1000)).tipoReferencia(referencia)
                 .referenciaId(referenciaId).build());
+    }
+
+    /** Los nombres de locales son libres; el aviso nunca debe fallar por su longitud. */
+    private static String recortar(String texto, int maximo) {
+        return texto.length() <= maximo ? texto : texto.substring(0, maximo - 1) + "…";
     }
 
     @Transactional
@@ -36,6 +41,15 @@ public class NotificacionService {
         return avisos.findByDestinatario_IdOrderByIdDesc(usuarioId).stream()
                 .map(a -> new Aviso(a.getId(), a.getTipo(), a.getTitulo(), a.getMensaje(),
                         a.getFechaCreacion(), a.isLeida())).toList();
+    }
+
+    @Transactional
+    public void leerTodas(Long usuarioId) {
+        LocalDateTime ahora = LocalDateTime.now();
+        avisos.findByDestinatario_IdOrderByIdDesc(usuarioId).stream().filter(a -> !a.isLeida()).forEach(a -> {
+            a.setLeida(true);
+            a.setFechaLectura(ahora);
+        });
     }
 
     @Transactional

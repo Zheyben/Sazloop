@@ -53,7 +53,17 @@ public class DocumentoEstablecimiento {
     private List<RevisionDocumento> revisiones = new ArrayList<>();
 
     public enum TipoDocumento {
-        LICENCIA_FUNCIONAMIENTO, CERTIFICADO_SANITARIO, INSPECCION_SEGURIDAD, OTRO
+        LICENCIA_FUNCIONAMIENTO("Licencia de funcionamiento"),
+        CERTIFICADO_SANITARIO("Certificado sanitario"),
+        INSPECCION_SEGURIDAD("Inspección de seguridad"),
+        OTRO("Otro documento");
+
+        private final String etiqueta;
+
+        TipoDocumento(String etiqueta) { this.etiqueta = etiqueta; }
+
+        /** Nombre legible usado en avisos y motivos de suspensión. */
+        public String etiqueta() { return etiqueta; }
     }
 }
 

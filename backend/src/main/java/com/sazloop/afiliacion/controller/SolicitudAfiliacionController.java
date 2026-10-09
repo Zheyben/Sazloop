@@ -1,6 +1,7 @@
 package com.sazloop.afiliacion.controller;
 
 import com.sazloop.afiliacion.domain.DocumentoEstablecimiento.TipoDocumento;
+import com.sazloop.afiliacion.dto.DocumentacionResponse;
 import com.sazloop.afiliacion.dto.SolicitudResponse;
 import com.sazloop.afiliacion.service.SolicitudAfiliacionService;
 import com.sazloop.afiliacion.service.SolicitudAfiliacionService.ArchivoPrivado;
@@ -39,6 +40,11 @@ public class SolicitudAfiliacionController {
         return solicitudes.consultar(usuarioActual.id(request), localId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/documentacion")
+    public DocumentacionResponse documentacion(@PathVariable Long localId, HttpServletRequest request) {
+        return solicitudes.documentacion(usuarioActual.id(request), localId);
     }
 
     @PostMapping(value = "/documentos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

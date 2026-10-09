@@ -22,10 +22,13 @@ import java.time.LocalDateTime;
 public class CancelacionService {
     private final ReservaRepository reservas;
     private final OfertaPackRepository ofertas;
+    private final AvisosReservaService avisos;
 
-    public CancelacionService(ReservaRepository reservas, OfertaPackRepository ofertas) {
+    public CancelacionService(ReservaRepository reservas, OfertaPackRepository ofertas,
+            AvisosReservaService avisos) {
         this.reservas = reservas;
         this.ofertas = ofertas;
+        this.avisos = avisos;
     }
 
     @Transactional
@@ -63,6 +66,7 @@ public class CancelacionService {
         reserva.setEstado(Reserva.EstadoReserva.CANCELADA);
         reserva.getCodigoRecojo().setEstado(CodigoRecojo.EstadoCodigo.VENCIDO);
         reservas.saveAndFlush(reserva);
+        avisos.cancelada(reserva, reembolso);
     }
 
     public static boolean puedeCancelar(Reserva reserva, LocalDateTime ahora) {

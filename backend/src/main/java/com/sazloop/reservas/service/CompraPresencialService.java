@@ -30,15 +30,17 @@ public class CompraPresencialService {
     private final UsuarioRepository usuarios;
     private final ConsumidorRepository consumidores;
     private final ImpactoCO2EvitadoRepository impactos;
+    private final AvisosReservaService avisos;
 
     public CompraPresencialService(CompraRecojoService compras, OfertaPackRepository ofertas,
             ReservaRepository reservas, RetencionStockRepository retenciones,
             CodigoRecojoRepository codigos, UsuarioRepository usuarios,
-            ConsumidorRepository consumidores, ImpactoCO2EvitadoRepository impactos) {
+            ConsumidorRepository consumidores, ImpactoCO2EvitadoRepository impactos,
+            AvisosReservaService avisos) {
         this.compras = compras; this.ofertas = ofertas; this.reservas = reservas;
         this.retenciones = retenciones; this.codigos = codigos;
         this.usuarios = usuarios; this.consumidores = consumidores;
-        this.impactos = impactos;
+        this.impactos = impactos; this.avisos = avisos;
     }
 
     @Transactional
@@ -190,5 +192,6 @@ public class CompraPresencialService {
         reserva.setEstado(Reserva.EstadoReserva.EXPIRADA);
         reserva.getPago().setEstado(Pago.EstadoPago.RECHAZADO);
         reserva.getCodigoRecojo().setEstado(CodigoRecojo.EstadoCodigo.VENCIDO);
+        avisos.efectivoVencido(reserva);
     }
 }

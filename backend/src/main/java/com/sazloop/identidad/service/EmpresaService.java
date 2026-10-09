@@ -119,6 +119,7 @@ public class EmpresaService {
     private static EstablecimientoResponse respuesta(Establecimiento local) {
         return new EstablecimientoResponse(local.getId(), local.getNombre(),
                 local.getDireccion().getDistrito(), local.getDireccion().getDireccionLinea(),
-                local.getEstado());
+                local.getEstado(), local.getCuentaOperativa() == null
+                        ? null : local.getCuentaOperativa().getNombreUsuario());
     }
 }

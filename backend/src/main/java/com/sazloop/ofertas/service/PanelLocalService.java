@@ -1,6 +1,9 @@
 package com.sazloop.ofertas.service;
 
+import com.sazloop.afiliacion.domain.SuspensionEstablecimiento;
+import com.sazloop.afiliacion.repository.SuspensionEstablecimientoRepository;
 import com.sazloop.identidad.domain.CuentaEstablecimiento;
+import com.sazloop.identidad.domain.Establecimiento;
 import com.sazloop.ofertas.domain.OfertaPack;
 import com.sazloop.ofertas.domain.VariantePack;
 import com.sazloop.ofertas.dto.OfertaResponse;
@@ -20,12 +23,14 @@ public class PanelLocalService {
     private final OfertaService servicioOfertas;
     private final OfertaPackRepository ofertas;
     private final ReservaRepository reservas;
+    private final SuspensionEstablecimientoRepository suspensiones;
 
     public PanelLocalService(OfertaService servicioOfertas, OfertaPackRepository ofertas,
-            ReservaRepository reservas) {
+            ReservaRepository reservas, SuspensionEstablecimientoRepository suspensiones) {
         this.servicioOfertas = servicioOfertas;
         this.ofertas = ofertas;
         this.reservas = reservas;
+        this.suspensiones = suspensiones;
     }
 
     @Transactional(readOnly = true)
@@ -41,11 +46,14 @@ public class PanelLocalService {
         String tokenQr = vigente == null ? null : publicaciones.stream()
                 .filter(oferta -> oferta.getId().equals(vigente.id()))
                 .findFirst().orElseThrow().getTokenQr();
+        String motivoSuspension = suspensiones.findFirstByEstablecimiento_IdAndActivaTrueOrderByIdDesc(localId)
+                .map(SuspensionEstablecimiento::getMotivo).orElse(null);
         return new Resumen(cuenta.getEstablecimiento().getNombre(), vigente, tokenQr, stock,
                 periodo(pedidos, publicaciones, hoy, ahora),
                 periodo(pedidos, publicaciones,
                         hoy.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)), ahora),
-                periodo(pedidos, publicaciones, hoy.withDayOfMonth(1), ahora));
+                periodo(pedidos, publicaciones, hoy.withDayOfMonth(1), ahora),
+                cuenta.getEstablecimiento().getEstado(), motivoSuspension);
     }
 
     private Periodo periodo(List<Reserva> pedidos, List<OfertaPack> publicaciones,
@@ -57,7 +65,7 @@ public class PanelLocalService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         int noVendidas = publicaciones.stream()
                 .filter(oferta -> !oferta.getFinRecojo().isAfter(ahora))
-                .filter(oferta -> !oferta.getFinRecojo().toLocalDate().isBefore(inicio))
+                .filter(oferta -> !oferta.getFechaOferta().isBefore(inicio))
                 .flatMap(oferta -> oferta.getVariantes().stream())
                 .mapToInt(VariantePack::getStockDisponible).sum();
         return new Periodo(ganancia, noVendidas);
@@ -65,5 +73,6 @@ public class PanelLocalService {
 
     public record Periodo(BigDecimal ganancia, int unidadesNoVendidas) {}
     public record Resumen(String establecimiento, OfertaResponse ofertaVigente,
-            String tokenQr, int stockDisponible, Periodo dia, Periodo semana, Periodo mes) {}
+            String tokenQr, int stockDisponible, Periodo dia, Periodo semana, Periodo mes,
+            Establecimiento.EstadoEstablecimiento estadoLocal, String motivoSuspension) {}
 }

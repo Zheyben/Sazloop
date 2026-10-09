@@ -30,13 +30,14 @@ public class CompraRecojoService {
     private final UsuarioRepository usuarios;
     private final ResenaRepository resenas;
     private final ImpactoCO2EvitadoRepository impactos;
+    private final AvisosReservaService avisos;
 
     public CompraRecojoService(OfertaPackRepository ofertas, ReservaRepository reservas,
             CodigoRecojoRepository codigos, ConsumidorRepository consumidores, UsuarioRepository usuarios,
-            ResenaRepository resenas, ImpactoCO2EvitadoRepository impactos) {
+            ResenaRepository resenas, ImpactoCO2EvitadoRepository impactos, AvisosReservaService avisos) {
         this.ofertas = ofertas; this.reservas = reservas; this.codigos = codigos;
         this.consumidores = consumidores; this.usuarios = usuarios; this.resenas = resenas;
-        this.impactos = impactos;
+        this.impactos = impactos; this.avisos = avisos;
     }
 
     /** Una falla en cualquier pedido revierte el pago y todas las reservas del lote. */
@@ -107,7 +108,9 @@ public class CompraRecojoService {
         reserva.setPago(pago);
         reserva.setBoleta(boleta);
         reserva.setCodigoRecojo(codigo);
-        return respuesta(reservas.saveAndFlush(reserva));
+        Reserva guardada = reservas.saveAndFlush(reserva);
+        avisos.recordatorioRecojo(guardada);
+        return respuesta(guardada);
     }
 
     @Transactional(readOnly = true)
@@ -172,6 +175,17 @@ public class CompraRecojoService {
                                 reserva.getConsumidor().getId(),
                                 reserva.getOferta().getPackSorpresa().getEstablecimiento().getId()),
                 CancelacionService.puedeCancelar(reserva, LocalDateTime.now()),
-                reserva.getCancelacion() == null ? null : reserva.getCancelacion().getImporteReembolso());
+                reserva.getCancelacion() == null ? null : reserva.getCancelacion().getImporteReembolso(),
+                cliente(reserva.getConsumidor().getUsuario()),
+                reserva.getDetalles().stream().map(detalle -> new CompraResponse.Linea(
+                        detalle.getVariante().getTamanio(), detalle.getCantidad(), detalle.getPrecioUnitario()))
+                        .toList());
+    }
+
+    /** Nombre y la inicial del apellido: suficiente para que el personal identifique al cliente. */
+    private static String cliente(Usuario usuario) {
+        String nombre = usuario.getNombres().trim().split("\\s+")[0];
+        String apellido = usuario.getApellidos().trim();
+        return apellido.isEmpty() ? nombre : nombre + " " + apellido.charAt(0) + ".";
     }
 }

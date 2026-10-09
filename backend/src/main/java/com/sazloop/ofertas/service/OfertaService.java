@@ -76,6 +76,9 @@ public class OfertaService {
         Long localId = cuenta.getEstablecimiento().getId();
         Establecimiento local = establecimientos.bloquear(localId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (local.getEstado() == Establecimiento.EstadoEstablecimiento.SUSPENDIDO)
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El local está suspendido por documentos vencidos y no puede publicar ofertas");
         if (local.getEstado() != Establecimiento.EstadoEstablecimiento.ACTIVO)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Local no aprobado");
         PackSorpresa pack = packs.findById(entrada.packId())

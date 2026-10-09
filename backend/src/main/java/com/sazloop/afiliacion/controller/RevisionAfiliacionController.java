@@ -24,6 +24,12 @@ public class RevisionAfiliacionController {
         return servicio.pendientes();
     }
 
+    @GetMapping("/establecimientos")
+    public List<EstablecimientoAdminResponse> establecimientos(HttpServletRequest request) {
+        sesion.obtener(request);
+        return servicio.establecimientos();
+    }
+
     @GetMapping("/solicitudes/{id}")
     public SolicitudRevisionResponse consultar(@PathVariable Long id, HttpServletRequest request) {
         sesion.obtener(request);

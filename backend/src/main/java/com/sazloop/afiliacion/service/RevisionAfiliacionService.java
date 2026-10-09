@@ -6,15 +6,18 @@ import com.sazloop.afiliacion.domain.RevisionDocumento.ResultadoRevision;
 import com.sazloop.afiliacion.domain.SolicitudAfiliacion.EstadoSolicitud;
 import com.sazloop.afiliacion.dto.*;
 import com.sazloop.afiliacion.repository.*;
+import com.sazloop.experiencia.domain.Notificacion.TipoNotificacion;
+import com.sazloop.experiencia.service.NotificacionService;
 import com.sazloop.identidad.domain.Establecimiento;
+import com.sazloop.identidad.repository.EstablecimientoRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.time.LocalDate;
 import java.util.List;
 
-/** Revisión humana de cada archivo y resolución de la solicitud (RF-07 y RF-08). */
+/** Revisión humana de cada archivo y resolución de la solicitud o renovación (RF-07, RF-08 y RF-09). */
 @Service
 public class RevisionAfiliacionService {
     private final SolicitudAfiliacionRepository solicitudes;
@@ -22,15 +25,23 @@ public class RevisionAfiliacionService {
     private final RevisionDocumentoRepository revisiones;
     private final EvaluacionAfiliacionRepository evaluaciones;
     private final AlmacenDocumentoService almacen;
+    private final EstablecimientoRepository establecimientos;
+    private final VigenciaDocumentosService vigencia;
+    private final NotificacionService notificaciones;
 
     public RevisionAfiliacionService(SolicitudAfiliacionRepository solicitudes,
             DocumentoEstablecimientoRepository documentos, RevisionDocumentoRepository revisiones,
-            EvaluacionAfiliacionRepository evaluaciones, AlmacenDocumentoService almacen) {
+            EvaluacionAfiliacionRepository evaluaciones, AlmacenDocumentoService almacen,
+            EstablecimientoRepository establecimientos, VigenciaDocumentosService vigencia,
+            NotificacionService notificaciones) {
         this.solicitudes = solicitudes;
         this.documentos = documentos;
         this.revisiones = revisiones;
         this.evaluaciones = evaluaciones;
         this.almacen = almacen;
+        this.establecimientos = establecimientos;
+        this.vigencia = vigencia;
+        this.notificaciones = notificaciones;
     }
 
     @Transactional(readOnly = true)
@@ -41,6 +52,22 @@ public class RevisionAfiliacionService {
 
     @Transactional(readOnly = true)
     public SolicitudRevisionResponse consultar(Long id) { return respuesta(solicitud(id)); }
+
+    /** Todos los locales con su estado; los suspendidos muestran el motivo. */
+    @Transactional(readOnly = true)
+    public List<EstablecimientoAdminResponse> establecimientos() {
+        return establecimientos.findAll(Sort.by("id")).stream().map(local -> {
+            var suspension = vigencia.suspensionActiva(local.getId()).orElse(null);
+            return new EstablecimientoAdminResponse(local.getId(), local.getNombre(),
+                    local.getEmpresa().getNombreComercial(), local.getEmpresa().getRuc(),
+                    local.getDireccion().getDistrito(), local.getDireccion().getDireccionLinea(),
+                    local.getEstado(), suspension == null ? null : suspension.getMotivo(),
+                    suspension == null ? null : suspension.getFechaInicio(),
+                    suspension != null && VigenciaDocumentosService.CORREO_SISTEMA
+                            .equalsIgnoreCase(suspension.getAdministrador().getEmailInstitucional()),
+                    solicitudes.existsByEstablecimiento_IdAndEstado(local.getId(), EstadoSolicitud.EN_REVISION));
+        }).toList();
+    }
 
     @Transactional(readOnly = true)
     public SolicitudAfiliacionService.ArchivoPrivado descargar(Long documentoId) {
@@ -64,7 +91,7 @@ public class RevisionAfiliacionService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Indica las observaciones del rechazo");
         }
         if (entrada.tipo() != null) doc.setTipoDocumento(entrada.tipo());
-        if (entrada.numero() != null) doc.setNumeroDocumento(entrada.numero().trim());
+        if (entrada.numero() != null) doc.setNumeroDocumento(entrada.numero().isBlank() ? null : entrada.numero().trim());
         if (entrada.emision() != null) doc.setFechaEmision(entrada.emision());
         if (entrada.vencimiento() != null) doc.setFechaVencimiento(entrada.vencimiento());
         if (doc.getFechaEmision() != null && doc.getFechaVencimiento() != null &&
@@ -88,23 +115,60 @@ public class RevisionAfiliacionService {
             boolean noAprobable = lista.stream().anyMatch(d ->
                     revisiones.findFirstByDocumento_IdOrderByIdDesc(d.getId()).orElseThrow().getResultado()
                             != ResultadoRevision.APROBADO ||
-                    d.getFechaVencimiento() != null && d.getFechaVencimiento().isBefore(LocalDate.now()));
+                    d.getFechaVencimiento() != null
+                            && d.getFechaVencimiento().isBefore(VigenciaDocumentosService.hoy()));
             if (noAprobable) throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "No se puede aprobar con documentos rechazados o vencidos");
         }
         if (evaluaciones.existsBySolicitudAfiliacion_Id(id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La solicitud ya fue resuelta");
         }
+        boolean renovacion = esRenovacion(solicitud);
         EvaluacionAfiliacion evaluacion = evaluaciones.save(EvaluacionAfiliacion.builder()
                 .solicitudAfiliacion(solicitud).administrador(admin)
                 .decision(entrada.decision()).motivo(entrada.motivo().trim()).build());
         solicitud.setEvaluacion(evaluacion);
-        solicitud.setEstado(entrada.decision() == DecisionAfiliacion.APROBADA
-                ? EstadoSolicitud.APROBADA : EstadoSolicitud.RECHAZADA);
-        if (entrada.decision() == DecisionAfiliacion.APROBADA) {
-            solicitud.getEstablecimiento().setEstado(Establecimiento.EstadoEstablecimiento.ACTIVO);
-        }
+        boolean aprobada = entrada.decision() == DecisionAfiliacion.APROBADA;
+        solicitud.setEstado(aprobada ? EstadoSolicitud.APROBADA : EstadoSolicitud.RECHAZADA);
+        Establecimiento local = solicitud.getEstablecimiento();
+        boolean reactivado = false;
+        if (aprobada && !renovacion) local.setEstado(Establecimiento.EstadoEstablecimiento.ACTIVO);
+        if (aprobada && renovacion) reactivado = vigencia.reactivar(local);
+        notificarDecision(solicitud, renovacion, aprobada, reactivado, entrada.motivo().trim());
         return respuesta(solicitud);
+    }
+
+    private void notificarDecision(SolicitudAfiliacion solicitud, boolean renovacion, boolean aprobada,
+            boolean reactivado, String motivo) {
+        Establecimiento local = solicitud.getEstablecimiento();
+        boolean suspendido = local.getEstado() == Establecimiento.EstadoEstablecimiento.SUSPENDIDO;
+        String titulo;
+        String mensaje;
+        if (!renovacion && aprobada) {
+            titulo = "Solicitud aprobada: " + local.getNombre();
+            mensaje = "El local ya puede operar en Sazloop. Crea la cuenta del trabajador para que publique "
+                    + "su pack sorpresa. Motivo: " + motivo;
+        } else if (!renovacion) {
+            titulo = "Solicitud rechazada: " + local.getNombre();
+            mensaje = "Motivo: " + motivo + ". Puedes adjuntar nuevos documentos y enviar otra solicitud.";
+        } else if (aprobada) {
+            titulo = "Renovación aprobada: " + local.getNombre();
+            mensaje = (reactivado ? "El local fue reactivado y vuelve a aparecer en la búsqueda. "
+                    : suspendido ? "El local sigue suspendido porque aún tiene documentos vencidos. "
+                    : "Los documentos renovados reemplazan a los anteriores. ") + "Motivo: " + motivo;
+        } else {
+            titulo = "Renovación rechazada: " + local.getNombre();
+            mensaje = "Motivo: " + motivo + ". " + (suspendido
+                    ? "El local sigue suspendido; presenta nuevamente los documentos vencidos."
+                    : "Presenta nuevamente los documentos antes de que venzan.");
+        }
+        notificaciones.crear(local.getEmpresa().getPropietario().getUsuario(),
+                TipoNotificacion.RESULTADO_AFILIACION, titulo, mensaje, "SolicitudAfiliacion", solicitud.getId());
+    }
+
+    private boolean esRenovacion(SolicitudAfiliacion s) {
+        return solicitudes.existsByEstablecimiento_IdAndEstadoAndIdLessThan(
+                s.getEstablecimiento().getId(), EstadoSolicitud.APROBADA, s.getId());
     }
 
     private SolicitudRevisionResponse respuesta(SolicitudAfiliacion s) {
@@ -116,8 +180,12 @@ public class RevisionAfiliacionService {
                             d.getFechaVencimiento(), r == null ? null : r.getResultado(),
                             r == null ? null : r.getObservaciones());
                 }).toList();
-        return new SolicitudRevisionResponse(s.getId(), s.getEstablecimiento().getId(),
-                s.getEstablecimiento().getNombre(), s.getEstado(), lista);
+        Establecimiento local = s.getEstablecimiento();
+        return new SolicitudRevisionResponse(s.getId(), local.getId(), local.getNombre(), s.getEstado(), lista,
+                esRenovacion(s), local.getEstado(), local.getEmpresa().getNombreComercial(),
+                local.getEmpresa().getRuc(), local.getDireccion().getDistrito(),
+                local.getDireccion().getDireccionLinea(), s.getFechaSolicitud(),
+                s.getEvaluacion() == null ? null : s.getEvaluacion().getMotivo());
     }
 
     private SolicitudAfiliacion solicitud(Long id) {

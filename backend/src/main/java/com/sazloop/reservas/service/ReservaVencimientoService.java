@@ -12,9 +12,11 @@ import java.time.LocalDateTime;
 @Service
 public class ReservaVencimientoService {
     private final ReservaRepository reservas;
+    private final AvisosReservaService avisos;
 
-    public ReservaVencimientoService(ReservaRepository reservas) {
+    public ReservaVencimientoService(ReservaRepository reservas, AvisosReservaService avisos) {
         this.reservas = reservas;
+        this.avisos = avisos;
     }
 
     @Scheduled(fixedDelay = 60000)
@@ -28,6 +30,7 @@ public class ReservaVencimientoService {
                     && !reserva.getOferta().getFinRecojo().isAfter(ahora)) {
                 reserva.setEstado(Reserva.EstadoReserva.EXPIRADA);
                 reserva.getCodigoRecojo().setEstado(CodigoRecojo.EstadoCodigo.VENCIDO);
+                avisos.noRecogida(reserva);
             }
         }
     }

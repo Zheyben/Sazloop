@@ -10,4 +10,8 @@ import java.util.List;
 public interface SolicitudAfiliacionRepository extends JpaRepository<SolicitudAfiliacion, Long> {
     Optional<SolicitudAfiliacion> findFirstByEstablecimiento_IdOrderByIdDesc(Long establecimientoId);
     List<SolicitudAfiliacion> findByEstadoOrderByIdAsc(SolicitudAfiliacion.EstadoSolicitud estado);
+    /** Una solicitud posterior a otra ya aprobada del mismo local es una renovación. */
+    boolean existsByEstablecimiento_IdAndEstadoAndIdLessThan(
+            Long establecimientoId, SolicitudAfiliacion.EstadoSolicitud estado, Long id);
+    boolean existsByEstablecimiento_IdAndEstado(Long establecimientoId, SolicitudAfiliacion.EstadoSolicitud estado);
 }

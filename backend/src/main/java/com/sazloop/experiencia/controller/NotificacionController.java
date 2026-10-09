@@ -19,6 +19,11 @@ public class NotificacionController {
     public List<NotificacionService.Aviso> listar(HttpServletRequest request) {
         return avisos.listar(usuario.id(request));
     }
+    @PostMapping("/leer-todas")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void leerTodas(HttpServletRequest request) {
+        avisos.leerTodas(usuario.id(request));
+    }
     @PostMapping("/{id}/leer")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void leer(@PathVariable Long id, HttpServletRequest request) {
