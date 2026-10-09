@@ -132,8 +132,9 @@ public class CompraRecojoService {
         if (reserva.getEstado() != Reserva.EstadoReserva.CONFIRMADA ||
                 reserva.getCodigoRecojo().getEstado() != CodigoRecojo.EstadoCodigo.PENDIENTE)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El código ya fue usado o la compra no está confirmada");
-        if (ahora.isBefore(oferta.getInicioRecojo()) || !ahora.isBefore(oferta.getFinRecojo()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Fuera del horario permitido para recojo");
+        // El fin del horario es el único límite: se puede entregar desde el momento del pago.
+        if (!ahora.isBefore(oferta.getFinRecojo()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El horario de recojo de este pedido ya terminó");
         reserva.getCodigoRecojo().setEstado(CodigoRecojo.EstadoCodigo.UTILIZADO);
         reserva.getCodigoRecojo().setFechaUso(ahora);
         reserva.setEstado(Reserva.EstadoReserva.RECOGIDA);

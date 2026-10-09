@@ -65,8 +65,7 @@ public class CompraPresencialService {
         OfertaPack oferta = ofertas.bloquear(entrada.ofertaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         LocalDateTime ahora = LocalDateTime.now();
-        if (oferta.getTokenQr() == null || !oferta.getTokenQr().equals(solicitud.token()) ||
-                ahora.isBefore(oferta.getInicioRecojo()))
+        if (oferta.getTokenQr() == null || !oferta.getTokenQr().equals(solicitud.token()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "QR no válido para la compra presencial");
         if (oferta.getEstado() != OfertaPack.EstadoOferta.ACTIVA ||
                 oferta.getPackSorpresa().getEstablecimiento().getEstado()

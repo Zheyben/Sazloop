@@ -49,7 +49,7 @@ public class IndicadoresEmpresaService {
         }
         return new Resumen(locales, new Indicadores(null, "Total empresa", ventas,
                 importeVentas, comisiones, ingresos, cancelaciones, noRecogidas,
-                numResenas, promedio(sumaNotas, numResenas), entregados));
+                numResenas, promedio(sumaNotas, numResenas), entregados, List.of()));
     }
 
     private Indicadores calcular(Long id, String nombre, List<Reserva> pedidos, List<Resena> opiniones) {
@@ -57,23 +57,37 @@ public class IndicadoresEmpresaService {
         BigDecimal importeVentas = BigDecimal.ZERO, comisiones = BigDecimal.ZERO,
                 ingresos = BigDecimal.ZERO, sumaNotas = BigDecimal.ZERO;
         for (Reserva pedido : pedidos) {
+            Pago pago = pedido.getPago();
+            boolean pagado = pago != null && pago.getEstado() == Pago.EstadoPago.CONFIRMADO;
             if (pedido.getEstado() == Reserva.EstadoReserva.CANCELADA) cancelaciones++;
-            if (pedido.getEstado() == Reserva.EstadoReserva.EXPIRADA
-                    && pedido.getPago().getEstado() == Pago.EstadoPago.CONFIRMADO) noRecogidas++;
-            if (pedido.getPago().getEstado() != Pago.EstadoPago.CONFIRMADO) continue;
+            if (pedido.getEstado() == Reserva.EstadoReserva.EXPIRADA && pagado) noRecogidas++;
+            if (!pagado) continue;
             if (pedido.getEstado() != Reserva.EstadoReserva.CANCELADA) {
                 ventas++;
                 importeVentas = importeVentas.add(pedido.getMontoTotal());
             }
-            comisiones = comisiones.add(pedido.getPago().getComision().getImporteComision());
-            ingresos = ingresos.add(pedido.getPago().getComision().getIngresoEstablecimiento());
+            // Los datos anteriores al cálculo de comisiones pueden no tenerla registrada.
+            if (pago.getComision() != null) {
+                comisiones = comisiones.add(pago.getComision().getImporteComision());
+                ingresos = ingresos.add(pago.getComision().getIngresoEstablecimiento());
+            }
             if (pedido.getEstado() == Reserva.EstadoReserva.RECOGIDA)
                 entregados += pedido.getDetalles().stream().mapToInt(DetalleReserva::getCantidad).sum();
         }
         for (Resena opinion : opiniones)
             sumaNotas = sumaNotas.add(BigDecimal.valueOf(opinion.getCalificacion()));
         return new Indicadores(id, nombre, ventas, importeVentas, comisiones, ingresos,
-                cancelaciones, noRecogidas, opiniones.size(), promedio(sumaNotas, opiniones.size()), entregados);
+                cancelaciones, noRecogidas, opiniones.size(), promedio(sumaNotas, opiniones.size()), entregados,
+                recientes(opiniones));
+    }
+
+    /** Las cinco reseñas más recientes de un local, con su comentario. */
+    private static List<ResenaReciente> recientes(List<Resena> opiniones) {
+        return opiniones.stream()
+                .sorted(java.util.Comparator.comparing(Resena::getFechaPublicacion).reversed())
+                .limit(5)
+                .map(o -> new ResenaReciente(o.getCalificacion(), o.getComentario(), o.getFechaPublicacion()))
+                .toList();
     }
 
     private BigDecimal promedio(BigDecimal suma, int cantidad) {
@@ -84,6 +98,8 @@ public class IndicadoresEmpresaService {
     public record Indicadores(Long establecimientoId, String establecimiento, int ventas,
             BigDecimal importeVentas, BigDecimal comisiones, BigDecimal ingresos,
             int cancelaciones, int noRecogidas, int cantidadResenas,
-            BigDecimal calificacionPromedio, int packsEntregados) {}
+            BigDecimal calificacionPromedio, int packsEntregados,
+            List<ResenaReciente> resenasRecientes) {}
+    public record ResenaReciente(int calificacion, String comentario, java.time.LocalDateTime fecha) {}
     public record Resumen(List<Indicadores> establecimientos, Indicadores total) {}
 }

@@ -57,6 +57,12 @@ public class RevisionAfiliacionController {
         return servicio.revisar(admin, id, entrada);
     }
 
+    @PostMapping("/solicitudes/{id}/resolucion")
+    public SolicitudRevisionResponse resolver(@PathVariable Long id, @Valid @RequestBody ResolucionRequest entrada,
+                                              HttpServletRequest request) {
+        return servicio.resolver(sesion.obtener(request), id, entrada);
+    }
+
     @PostMapping("/solicitudes/{id}/decision")
     public SolicitudRevisionResponse decidir(@PathVariable Long id, @Valid @RequestBody DecisionRequest entrada,
                                                HttpServletRequest request) {

@@ -58,20 +58,30 @@ public class PanelLocalService {
 
     private Periodo periodo(List<Reserva> pedidos, List<OfertaPack> publicaciones,
             LocalDate inicio, LocalDateTime ahora) {
-        BigDecimal ganancia = pedidos.stream()
+        List<Reserva> entregados = pedidos.stream()
                 .filter(pedido -> pedido.getEstado() == Reserva.EstadoReserva.RECOGIDA)
+                .filter(pedido -> pedido.getRecojo() != null && pedido.getPago() != null && pedido.getPago().getComision() != null)
                 .filter(pedido -> !pedido.getRecojo().getFechaRecojo().toLocalDate().isBefore(inicio))
+                .toList();
+        BigDecimal ganancia = entregados.stream()
                 .map(pedido -> pedido.getPago().getComision().getIngresoEstablecimiento())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal comision = entregados.stream()
+                .map(pedido -> pedido.getPago().getComision().getImporteComision())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        int unidadesEntregadas = entregados.stream()
+                .flatMap(pedido -> pedido.getDetalles().stream()).mapToInt(d -> d.getCantidad()).sum();
         int noVendidas = publicaciones.stream()
                 .filter(oferta -> !oferta.getFinRecojo().isAfter(ahora))
                 .filter(oferta -> !oferta.getFechaOferta().isBefore(inicio))
                 .flatMap(oferta -> oferta.getVariantes().stream())
                 .mapToInt(VariantePack::getStockDisponible).sum();
-        return new Periodo(ganancia, noVendidas);
+        return new Periodo(ganancia, noVendidas, ganancia.add(comision), comision, unidadesEntregadas);
     }
 
-    public record Periodo(BigDecimal ganancia, int unidadesNoVendidas) {}
+    /** ganancia = neta (ya sin la comisión del 10 %); ventaBruta = ganancia + comisión. */
+    public record Periodo(BigDecimal ganancia, int unidadesNoVendidas, BigDecimal ventaBruta,
+            BigDecimal comision, int packsEntregados) {}
     public record Resumen(String establecimiento, OfertaResponse ofertaVigente,
             String tokenQr, int stockDisponible, Periodo dia, Periodo semana, Periodo mes,
             Establecimiento.EstadoEstablecimiento estadoLocal, String motivoSuspension) {}

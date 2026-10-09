@@ -102,6 +102,47 @@ public class RevisionAfiliacionService {
         return respuesta(solicitud);
     }
 
+    /**
+     * Registra la revisión de cada documento y la decisión final de una sola vez. Si algo falla
+     * (por ejemplo, aprobar con un documento vencido) no se guarda nada.
+     */
+    @Transactional
+    public SolicitudRevisionResponse resolver(AdministradorPlataforma admin, Long id, ResolucionRequest entrada) {
+        SolicitudAfiliacion solicitud = solicitud(id);
+        exigirEnRevision(solicitud);
+        List<DocumentoEstablecimiento> lista = documentos.findBySolicitudAfiliacion_IdOrderByIdAsc(id);
+        java.util.Map<Long, ResolucionRequest.Documento> porId = new java.util.HashMap<>();
+        for (ResolucionRequest.Documento item : entrada.documentos()) porId.put(item.id(), item);
+        // Resultado y observación finales de cada documento: se conserva la revisión previa si ya existe.
+        java.util.Map<Long, ResultadoRevision> resultados = new java.util.HashMap<>();
+        java.util.Map<Long, String> observaciones = new java.util.HashMap<>();
+        for (DocumentoEstablecimiento doc : lista) {
+            RevisionDocumento previa = revisiones.findFirstByDocumento_IdOrderByIdDesc(doc.getId()).orElse(null);
+            if (previa != null) {
+                resultados.put(doc.getId(), previa.getResultado());
+                observaciones.put(doc.getId(), previa.getObservaciones() == null ? "" : previa.getObservaciones());
+                continue;
+            }
+            ResolucionRequest.Documento item = porId.get(doc.getId());
+            if (item == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Indica el resultado de cada documento: aprobar o rechazar");
+            revisar(admin, doc.getId(), new RevisionRequest(item.resultado(), item.observaciones()));
+            resultados.put(doc.getId(), item.resultado());
+            observaciones.put(doc.getId(), item.observaciones() == null ? "" : item.observaciones());
+        }
+        boolean todoAprobado = !lista.isEmpty() && lista.stream()
+                .allMatch(d -> resultados.get(d.getId()) == ResultadoRevision.APROBADO);
+        DecisionAfiliacion decision = todoAprobado ? DecisionAfiliacion.APROBADA : DecisionAfiliacion.RECHAZADA;
+        String motivo = entrada.comentario() != null && !entrada.comentario().isBlank() ? entrada.comentario().trim()
+                : todoAprobado ? "Documentación revisada y conforme"
+                : lista.stream().filter(d -> resultados.get(d.getId()) == ResultadoRevision.RECHAZADO)
+                        .map(d -> d.getTipoDocumento().etiqueta() + ": " + observaciones.get(d.getId()).trim())
+                        .collect(java.util.stream.Collectors.joining("; "));
+        if (motivo.isBlank()) motivo = "Solicitud rechazada tras la revisión de los documentos";
+        if (motivo.length() > 500) motivo = motivo.substring(0, 499) + "…";
+        return decidir(admin, id, new DecisionRequest(decision, motivo));
+    }
+
     @Transactional
     public SolicitudRevisionResponse decidir(AdministradorPlataforma admin, Long id, DecisionRequest entrada) {
         SolicitudAfiliacion solicitud = solicitud(id);

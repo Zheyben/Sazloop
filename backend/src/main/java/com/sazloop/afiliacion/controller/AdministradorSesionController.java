@@ -3,8 +3,8 @@ package com.sazloop.afiliacion.controller;
 import com.sazloop.afiliacion.domain.AdministradorPlataforma;
 import com.sazloop.afiliacion.service.AdministradorService;
 import com.sazloop.afiliacion.service.AdministradorSesionActual;
+import com.sazloop.shared.SesionesPorRol;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -24,10 +24,7 @@ public class AdministradorSesionController {
     @PostMapping
     public AdministradorResponse entrar(@Valid @RequestBody Credenciales entrada, HttpServletRequest request) {
         AdministradorPlataforma admin = servicio.iniciar(entrada.email(), entrada.contrasena());
-        HttpSession anterior = request.getSession(false);
-        if (anterior != null) anterior.invalidate();
-        HttpSession sesion = request.getSession(true);
-        sesion.setAttribute("administradorId", admin.getId());
+        SesionesPorRol.abrir(request, SesionesPorRol.ADMINISTRADOR, admin.getId());
         return respuesta(admin);
     }
 
@@ -40,7 +37,7 @@ public class AdministradorSesionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void salir(HttpServletRequest request) {
         sesionActual.obtener(request);
-        request.getSession(false).invalidate();
+        SesionesPorRol.cerrar(request, SesionesPorRol.ADMINISTRADOR);
     }
 
     private static AdministradorResponse respuesta(AdministradorPlataforma admin) {

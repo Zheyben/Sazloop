@@ -85,7 +85,8 @@ public class OfertaService {
                 .filter(p -> p.isActivo() && p.getEstablecimiento().getId().equals(localId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pack no encontrado"));
         LocalDateTime ahora = LocalDateTime.now();
-        if (!entrada.inicioRecojo().isAfter(ahora) ||
+        // Se tolera un inicio "ahora" (hasta 5 minutos atrás por el reloj del navegador).
+        if (entrada.inicioRecojo().isBefore(ahora.minusMinutes(5)) ||
                 !entrada.finRecojo().isAfter(entrada.inicioRecojo()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Revisa las horas de recojo");
         for (OfertaPack anterior : ofertas.findByPackSorpresa_Establecimiento_IdAndEstado(

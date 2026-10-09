@@ -3,6 +3,7 @@ package com.sazloop.identidad.controller;
 import com.sazloop.identidad.dto.InicioSesionRequest;
 import com.sazloop.identidad.dto.UsuarioResponse;
 import com.sazloop.identidad.service.SesionUsuarioService;
+import com.sazloop.shared.SesionesPorRol;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -29,9 +30,7 @@ public class SesionUsuarioController {
     @PostMapping
     public UsuarioResponse iniciar(@Valid @RequestBody InicioSesionRequest entrada, HttpServletRequest request) {
         UsuarioResponse usuario = sesiones.iniciar(entrada);
-        HttpSession sesion = request.getSession(true);
-        request.changeSessionId();
-        sesion.setAttribute("usuarioId", usuario.id());
+        SesionesPorRol.abrir(request, SesionesPorRol.PERSONA, usuario.id());
         return usuario;
     }
 
@@ -47,9 +46,6 @@ public class SesionUsuarioController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cerrar(HttpServletRequest request) {
-        HttpSession sesion = request.getSession(false);
-        if (sesion != null) {
-            sesion.invalidate();
-        }
+        SesionesPorRol.cerrar(request, SesionesPorRol.PERSONA);
     }
 }

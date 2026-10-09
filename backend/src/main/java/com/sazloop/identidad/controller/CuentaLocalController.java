@@ -3,8 +3,8 @@ package com.sazloop.identidad.controller;
 import com.sazloop.identidad.domain.CuentaEstablecimiento;
 import com.sazloop.identidad.dto.CuentaLocalRequest;
 import com.sazloop.identidad.service.*;
+import com.sazloop.shared.SesionesPorRol;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +32,7 @@ public class CuentaLocalController {
     @PostMapping("/local/sesion")
     public CuentaResponse entrar(@Valid @RequestBody CuentaLocalRequest entrada, HttpServletRequest request) {
         CuentaEstablecimiento cuenta = servicio.iniciar(entrada);
-        HttpSession anterior = request.getSession(false);
-        if (anterior != null) anterior.invalidate();
-        request.getSession(true).setAttribute("cuentaLocalId", cuenta.getId());
+        SesionesPorRol.abrir(request, SesionesPorRol.LOCAL, cuenta.getId());
         return respuesta(cuenta);
     }
 
@@ -45,7 +43,7 @@ public class CuentaLocalController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void salir(HttpServletRequest request) {
         actual.obtener(request);
-        request.getSession(false).invalidate();
+        SesionesPorRol.cerrar(request, SesionesPorRol.LOCAL);
     }
 
     private static CuentaResponse respuesta(CuentaEstablecimiento cuenta) {
