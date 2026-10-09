@@ -12,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 // @SpringBootApplication: la anotación que activa tres cosas
 // a la vez (ver explicación abajo)
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 // =========================================================
 // @SpringBootApplication
@@ -36,6 +37,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //      de com.sazloop: Spring las encuentra automáticamente.
 // =========================================================
 @SpringBootApplication
+@EnableScheduling
 public class SazloopApplication {
 
     // =========================================================

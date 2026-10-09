@@ -9,7 +9,7 @@ import java.util.List;
 
 /** Horario y variantes de la única oferta activa del local. */
 public record OfertaRequest(@NotNull Long packId, @NotNull LocalDateTime inicioRecojo,
-        @NotNull LocalDateTime finRecojo, @NotNull LocalDateTime limiteDefinitivo,
+        @NotNull LocalDateTime finRecojo,
         @NotEmpty List<@Valid VarianteRequest> variantes) {
     public record VarianteRequest(@NotNull TamanioVariante tamanio,
             @NotNull @DecimalMin("0.01") BigDecimal precioReferencial,

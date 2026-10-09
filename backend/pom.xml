@@ -152,8 +152,13 @@
                 <targetPath>static</targetPath>
                 <includes>
                     <include>index.html</include>
-                    <include>styles.css</include>
-                    <include>app.js</include>
+                    <include>css/estilos.css</include>
+                    <include>js/acceso.js</include>
+                    <include>img/*.svg</include>
+                    <include>app/*.html</include>
+                    <include>app/*.css</include>
+                    <include>app/*.js</include>
+                    <include>app/vendor/*.mjs</include>
                 </includes>
             </resource>
         </resources>

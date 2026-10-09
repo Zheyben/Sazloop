@@ -18,10 +18,20 @@ public class OfertaController {
     public OfertaController(CuentaLocalActual cuenta, OfertaService servicio) {
         this.cuenta = cuenta; this.servicio = servicio;
     }
+    @GetMapping("/local/packs")
+    public List<OfertaService.PackDisponible> listarPacks(HttpServletRequest request) {
+        return servicio.listarPacks(cuenta.obtener(request));
+    }
     @PostMapping("/local/packs")
     @ResponseStatus(HttpStatus.CREATED)
     public PackCreado crearPack(@Valid @RequestBody PackRequest entrada, HttpServletRequest request) {
         return new PackCreado(servicio.crearPack(cuenta.obtener(request), entrada));
+    }
+    @PostMapping("/local/publicaciones")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OfertaResponse crearYPublicar(@Valid @RequestBody PublicacionRequest entrada,
+            HttpServletRequest request) {
+        return servicio.crearYPublicar(cuenta.obtener(request), entrada);
     }
     @PostMapping("/local/ofertas")
     @ResponseStatus(HttpStatus.CREATED)

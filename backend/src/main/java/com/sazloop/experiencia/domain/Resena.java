@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 /** Calificación verificada que solo se habilita después del recojo. */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
-@Table(name = "resenas")
+@Table(name = "resenas", uniqueConstraints = @UniqueConstraint(
+        name = "uk_resena_consumidor_local", columnNames = {"consumidor_id", "establecimiento_id"}))
 public class Resena {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

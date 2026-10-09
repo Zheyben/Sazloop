@@ -1,0 +1,103 @@
+.marco-acceso {
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  padding: 0;
+}
+.panel-historia, .panel-formulario { min-width: 0; min-height: 100dvh; padding: clamp(2rem, 6vw, 5rem); }
+.panel-historia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0;
+  background: radial-gradient(circle at 4% 4%, rgba(255, 255, 255, .8), transparent 44%), #e9f0dc;
+  color: var(--bosque);
+  transition: background-color .35s ease, color .35s ease;
+}
+.historia-contenido { position: relative; z-index: 1; width: min(100%, 540px); margin-block: auto; }
+.panel-historia .etiqueta { color: var(--hoja); }
+.historia-contenido .etiqueta { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.5rem; }
+.historia-contenido .etiqueta::before { content: ""; width: 2rem; height: 1px; flex: none; background: currentColor; }
+.panel-historia h1 { max-width: 12ch; margin: 0 0 2rem; font-size: clamp(3rem, 5vw, 5rem); }
+.panel-historia h1 em { color: var(--hoja); transition: color .35s ease; }
+.historia-contenido > p:not(.etiqueta) { max-width: 38ch; margin: 0; padding-left: 1.25rem; border-left: 2px solid currentColor; color: var(--secundario); font-size: 1.08rem; line-height: 1.8; }
+.historia-marca { position: absolute; z-index: 0; right: -1.3rem; bottom: -5.5rem; color: rgba(49, 92, 61, .13); font: 400 clamp(15rem, 27vw, 26rem)/1 var(--sans); user-select: none; pointer-events: none; }
+.modo-empresa .panel-historia { color: #fff; background: var(--bosque); }
+.modo-empresa .panel-historia h1, .modo-empresa .panel-historia .etiqueta { color: #fff; }
+.modo-empresa .panel-historia h1 em { color: var(--menta); }
+.modo-empresa .historia-contenido > p:not(.etiqueta) { color: #e2efdf; }
+.modo-empresa .historia-marca { color: rgba(217, 236, 171, .12); }
+.modo-administrador .panel-historia { color: #343b3d; background: radial-gradient(circle at 4% 4%, #fff, transparent 44%), #e9ebec; }
+.modo-administrador .panel-historia h1, .modo-administrador .panel-historia .etiqueta { color: #343b3d; }
+.modo-administrador .panel-historia h1 em { color: #677477; }
+.modo-administrador .historia-contenido > p:not(.etiqueta) { color: #4e595c; }
+.modo-administrador .historia-marca { color: rgba(73, 88, 91, .11); }
+.panel-formulario {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--borde);
+  border-radius: 0;
+  background: var(--marfil);
+}
+.volver-publico {
+  position: fixed; z-index: 5; top: 1.5rem; right: 1.5rem;
+  display: grid; place-items: center; width: 44px; height: 44px;
+  color: var(--bosque); text-decoration: none;
+  transition: transform .2s ease, color .2s ease;
+}
+.volver-publico svg { display: block; width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.volver-publico:hover { color: var(--hoja); transform: translateX(-4px); }
+.formulario-contenido { width: min(100%, 390px); }
+.formulario-contenido h2 { margin: .5rem 0 1.4rem; }
+#mensaje-acceso { min-height: 1.4rem; margin-bottom: .7rem; font-size: .9rem; }
+#mensaje-acceso.error { color: #a3261f; }
+#mensaje-acceso.ok { color: var(--hoja); }
+.formulario-acceso { display: grid; gap: 1.1rem; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.formulario-acceso label { display: block; margin: 0; color: var(--bosque); font-size: .94rem; font-weight: 650; }
+.formulario-acceso input { width: 100%; margin-top: .4rem; padding: .78rem .9rem; }
+.formulario-acceso button { width: 100%; margin-top: .35rem; min-height: 50px; }
+.formulario-acceso button:disabled { opacity: .6; cursor: wait; }
+.modo-administrador .formulario-acceso button { background: #4e5b5e; border-color: #4e5b5e; }
+.modo-administrador .formulario-acceso button:hover { background: #394548; }
+.alternar-formulario { margin: 1.25rem 0 0; color: var(--secundario); text-align: center; font-size: .93rem; }
+.alternar-formulario a { color: var(--bosque); font-weight: 800; }
+.ayuda-acceso { margin-top: 1.2rem; color: var(--secundario); font-size: .9rem; }
+.selector-acceso { position: absolute; z-index: 1; bottom: clamp(2rem, 6vw, 5rem); left: clamp(2rem, 6vw, 5rem); width: min(calc(100% - 2 * clamp(2rem, 6vw, 5rem)), 420px); }
+.selector-acceso .etiqueta { margin-bottom: .8rem; }
+.selector-rol { display: flex; gap: .35rem; margin: 0; padding: .3rem; border: 1px solid rgba(24, 58, 43, .16); border-radius: 100px; background: rgba(255, 253, 247, .78); }
+.selector-rol button { flex: 1; min-height: 43px; border: 0; border-radius: 100px; color: var(--bosque); background: transparent; font-weight: 750; }
+.selector-rol button[aria-pressed="true"] { color: #fff; background: var(--bosque); box-shadow: 0 3px 10px rgba(24, 58, 43, .15); }
+.selector-rol button:hover:not([aria-pressed="true"]) { background: rgba(24, 58, 43, .09); color: var(--bosque); }
+.modo-empresa .selector-rol { border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .12); }
+.modo-empresa .selector-rol button { color: #fff; }
+.modo-empresa .selector-rol button[aria-pressed="true"] { color: var(--bosque); background: var(--menta); }
+.modo-empresa .selector-rol button:hover:not([aria-pressed="true"]) { color: #fff; background: rgba(255, 255, 255, .14); }
+@media (max-height: 680px) and (min-width: 801px) {
+  .panel-historia { gap: 2rem; }
+  .historia-contenido { margin-block: 0; }
+  .selector-acceso { position: relative; bottom: auto; left: auto; width: min(100%, 420px); }
+}
+@media (max-width: 800px) {
+  .marco-acceso { grid-template-columns: 1fr; }
+  .panel-historia { min-height: 280px; gap: 2rem; }
+  .historia-contenido { margin-block: 0; }
+  .panel-historia h1 { max-width: 20ch; margin: .5rem 0 1rem; font-size: clamp(2.7rem, 8vw, 4rem); }
+  .selector-acceso { position: relative; bottom: auto; left: auto; width: min(100%, 420px); }
+  .historia-marca { bottom: -5rem; right: 0; font-size: 18rem; }
+  .panel-formulario { min-height: 430px; }
+}
+@media (max-width: 450px) {
+  .marco-acceso { width: 100%; }
+  .panel-historia, .panel-formulario { padding: 1.5rem; }
+  .panel-historia { min-height: 260px; }
+  .panel-historia h1 { font-size: 2.65rem; }
+  .volver-publico { top: .75rem; right: .75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel-historia, .panel-historia h1 em, .volver-publico { transition: none; }
+}

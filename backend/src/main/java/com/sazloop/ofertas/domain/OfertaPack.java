@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Publicación concreta de un pack para una fecha y ventana de recojo.
@@ -36,7 +37,7 @@ public class OfertaPack {
     @Column(name = "fin_recojo", nullable = false)
     private LocalDateTime finRecojo;
 
-    /** Después de este momento la reserva ya no puede entregarse ni cancelarse. */
+    /** Conserva compatibilidad con los datos anteriores; en nuevas ofertas coincide con finRecojo. */
     @NotNull
     @Column(name = "limite_definitivo", nullable = false)
     private LocalDateTime limiteDefinitivo;
@@ -48,6 +49,10 @@ public class OfertaPack {
     @Builder.Default
     @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VariantePack> variantes = new ArrayList<>();
+
+    @Builder.Default
+    @Column(name = "token_qr", unique = true, length = 36)
+    private String tokenQr = UUID.randomUUID().toString();
 
     @Builder.Default
     @Column(name = "fecha_publicacion", nullable = false, updatable = false)

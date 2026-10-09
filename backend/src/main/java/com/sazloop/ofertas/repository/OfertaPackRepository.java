@@ -13,6 +13,7 @@ public interface OfertaPackRepository extends JpaRepository<OfertaPack, Long> {
     List<OfertaPack> findByPackSorpresa_Establecimiento_IdAndEstado(
             Long localId, OfertaPack.EstadoOferta estado);
     List<OfertaPack> findByEstado(OfertaPack.EstadoOferta estado);
+    List<OfertaPack> findByPackSorpresa_Establecimiento_Id(Long localId);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from OfertaPack o where o.id = :id")
     Optional<OfertaPack> bloquear(@Param("id") Long id);

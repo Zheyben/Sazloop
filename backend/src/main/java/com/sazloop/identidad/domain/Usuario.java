@@ -38,6 +38,13 @@ public class Usuario {
     @Column(length = 20)
     private String telefono;
 
+    @Lob
+    @Column(name = "foto_perfil")
+    private byte[] fotoPerfil;
+
+    @Column(name = "foto_perfil_tipo", length = 20)
+    private String fotoPerfilTipo;
+
     @Builder.Default @Column(nullable = false)
     private boolean activo = true;
 

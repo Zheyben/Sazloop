@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Compra presencial</title>
+  <script type="module" src="qr.js"></script>
+</head>
+<body>
+  <header><a href="consumidor.html">Sazloop</a></header>
+  <main>
+    <h1>Oferta del establecimiento</h1>
+    <section id="ofertaQr" aria-live="polite">Cargando oferta…</section>
+    <form id="formQr" hidden>
+      <fieldset id="variantesQr"><legend>Elige las unidades</legend></fieldset>
+      <p id="totalQr"></p>
+      <label>Medio de pago
+        <select name="medioPago">
+          <option value="YAPE">Yape</option>
+          <option value="TARJETA_DEBITO">Tarjeta de débito</option>
+          <option value="EFECTIVO">Efectivo en el establecimiento</option>
+        </select>
+      </label>
+      <fieldset id="yapeQr">
+        <legend>Yape</legend>
+        <label>Número peruano <input name="telefonoYape" type="tel" inputmode="numeric" pattern="9[0-9]{8}" maxlength="9" required></label>
+        <button id="siguienteYapeQr" type="button">Siguiente</button>
+        <div id="codigoYapeQr" hidden>
+          <label>Código de seis dígitos <input name="codigoYape" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+          <button id="validarYapeQr" type="button">Validar</button>
+        </div>
+      </fieldset>
+      <fieldset id="tarjetaQr" hidden disabled>
+        <legend>Tarjeta de débito</legend>
+        <label>Número de tarjeta <input name="numeroTarjeta" inputmode="numeric" autocomplete="cc-number" required></label>
+        <label>Nombre del titular <input name="titular" autocomplete="cc-name" required></label>
+        <label>Vencimiento <input name="vencimiento" type="month" autocomplete="cc-exp" required></label>
+        <label>CVV o CVC <input name="cvv" type="password" inputmode="numeric" minlength="3" maxlength="4" required></label>
+        <button id="validarTarjetaQr" type="button">Validar</button>
+      </fieldset>
+      <p id="ayudaEfectivoQr" hidden>Entrega el dinero al trabajador antes de que venza la reserva.</p>
+      <label><input name="terminos" type="checkbox" required> Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>.</label>
+      <button id="confirmarQr" type="submit" disabled>Confirmar compra</button>
+      <p id="mensajeQr" role="status" aria-live="polite"></p>
+    </form>
+    <section id="resultadoQr" aria-live="polite"></section>
+  </main>
+</body>
+</html>

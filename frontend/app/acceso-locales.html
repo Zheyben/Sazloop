@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Ingreso de locales</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="accesos.css">
+  <script type="module" src="accesos.js"></script>
+</head>
+<body data-acceso="locales">
+  <a class="volver-publico" href="../index.html" aria-label="Volver al sitio público"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5m7 7-7-7 7-7"/></svg></a>
+  <main class="marco-acceso modo-trabajador" id="marco-local">
+    <section class="panel-historia" aria-labelledby="titulo-historia">
+      <div class="historia-contenido">
+        <p class="etiqueta" id="etiqueta-historia">PARA EL TRABAJADOR</p>
+        <h1 id="titulo-historia">Tu local, <em>en marcha.</em></h1>
+        <p id="descripcion-historia">Ingresa con la cuenta de tu establecimiento para consultar y confirmar los recojos.</p>
+      </div>
+      <div class="selector-acceso">
+        <p class="etiqueta">ESPACIO DE LOCALES</p>
+        <div class="selector-rol" role="group" aria-label="Tipo de acceso">
+          <button type="button" data-rol="trabajador" aria-pressed="true">Trabajador</button>
+          <button type="button" data-rol="empresa" aria-pressed="false">Empresa</button>
+        </div>
+      </div>
+      <span class="historia-marca" aria-hidden="true">✳</span>
+    </section>
+    <section class="panel-formulario" aria-labelledby="titulo-formulario">
+      <div class="formulario-contenido">
+        <h2 id="titulo-formulario">Ingresar como trabajador</h2>
+        <p id="mensaje-acceso" role="status" aria-live="polite"></p>
+        <form id="ingreso-trabajador" class="formulario-acceso">
+          <label>Usuario del local <input name="nombreUsuario" autocomplete="username" maxlength="80" required></label>
+          <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
+          <button type="submit">Ingresar</button>
+        </form>
+        <form id="ingreso-personal" class="formulario-acceso" hidden>
+          <label>Correo <input name="email" type="email" autocomplete="email" required></label>
+          <label>Contraseña <input name="contrasena" type="password" autocomplete="current-password" required></label>
+          <button type="submit">Ingresar</button>
+        </form>
+        <p id="ir-registro" class="alternar-formulario" hidden>¿No tienes una cuenta? <a href="#registro">Regístrate aquí</a></p>
+        <form id="registro-personal" class="formulario-acceso" hidden>
+          <label>Nombres <input name="nombres" autocomplete="given-name" maxlength="80" required></label>
+          <label>Apellidos <input name="apellidos" autocomplete="family-name" maxlength="80" required></label>
+          <label>Correo <input name="email" type="email" autocomplete="email" maxlength="150" required></label>
+          <label>Teléfono <input name="telefono" type="tel" autocomplete="tel" maxlength="20"></label>
+          <label>Contraseña <input name="contrasena" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+          <button type="submit">Crear cuenta</button>
+        </form>
+        <p id="ir-ingreso" class="alternar-formulario" hidden>¿Ya tienes una cuenta? <a href="#ingreso">Inicia sesión</a></p>
+        <p id="ayuda-trabajador" class="ayuda-acceso">Tu empresa te proporciona el usuario y la contraseña del local.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

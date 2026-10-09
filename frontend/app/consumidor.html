@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sazloop | Inicio</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal.css">
+  <script type="module" src="portal-main.js"></script>
+</head>
+<body>
+  <header id="portal-nav" class="portal-cabecera"></header>
+  <main class="portal-principal">
+    <p><a href="notificaciones.html">Notificaciones</a></p>
+    <section class="bienvenida" aria-labelledby="titulo-inicio">
+      <div>
+        <p class="etiqueta">TU ESPACIO SAZLOOP</p>
+        <h1 id="titulo-inicio">Hola, <span id="usuario"></span><em>.</em></h1>
+        <p>Encuentra un pack sorpresa disponible para ti.</p>
+      </div>
+      <span class="bienvenida-marca" aria-hidden="true">✳</span>
+    </section>
+    <section class="seccion-resultados" aria-labelledby="titulo-packs">
+      <div class="seccion-encabezado">
+        <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Novedades</h2></div>
+        <a id="ver-todas" class="enlace-ver-todas" href="catalogo.html">Ver todas</a>
+      </div>
+      <p id="mensaje" role="status" aria-live="polite"></p>
+      <div id="lista" class="grid-packs" aria-label="Packs disponibles"></div>
+    </section>
+  </main>
+  <dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
+</body>
+</html>

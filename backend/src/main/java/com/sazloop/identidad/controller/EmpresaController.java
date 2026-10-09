@@ -5,6 +5,7 @@ import com.sazloop.identidad.dto.EmpresaResponse;
 import com.sazloop.identidad.dto.EstablecimientoRequest;
 import com.sazloop.identidad.dto.EstablecimientoResponse;
 import com.sazloop.identidad.service.EmpresaService;
+import com.sazloop.identidad.service.IndicadoresEmpresaService;
 import com.sazloop.identidad.service.UsuarioSesionActual;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -25,10 +26,13 @@ import java.util.List;
 public class EmpresaController {
     private final EmpresaService empresas;
     private final UsuarioSesionActual usuarioActual;
+    private final IndicadoresEmpresaService indicadores;
 
-    public EmpresaController(EmpresaService empresas, UsuarioSesionActual usuarioActual) {
+    public EmpresaController(EmpresaService empresas, UsuarioSesionActual usuarioActual,
+            IndicadoresEmpresaService indicadores) {
         this.empresas = empresas;
         this.usuarioActual = usuarioActual;
+        this.indicadores = indicadores;
     }
 
     @PostMapping
@@ -42,6 +46,11 @@ public class EmpresaController {
         return empresas.obtenerEmpresa(usuarioActual.id(request))
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+    @GetMapping("/actual/indicadores")
+    public IndicadoresEmpresaService.Resumen indicadores(HttpServletRequest request) {
+        return indicadores.resumen(usuarioActual.id(request));
     }
 
     @PostMapping("/actual/establecimientos")

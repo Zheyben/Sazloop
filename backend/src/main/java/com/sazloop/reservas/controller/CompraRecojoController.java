@@ -21,6 +21,13 @@ public class CompraRecojoController {
         this.servicio = servicio; this.usuario = usuario; this.local = local;
     }
 
+    @PostMapping("/compras/lote")
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<CompraResponse> comprarVarios(@Valid @RequestBody CompraMultipleRequest entrada,
+                                             HttpServletRequest request) {
+        return servicio.comprarVarios(usuario.id(request), entrada);
+    }
+
     @PostMapping("/compras")
     @ResponseStatus(HttpStatus.CREATED)
     public CompraResponse comprar(@Valid @RequestBody CompraRequest entrada, HttpServletRequest request) {

@@ -36,9 +36,21 @@ public class OfertaService {
         this.resenas = resenas;
     }
 
+    public record PackDisponible(Long id, String nombre) {}
+
+    @Transactional(readOnly = true)
+    public List<PackDisponible> listarPacks(CuentaEstablecimiento cuenta) {
+        return packs.findByEstablecimiento_IdOrderByIdDesc(cuenta.getEstablecimiento().getId()).stream()
+                .filter(PackSorpresa::isActivo)
+                .map(pack -> new PackDisponible(pack.getId(), pack.getNombre()))
+                .toList();
+    }
+
     @Transactional
     public Long crearPack(CuentaEstablecimiento cuenta, PackRequest entrada) {
-        PackSorpresa pack = PackSorpresa.builder().establecimiento(cuenta.getEstablecimiento())
+        Establecimiento local = establecimientos.findById(cuenta.getEstablecimiento().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        PackSorpresa pack = PackSorpresa.builder().establecimiento(local)
                 .nombre(entrada.nombre().trim()).descripcion(entrada.descripcion().trim())
                 .posiblesProductos(entrada.posiblesProductos().trim()).build();
         for (String nombre : nombres(entrada.alergenos(), 80)) {
@@ -53,6 +65,13 @@ public class OfertaService {
     }
 
     @Transactional
+    public OfertaResponse crearYPublicar(CuentaEstablecimiento cuenta, PublicacionRequest entrada) {
+        Long packId = crearPack(cuenta, entrada.pack());
+        return publicar(cuenta, new OfertaRequest(packId, entrada.inicioRecojo(),
+                entrada.finRecojo(), entrada.variantes()));
+    }
+
+    @Transactional
     public OfertaResponse publicar(CuentaEstablecimiento cuenta, OfertaRequest entrada) {
         Long localId = cuenta.getEstablecimiento().getId();
         Establecimiento local = establecimientos.bloquear(localId)
@@ -64,19 +83,18 @@ public class OfertaService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pack no encontrado"));
         LocalDateTime ahora = LocalDateTime.now();
         if (!entrada.inicioRecojo().isAfter(ahora) ||
-                !entrada.finRecojo().isAfter(entrada.inicioRecojo()) ||
-                !entrada.limiteDefinitivo().isAfter(entrada.finRecojo()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Revisa las horas de recojo y el límite");
+                !entrada.finRecojo().isAfter(entrada.inicioRecojo()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Revisa las horas de recojo");
         for (OfertaPack anterior : ofertas.findByPackSorpresa_Establecimiento_IdAndEstado(
                 localId, OfertaPack.EstadoOferta.ACTIVA)) {
-            if (anterior.getLimiteDefinitivo().isBefore(ahora)) anterior.setEstado(OfertaPack.EstadoOferta.FINALIZADA);
+            if (!anterior.getFinRecojo().isAfter(ahora)) anterior.setEstado(OfertaPack.EstadoOferta.FINALIZADA);
             else throw new ResponseStatusException(HttpStatus.CONFLICT, "El local ya tiene una oferta activa");
         }
         Set<VariantePack.TamanioVariante> tamanios = new HashSet<>();
         OfertaPack oferta = OfertaPack.builder().packSorpresa(pack)
                 .fechaOferta(entrada.inicioRecojo().toLocalDate())
                 .inicioRecojo(entrada.inicioRecojo()).finRecojo(entrada.finRecojo())
-                .limiteDefinitivo(entrada.limiteDefinitivo()).estado(OfertaPack.EstadoOferta.ACTIVA).build();
+                .limiteDefinitivo(entrada.finRecojo()).estado(OfertaPack.EstadoOferta.ACTIVA).build();
         for (OfertaRequest.VarianteRequest v : entrada.variantes()) {
             if (!tamanios.add(v.tamanio()) || v.stock() < 1 ||
                     v.precioDescuento().compareTo(v.precioReferencial()) >= 0)
@@ -90,15 +108,25 @@ public class OfertaService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<OfertaResponse> vigente(CuentaEstablecimiento cuenta) {
+        return ofertas.findByPackSorpresa_Establecimiento_IdAndEstado(
+                        cuenta.getEstablecimiento().getId(), OfertaPack.EstadoOferta.ACTIVA).stream()
+                .filter(oferta -> oferta.getFinRecojo().isAfter(LocalDateTime.now()))
+                .findFirst().map(this::respuesta);
+    }
+
+    @Transactional(readOnly = true)
     public List<OfertaResponse> buscar(String distrito, String direccion, BigDecimal precioMaximo,
                                         Double calificacionMinima) {
         if (precioMaximo != null && precioMaximo.signum() <= 0 ||
                 calificacionMinima != null && (calificacionMinima < 0 || calificacionMinima > 5))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Filtro inválido");
         return ofertas.findByEstado(OfertaPack.EstadoOferta.ACTIVA).stream()
-                .filter(o -> o.getLimiteDefinitivo().isAfter(LocalDateTime.now()))
+                .filter(o -> o.getFinRecojo().isAfter(LocalDateTime.now()))
                 .filter(o -> o.getPackSorpresa().getEstablecimiento().getEstado() ==
                         Establecimiento.EstadoEstablecimiento.ACTIVO)
+                .sorted(Comparator.comparing(OfertaPack::getFechaPublicacion)
+                        .thenComparing(OfertaPack::getId).reversed())
                 .map(this::respuesta)
                 .filter(o -> o.variantes().stream().anyMatch(v -> v.stockDisponible() > 0 &&
                         (precioMaximo == null || v.precioDescuento().compareTo(precioMaximo) <= 0)))
@@ -112,7 +140,7 @@ public class OfertaService {
     public OfertaResponse consultar(Long id) {
         OfertaPack oferta = ofertas.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (oferta.getEstado() != OfertaPack.EstadoOferta.ACTIVA ||
-                !oferta.getLimiteDefinitivo().isAfter(LocalDateTime.now()) ||
+                !oferta.getFinRecojo().isAfter(LocalDateTime.now()) ||
                 oferta.getPackSorpresa().getEstablecimiento().getEstado()
                         != Establecimiento.EstadoEstablecimiento.ACTIVO)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

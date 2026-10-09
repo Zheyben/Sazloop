@@ -41,7 +41,7 @@ public class SesionUsuarioService {
 
     private static UsuarioResponse respuesta(Usuario usuario) {
         return new UsuarioResponse(usuario.getId(), usuario.getNombres(),
-                usuario.getApellidos(), usuario.getEmail());
+                usuario.getApellidos(), usuario.getEmail(), usuario.getTelefono(), usuario.getFotoPerfil() != null);
     }
 
     private static ResponseStatusException accesoDenegado() {
