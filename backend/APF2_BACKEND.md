@@ -40,4 +40,22 @@ Después de aprobar, el propietario usa `POST /api/establecimientos/{id}/cuenta`
 
 El perfil MySQL se activa con `SPRING_PROFILES_ACTIVE=mysql`; la base `sazloop` debe existir y las credenciales pueden configurarse mediante `SAZLOOP_DB_USER` y `SAZLOOP_DB_PASSWORD`. Este perfil requiere una prueba de ejecución separada en un equipo con MySQL. Si ya existen datos en la base anterior `mealflow`, deben copiarse a `sazloop` antes de cambiar de base; modificar la URL no traslada los datos.
 
+## Avance 2: vigencia, renovación, avisos e impacto
+
+| RF | Operación comprobable |
+| --- | --- |
+| 09 | `VigenciaDocumentosService` revisa al iniciar y cada minuto: avisa 7 días antes, suspende al vencer y reactiva al aprobar la renovación. |
+| 25 | `NotificacionService` recibe los eventos de afiliación, documentos, suspensión y pedidos; el recordatorio de recojo se crea al confirmar la compra. |
+| 26 | Cada recojo (código o efectivo) guarda un `ImpactoCO2Evitado` sin cifras; el panel muestra packs entregados. |
+
+Endpoints nuevos o ampliados:
+
+- `GET /api/establecimientos/{id}/documentacion`: documentos en vigor con su vigencia, suspensión activa, tipos vencidos y renovables, y última solicitud.
+- `POST /api/establecimientos/{id}/documentos`: en un local aprobado o suspendido, crea una renovación y solo acepta tipos vencidos o por vencer. `POST .../solicitud/enviar` exige, si el local está suspendido, todos los tipos vencidos.
+- `GET /api/administradores/establecimientos`: estado de todos los locales y motivo de suspensión.
+- `GET /api/administradores/solicitudes`: incluye `renovacion`, empresa, RUC, dirección y estado del local.
+- `POST /api/notificaciones/leer-todas`: marca todos los avisos como leídos.
+- `GET /api/local/recojos/{codigo}`: devuelve `cliente` y `lineas` (tamaño y cantidad a entregar).
+- `GET /api/local/resumen`: incluye `estadoLocal` y `motivoSuspension`. La cuenta del local puede ingresar con el local suspendido para entregar reservas pagadas, pero no publicar.
+
 **Dato pendiente del docente:** RF-06 habla de documentos obligatorios, pero el informe anterior no precisa una lista de tipos. Se permite adjuntar varios documentos y se exige al menos uno para enviar; el administrador decide manualmente su suficiencia. No se presupone una lista legal universal.

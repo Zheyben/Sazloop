@@ -41,9 +41,7 @@ Cada tema tiene un único documento principal. Los demás documentos deben enlaz
 
 ## Estado actual
 
-Sazloop corresponde al proyecto N.º 91 — SalvemosLaComida, según la identificación confirmada por el equipo. **El avance 1 está completo**: el informe reúne 26 RF agrupados por módulo, tres diagramas y cinco prototipos, y el backend contiene 31 entidades JPA.
-
-La siguiente etapa es el **avance 2**. Sus tareas concretas se definirán por separado. El frontend y las capas de servicios y controladores todavía no están implementados en `main`.
+Sazloop corresponde al proyecto N.º 91 — SalvemosLaComida, según la identificación confirmada por el equipo. **El avance 1 está completo** y el **avance 2** tiene los 26 RF implementados con backend y pantallas conectados. Las reglas aprobadas para esta versión están en el anexo del [informe del avance 2](informe/Avance_del_proyecto_02.docx).
 
 La situación del proyecto se mantiene en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
 

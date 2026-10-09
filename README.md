@@ -23,11 +23,9 @@ Antes de comenzar una tarea:
 
 ## Estado
 
-**Avance 1 completado.** El [informe del primer avance](docs/informe/Avance_del_proyecto_01.docx) y los demás entregables se encuentran en `docs/`. La etapa que sigue es el **avance 2**; su trabajo se definirá por separado.
+**Avance 2.** Los 26 requisitos funcionales tienen backend y pantallas conectados: sitio público, portal del consumidor, portal del trabajador, portal de empresa y portal de administración. Las reglas aprobadas están en el anexo del [informe del segundo avance](docs/informe/Avance_del_proyecto_02.docx).
 
-El backend contiene 31 entidades JPA y configuración inicial. El frontend aún no contiene una implementación; las pantallas del informe son prototipos. No se considera implementado un RF por aparecer en un diagrama.
-
-Consulta el estado del proyecto en [docs/tareas/ESTADO_ACTUAL.md](docs/tareas/ESTADO_ACTUAL.md).
+Consulta el estado por requisito y cómo se comprobó en [docs/tareas/ESTADO_ACTUAL.md](docs/tareas/ESTADO_ACTUAL.md).
 
 ## Función principal
 
@@ -45,7 +43,7 @@ El alcance completo se encuentra en [docs/PROYECTO.md](docs/PROYECTO.md).
 - Maven
 - Spring Data JPA
 - MySQL; H2 para desarrollo local
-- HTML, CSS, JavaScript y Tailwind CSS previstos para el frontend
+- HTML, CSS y JavaScript (módulos ES) en el frontend, servidos por el mismo backend
 
 ## Arquitectura
 
@@ -54,7 +52,7 @@ Monolito modular organizado por capas. Consulta [docs/ARQUITECTURA.md](docs/ARQU
 ## Estructura
 
 - `backend/`: aplicación Spring Boot.
-- `frontend/`: ubicación prevista de la interfaz web; actualmente solo contiene `.gitkeep`.
+- `frontend/`: sitio público (`index.html`) y aplicación web (`app/`): accesos, portal del consumidor (`consumidor.html`), del trabajador (`trabajador.html`), de empresa (`empresa.html`) y de administración (`administrador.html`). Maven los copia como contenido estático del backend.
 - `docs/`: conocimiento, decisiones y entregables del proyecto.
 
 ## Equipo
@@ -65,16 +63,21 @@ Monolito modular organizado por capas. Consulta [docs/ARQUITECTURA.md](docs/ARQU
 - Piero
 - Alejandro
 
-## Ejecutar el backend
+## Ejecutar la plataforma
 
-Requiere JDK 21 y acceso a Maven Central. Desde `backend/`:
+Requiere JDK 21 y acceso a Maven Central (no hace falta instalar Tomcat: viene incluido). Desde `backend/`, en Windows (CMD):
 
-```bash
-sh mvnw test
-sh mvnw spring-boot:run
+```bat
+mvnw.cmd test
+set SAZLOOP_ADMIN_EMAIL=admin@sazloop.test
+set SAZLOOP_ADMIN_PASSWORD=una-clave-de-prueba
+mvnw.cmd spring-boot:run
 ```
 
-En Windows: `mvnw.cmd test` y `mvnw.cmd spring-boot:run`.
+Luego abre `http://localhost:8080/`. El acceso de cada rol está en «Iniciar sesión»; el administrador usa el correo y la clave de las variables anteriores, que solo crean la cuenta si aún no existe.
 
-La clase de entrada es `com.sazloop.SazloopApplication`. El perfil por defecto es `dev`, con H2 en memoria (`jdbc:h2:mem:sazloop`). Para MySQL, configura el perfil `mysql`; el esquema local conserva el nombre técnico `mealflow` para no requerir una migración por el cambio de marca.
+- **Perfil `dev` (por defecto):** H2 en memoria; los datos se borran al detener la aplicación. Consola de la base en `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:sazloop`, usuario `sa`, sin contraseña).
+- **Perfil `mysql`:** crea la base `sazloop` en MySQL 8 y ejecuta `mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mysql`, con `SAZLOOP_DB_USER` y `SAZLOOP_DB_PASSWORD` si no usas `root` sin contraseña. Hibernate crea las tablas al iniciar.
+
+Las tareas programadas revisan cada minuto las reservas no recogidas, las retenciones de efectivo y la vigencia de los documentos. Los cambios en `frontend/` se ven después de reiniciar la aplicación.
 

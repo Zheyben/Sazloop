@@ -29,7 +29,7 @@ Reglas principales:
 flowchart TD
     A["Cuenta del establecimiento ingresa"] --> B["Define la oferta del día"]
     B --> C["Agrega tamaños, precios y stock"]
-    C --> D["Configura horario y límite de recojo"]
+    C --> D["Configura inicio y fin del recojo"]
     D --> E{"¿Ya existe una oferta activa?"}
     E -->|No| F["Publica la oferta"]
     E -->|Sí| G["Debe cerrar o esperar la oferta actual"]
@@ -48,11 +48,13 @@ flowchart TD
     E -->|Sí| F["Se confirma reserva y stock"]
     E -->|No| G["No se confirma la compra"]
     F --> H["Se genera boleta y código"]
+    H --> I["Recordatorio de recojo en Notificaciones"]
 ```
 
 Reglas principales:
 
 - Los medios remotos son tarjeta de débito simulada y Yape simulado.
+- Varios pedidos del carrito se pagan en una sola operación; cada pedido genera su propia reserva, boleta, código y recordatorio de recojo.
 - La reserva y la actualización definitiva del stock se ejecutan de forma consistente.
 - El contenido exacto del pack continúa siendo sorpresa.
 
@@ -85,13 +87,13 @@ flowchart TD
     C -->|No| G["No se entrega desde esa reserva"]
 ```
 
-Pagar no equivale a recibir el pack. El recojo es el hecho que cierra correctamente la compra y habilita la calificación.
+Pagar no equivale a recibir el pack. El recojo es el hecho que cierra correctamente la compra, registra su impacto (un pack entregado) y habilita la calificación. Solo se entrega dentro del horario de recojo; al terminar ese horario, la reserva pagada no recogida pasa a expirada y el consumidor recibe un aviso.
 
 ## 6. Cancelación de una reserva remota
 
 ```mermaid
 flowchart TD
-    A["Consumidor solicita cancelar"] --> B{"¿Sigue pendiente y dentro del límite?"}
+    A["Consumidor solicita cancelar"] --> B{"¿Sigue pendiente y antes del fin del horario?"}
     B -->|Sí| C["Reserva cancelada"]
     C --> D["Reembolso simulado del 50 %"]
     C --> E["Stock vuelve si aún puede venderse"]
@@ -105,13 +107,15 @@ No se puede cancelar una reserva ya recogida, cancelada o expirada. Las compras 
 
 ```mermaid
 flowchart TD
-    A["Vence documento obligatorio"] --> B["Establecimiento suspendido"]
-    B --> C["No puede publicar nuevas ofertas"]
-    C --> D["Propietario presenta renovación"]
+    P["Faltan 7 días"] --> Q["Aviso al propietario"]
+    Q --> A["Vence documento sin renovación aprobada"]
+    A --> B["Establecimiento suspendido y notificado"]
+    B --> C["No aparece en la búsqueda ni publica ofertas"]
+    C --> D["Propietario presenta solo los documentos vencidos"]
     D --> E["Administrador revisa manualmente"]
-    E --> F{"¿Documento aprobado?"}
-    F -->|Sí| G["Establecimiento reactivado"]
-    F -->|No| H["Continúa suspendido"]
+    E --> F{"¿Renovación aprobada?"}
+    F -->|Sí| G["Establecimiento reactivado y notificado"]
+    F -->|No| H["Continúa suspendido y puede volver a presentar"]
 ```
 
-La suspensión conserva la cuenta, el historial y la información del establecimiento. Las reservas pagadas antes de la suspensión deben ser atendidas.
+La suspensión conserva la cuenta, el historial y la información del establecimiento. La cuenta del trabajador sigue activa para validar códigos y entregar las reservas pagadas antes de la suspensión. Un documento que vence en los próximos siete días también puede renovarse antes de que el local se suspenda.

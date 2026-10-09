@@ -130,7 +130,7 @@ Las funciones futuras que aparezcan en un prototipo deben identificarse como no 
 
 ## Modelo de negocio
 
-La documentación previa registra una comisión del 10 % sobre el importe que efectivamente permanezca cobrado (DEC-036). Esta tasa está **documentada, pero pendiente de confirmación formal por el equipo**; el RF-24 del informe solicita mostrar comisiones, pero no especifica un porcentaje. Su cálculo aún no está implementado.
+La plataforma cobra una comisión del 10 % sobre el importe que efectivamente permanezca cobrado (DEC-036, confirmada en RF-24 del informe del avance 2). Si una reserva se cancela, la comisión se calcula sobre el 50 % retenido. El cálculo está implementado y se muestra en el panel de la empresa.
 
 Los pagos serán simulados. Si el pago presencial se realiza en efectivo, la comisión quedará registrada como un saldo simulado del establecimiento con la plataforma.
 
@@ -146,7 +146,7 @@ Los pagos serán simulados. Si el pago presencial se realiza en efectivo, la com
 | Base de datos | MySQL |
 | Persistencia | Spring Data JPA |
 
-El POM declara Spring Boot 4.1.1 y Java 21. H2 está configurada para desarrollo; MySQL sigue siendo la base prevista de persistencia. El frontend está planificado, aún sin código en `main`.
+El POM declara Spring Boot 4.1.1 y Java 21. H2 está configurada para desarrollo y MySQL es la base de persistencia. El frontend usa HTML, CSS y JavaScript sin framework y se sirve desde el mismo backend.
 
 ## Arquitectura
 

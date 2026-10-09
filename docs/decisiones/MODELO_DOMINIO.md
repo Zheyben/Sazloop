@@ -118,9 +118,9 @@ Conservar cada intento permite mantener un historial claro de lo sucedido.
 
 #### Suspensión por documento vencido
 
-Si vence un documento obligatorio de un establecimiento aprobado, el local se suspende y no podrá publicar nuevas ofertas. La información existente se conserva.
+Si vence un documento obligatorio de un establecimiento aprobado, el sistema suspende el local automáticamente y no podrá publicar nuevas ofertas ni aparecer en la búsqueda. La información existente se conserva y la cuenta del trabajador sigue activa para entregar las reservas ya pagadas. La suspensión automática se registra a nombre de una cuenta interna del sistema, sin acceso, para respetar la relación de `SuspensionEstablecimiento` con `AdministradorPlataforma`.
 
-El propietario deberá presentar el documento renovado. Cuando este sea revisado y aprobado manualmente, la suspensión podrá finalizar y el establecimiento volverá a operar.
+El propietario presenta solo los documentos vencidos en una nueva `SolicitudAfiliacion` (renovación). Cuando el administrador la aprueba, cada documento renovado reemplaza al anterior del mismo tipo, la suspensión se cierra (`activa = false`, `fechaFin`) y el establecimiento vuelve a operar.
 
 ### Elementos que se representarán como enumeraciones
 
@@ -138,7 +138,7 @@ No se crearán clases independientes para listas cerradas como:
 | Clase | ¿Qué representa? | ¿Por qué existe? |
 |---|---|---|
 | `PackSorpresa` | La definición general del pack ofrecido por un establecimiento. | Reúne su descripción, posibles productos y advertencias, sin revelar el contenido exacto que recibirá el consumidor. |
-| `OfertaPack` | La publicación concreta del pack disponible en una fecha determinada. | Guarda la vigencia, ventana de recojo, hora límite y estado de la oferta sin modificar la definición general del pack. |
+| `OfertaPack` | La publicación concreta del pack disponible en una fecha determinada. | Guarda la vigencia, el inicio y el fin del recojo (el fin es el único límite) y el estado de la oferta sin modificar la definición general del pack. |
 | `VariantePack` | Cada tamaño disponible dentro de una oferta, por ejemplo pequeño, mediano o grande. | Cada opción necesita su propio precio y cantidad disponible, aunque todas formen parte del mismo pack activo. |
 | `Alergeno` | Una sustancia que el pack podría contener y que puede causar una reacción alérgica. | Permite advertir al consumidor antes de comprar, aunque el contenido exacto del pack sea sorpresa. |
 | `RestriccionAlimentaria` | Una condición o característica alimentaria relevante, como presencia de gluten o falta de compatibilidad vegana. | Ayuda al consumidor a saber si el pack podría ser inadecuado para sus necesidades alimentarias. |
@@ -178,7 +178,7 @@ El consumidor podrá conocer:
 - Ejemplos de productos que podría recibir.
 - El tamaño seleccionado.
 - El precio referencial y el precio con descuento.
-- La ventana y el límite de recojo.
+- El inicio y el fin del horario de recojo.
 - Los posibles alérgenos.
 - Las restricciones alimentarias informadas.
 
@@ -246,7 +246,7 @@ El personal buscará ese código desde la cuenta del establecimiento. Al confirm
 
 #### Cancelación y devolución de stock
 
-Una reserva remota podrá cancelarse mientras continúe pendiente de recojo y no haya superado el límite definitivo de la oferta.
+Una reserva remota podrá cancelarse mientras continúe pendiente de recojo y antes del fin del horario de recojo de la oferta.
 
 Al cancelar:
 

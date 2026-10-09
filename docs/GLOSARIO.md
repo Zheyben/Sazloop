@@ -25,7 +25,10 @@ Este glosario establece los términos que utilizarán el informe, los diagramas,
 | Boleta simulada | Resumen interno de la compra sin validez tributaria. |
 | Código de recojo | Código único que el consumidor presenta para recibir el pack. |
 | Recojo | Entrega presencial del pack y cierre satisfactorio de la reserva. |
-| No recojo | Reserva que superó su límite definitivo sin ser entregada. |
+| No recojo | Reserva pagada que llegó al fin del horario de recojo sin ser entregada. |
+| Renovación | Nueva solicitud de un local aprobado con los documentos vencidos o por vencer; al aprobarse reemplaza a los anteriores y reactiva el local suspendido. |
+| Suspensión automática | Suspensión que aplica el sistema cuando vence un documento obligatorio sin renovación aprobada. |
+| Notificación | Aviso del buzón de un usuario sobre su solicitud, sus documentos, una suspensión o sus pedidos. |
 | Cancelación | Finalización solicitada de una reserva remota antes de su recojo y dentro del tiempo permitido. |
 | Reembolso simulado | Registro de la devolución del 50 % del importe pagado cuando corresponde. |
 | Comisión | Porción del importe cobrado que corresponde a la plataforma. |

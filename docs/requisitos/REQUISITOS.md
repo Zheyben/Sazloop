@@ -2,9 +2,9 @@
 
 ## Fuente y estado
 
-Los requisitos corresponden a las secciones 3.1 y 3.2 del [informe del primer avance](../informe/Avance_del_proyecto_01.docx). Se conservan los 26 IDs, descripciones, actores, prioridades y dependencias. Los IDs no se renumeran al agrupar por módulos.
+Los requisitos corresponden a las secciones 3.1 y 3.2 del [informe del segundo avance](../informe/Avance_del_proyecto_02.docx) y se precisan en su anexo «Definiciones funcionales aprobadas», resumido al final de este documento. Se conservan los 26 IDs, actores, prioridades y dependencias. Los IDs no se renumeran al agrupar por módulos. Si un texto antiguo contradice el anexo aprobado, prevalece el anexo.
 
-Son requisitos de la solución; su presencia aquí no acredita implementación. El [estado actual](../tareas/ESTADO_ACTUAL.md) describe las capas disponibles en el código.
+El [estado actual](../tareas/ESTADO_ACTUAL.md) indica qué está implementado y cómo se comprobó.
 
 ## Requisitos funcionales
 
@@ -43,7 +43,7 @@ packs sorpresa disponibles.
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|---------------|-----------------|
 | **RF-11** | El sistema deberá permitir que el establecimiento registre la descripción y los posibles contenidos de su pack sorpresa.                                             | Establecimiento     | **Esencial**  | **-**           |
 | **RF-12** | El sistema deberá permitir que el establecimiento publique una sola oferta activa de pack sorpresa con una o más variantes de tamaño, precio y stock.                | Establecimiento     | **Esencial**  | **-**           |
-| **RF-13** | El sistema deberá permitir que el establecimiento configure el horario y la hora límite para el recojo de los packs sorpresa.                                        | Establecimiento     | **Esencial**  | **-**           |
+| **RF-13** | El sistema deberá permitir que el establecimiento configure el inicio y el fin del horario de recojo de los packs sorpresa. El fin del horario es el único límite para entregar o cancelar una reserva. | Establecimiento     | **Esencial**  | **-**           |
 | **RF-14** | El sistema deberá permitir que el consumidor busque y filtre establecimientos por distrito, dirección textual, precio y calificación.                                | Consumidor          | **Esencial**  | **-**           |
 | **RF-15** | El sistema deberá mostrar al consumidor la información del establecimiento, la oferta activa, el descuento, los posibles alérgenos y las restricciones alimentarias. | Consumidor          | **Esencial**  | **-**           |
 | **RF-17** | El sistema deberá mostrar directamente la oferta activa de un establecimiento cuando el consumidor acceda mediante su código QR físico.                              | Consumidor          | **Esencial**  | **-**           |
@@ -77,8 +77,8 @@ notificaciones posteriores o complementarias a la operación principal.
 
 | **ID**    | **Requisito Funcional**                                                                                                                                                                                                | **Actor Principal** | **Prioridad**  | **Dependencia**                                             |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|----------------|-------------------------------------------------------------|
-| **RF-23** | El sistema deberá permitir que el consumidor registre una calificación y un comentario después de completar el recojo de su pedido.                                                                                    | Consumidor          | **Esencial**   | **-**                                                       |
-| **RF-24** | El sistema deberá mostrar al propietario un panel con información de ventas, comisiones, ingresos, cancelaciones, reservas no recogidas, reseñas e indicadores de impacto por establecimiento y de manera consolidada. | Propietario         | **Importante** | Consolida información de Ofertas, Reservas y Transacciones. |
+| **RF-23** | El sistema deberá permitir que el consumidor registre una calificación obligatoria y, opcionalmente, un comentario después de completar el recojo de su pedido.                                                       | Consumidor          | **Esencial**   | **-**                                                       |
+| **RF-24** | El sistema deberá mostrar al propietario un panel con información de ventas, comisiones, ingresos, cancelaciones, reservas no recogidas, reseñas e indicadores de impacto por establecimiento y de manera consolidada. La comisión de Sazloop es el 10 % del importe que permanece cobrado; si el consumidor cancela, se calcula sobre el 50 % retenido. | Propietario         | **Importante** | Consolida información de Ofertas, Reservas y Transacciones. |
 | **RF-25** | El sistema deberá enviar notificaciones a los usuarios correspondientes sobre el estado de las solicitudes, los documentos, las suspensiones y el recojo de los pedidos.                                               | Sistema             | **Importante** | Recibe eventos generados por Afiliación y Reservas.         |
 | **RF-26** | El sistema deberá registrar de manera conceptual los indicadores de alimento recuperado y CO₂ evitado después de completar el recojo de un pedido.                                                                     | Sistema             | **Importante** | **-**                                                       |
 
@@ -94,6 +94,17 @@ notificaciones posteriores o complementarias a la operación principal.
 - Una reserva expirada o recogida no puede cancelarse.
 - Los pagos digitales, reembolsos y boletas son simulados.
 - La plataforma no garantiza el contenido exacto del pack, pero debe informar posibles alérgenos y restricciones.
+
+## Precisiones del avance 2 (anexo aprobado)
+
+- **RF-13:** cada oferta define inicio y fin del horario de recojo. El fin es el único límite: después no se entrega ni se cancela, y la reserva pagada no recogida pasa a expirada. No hay límite definitivo adicional.
+- **RF-09:** siete días antes del vencimiento de un documento se avisa al propietario; si vence sin renovación aprobada, el local se suspende automáticamente. La renovación incluye solo los documentos vencidos y la aprueba un administrador. Durante la suspensión se conservan la cuenta, el historial y la entrega de reservas pagadas.
+- **RF-25:** se notifican el resultado de solicitudes y renovaciones, los documentos por vencer, las suspensiones y los cambios del pedido. El recordatorio de recojo se crea al confirmar la compra.
+- **RF-26:** cada recojo completado (entrega con código o compra presencial en efectivo) registra su impacto conceptual. El impacto visible es el número de packs entregados, sin cifras de kilos ni CO₂.
+- **Panel del trabajador:** stock disponible, ganancia neta de pedidos entregados (descontada la comisión del 10 %) y unidades sin vender por día, semana de lunes a domingo y mes, en hora de Perú.
+- **Panel empresarial:** las ventas cuentan reservas pagadas aunque no se hayan recogido; las cancelaciones se informan aparte y su importe retenido sí suma en ingresos y comisiones.
+
+El detalle de cada regla y su justificación están en [Decisiones del proyecto](../decisiones/DECISIONES_PROYECTO.md) (DEC-008, DEC-009, DEC-030, DEC-035, DEC-036 y DEC-043 a DEC-047).
 
 ## Requisitos no funcionales
 

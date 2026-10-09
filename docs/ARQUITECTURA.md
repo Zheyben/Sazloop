@@ -24,16 +24,16 @@ Esta solución es suficiente para el alcance académico y permite que los cinco 
 
 El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inicial se usa H2 en memoria para realizar comprobaciones rápidas; MySQL continúa siendo la base de datos oficial para la integración y la entrega final.
 
-## Estado implementado al 26 de septiembre de 2026
+## Estado implementado al 9 de octubre de 2026
 
-- Backend: clase `SazloopApplication`, 31 entidades JPA, enumeraciones, configuración y una prueba de carga de contexto.
-- Paquete base: `com.sazloop`; coordenadas Maven: `com.sazloop:sazloop-backend`.
-- No hay controllers, services, repositories ni DTO implementados en el árbol revisado.
-- `frontend/` contiene únicamente `.gitkeep`. La API REST y su comunicación con el frontend son arquitectura prevista.
-- El perfil activo es `dev` (H2). La configuración MySQL existe, pero no demuestra una integración ejecutada.
-- El esquema MySQL conserva el identificador `mealflow` por compatibilidad; el cambio de marca no requiere alterar tablas ni migrar datos.
+- Backend: los seis módulos tienen controllers, services, repositories y DTO sobre las 31 entidades JPA; paquete base `com.sazloop`, coordenadas `com.sazloop:sazloop-backend`.
+- Sesiones con cookie `HttpOnly` separadas para persona (consumidor o propietario), cuenta del local y administrador; contraseñas con PBKDF2.
+- Tareas programadas (`@Scheduled`): vencimiento de reservas no recogidas, liberación de retenciones de efectivo y revisión de vigencia de documentos (`VigenciaDocumentosService`).
+- Frontend en `frontend/` con HTML, CSS y JavaScript (módulos ES) que consume la API REST con `fetch`. Maven lo copia como contenido estático, por lo que backend y frontend se sirven desde el mismo origen. Los tres portales internos comparten `panel.css` y `panel.js`; el consumidor usa `portal.css` y `portal.js`.
+- Perfiles: `dev` con H2 en memoria y su consola (módulo `spring-boot-h2console`), y `mysql` con la base `sazloop`.
+- Errores: la API devuelve el motivo de negocio (`spring.web.error.include-message`) y nunca la traza.
 
-Las secciones siguientes describen responsabilidades previstas; declarar una dependencia no significa que su funcionalidad esté implementada. El estado del código se resume en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
+El estado por requisito y su comprobación se resumen en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
 
 ## Dependencias del backend
 

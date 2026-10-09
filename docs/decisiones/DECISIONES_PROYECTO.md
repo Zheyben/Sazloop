@@ -31,10 +31,10 @@ Una reserva remota no entregada puede cancelarse. Penalización: 50% de lo abona
 El comercio no puede cancelar una oferta después de que tenga reservas confirmadas.
 
 ## DEC-008 — Horarios definidos por el establecimiento
-Cada oferta tiene ventana de recojo y límite definitivo configurados por el comercio según el producto.
+Cada oferta establece el inicio y el fin de su horario de recojo, configurados por el comercio. **El fin del horario es el único límite**: después de ese momento no se permite entregar ni cancelar una reserva. No existe un límite definitivo adicional (actualizado en el avance 2; la columna `limite_definitivo` se conserva por compatibilidad y siempre coincide con el fin del horario).
 
 ## DEC-009 — Gestión de no recojo
-Si termina la ventana normal, puede notificarse al consumidor y existir margen adicional. Tras el límite definitivo, la reserva pasa a no recogida/expirada y no puede entregarse.
+Una reserva pagada que no se entrega antes del fin del horario de recojo pasa automáticamente a expirada (no recogida) y ya no puede entregarse. El importe cobrado y la comisión se conservan, no cuenta como pack entregado para el impacto y el consumidor recibe un aviso. No existe un margen adicional después del fin del horario.
 
 ## DEC-010 — Reseñas solo tras recojo completado
 No se puede reseñar una experiencia que no haya terminado en entrega.
@@ -136,7 +136,7 @@ Si una solicitud presenta problemas, se rechaza y se informa el motivo. La cuent
 
 ## DEC-030 — Suspensión por documento vencido
 
-Un establecimiento aprobado se suspende si vence un documento obligatorio. No podrá publicar nuevas ofertas hasta que el documento renovado sea revisado y aprobado. Su cuenta e historial se conservan.
+Un establecimiento aprobado se suspende automáticamente si vence un documento obligatorio. Mientras esté suspendido no aparece en la búsqueda, no vende y no puede publicar nuevas ofertas. Su cuenta, su historial y sus reservas pagadas se conservan: la cuenta del trabajador sigue activa para validar códigos y entregar esas reservas. El local se reactiva cuando el administrador aprueba la renovación (DEC-044).
 
 ## DEC-031 — Una oferta activa con variantes
 
@@ -156,13 +156,13 @@ Cuando se elija efectivo desde el QR del local, el stock se retendrá temporalme
 
 ## DEC-035 — Límites de cancelación remota
 
-Una reserva remota puede cancelarse mientras esté pendiente de recojo y no haya superado el límite definitivo. Se registra un reembolso simulado del 50 % y el stock se recupera si todavía puede venderse.
+Una reserva remota puede cancelarse mientras esté pendiente de recojo y antes del fin del horario de recojo (DEC-008). Se registra un reembolso simulado del 50 % y el stock se recupera si todavía puede venderse.
 
 ## DEC-036 — Comisión del 10 % sobre lo cobrado
 
 La comisión de la plataforma será el 10 % del importe que efectivamente permanezca cobrado. Si una reserva se cancela, la comisión se calcula sobre la mitad retenida, no sobre el precio original.
 
-**Estado de esta cifra:** documentada en la decisión inicial, pendiente de confirmación formal por el equipo. El informe del primer avance no define una tasa y el código todavía no calcula comisiones.
+**Estado de esta cifra:** confirmada en RF-24 y en las definiciones funcionales aprobadas del informe del avance 2. El cálculo está implementado: si el consumidor cancela, la comisión se aplica sobre el 50 % retenido; en efectivo queda como saldo simulado del local con la plataforma.
 
 ## DEC-037 — Panel basado en información calculada
 
@@ -195,6 +195,26 @@ La primera versión se dirige a establecimientos y consumidores de Lima Metropol
 ## DEC-042 — Separación entre diseño e implementación
 
 Los RF corresponden a los 26 requisitos agrupados del informe del primer avance. Las 31 entidades existen en el backend y originan 33 tablas al incluir las dos asociaciones muchos a muchos. Las operaciones dibujadas, la API REST y los prototipos describen comportamiento previsto; no se marcan como ejecutados sin evidencia. El estado del código se mantiene en [ESTADO_ACTUAL.md](../tareas/ESTADO_ACTUAL.md).
+
+## DEC-043 — Vigencia de documentos y aviso previo
+
+Todo documento aprobado con fecha de vencimiento cuenta para la vigencia del local; uno sin fecha no vence. El propietario puede indicar la fecha al adjuntarlo y el administrador la corrige al revisarlo. Un documento vale hasta el final del día de su vencimiento (hora de Perú). Siete días antes, el propietario recibe un único aviso; si vence sin una renovación aprobada, una tarea programada (al iniciar y cada minuto) suspende el local, registra el motivo y lo notifica. La suspensión automática queda firmada por una cuenta interna del sistema sin acceso, para conservar la relación obligatoria con `AdministradorPlataforma` del modelo.
+
+## DEC-044 — Renovación de documentos
+
+Para reactivar un local suspendido, el propietario presenta solo los documentos vencidos; también puede renovar un documento que vence en los próximos siete días. La renovación es una nueva `SolicitudAfiliacion` del mismo local y se reconoce porque existe una solicitud anterior aprobada. El administrador la revisa en la misma pantalla. Al aprobarla, cada documento renovado reemplaza al anterior del mismo tipo y, si el local ya no tiene documentos vencidos, se reactiva y su suspensión se cierra. Si la rechaza, el local sigue en el mismo estado y puede presentar otra renovación.
+
+## DEC-045 — Notificaciones
+
+El buzón registra avisos para el propietario (resultado de la solicitud o la renovación, documento por vencer y suspensión) y para el consumidor (recordatorio de recojo, cancelación con reembolso, pedido no recogido y reserva en efectivo vencida). **El recordatorio de recojo se crea al confirmar la compra**, uno por pedido, con su código, dirección y horario. La cuenta compartida del local no recibe notificaciones porque no es un usuario personal.
+
+## DEC-046 — Impacto visible
+
+Cada recojo completado, tanto por entrega con código como por compra presencial en efectivo, registra un `ImpactoCO2Evitado` sin cifras. En esta etapa el impacto visible es el número de packs efectivamente entregados; no se muestran kilos de alimento recuperado ni CO₂ evitado hasta aprobar una fórmula.
+
+## DEC-047 — Mensajes de error comprensibles
+
+Las respuestas de error de la API incluyen el motivo de negocio (por ejemplo, «Stock insuficiente») y nunca la traza interna; las pantallas muestran ese motivo. En Spring Boot 4 se configura con `spring.web.error.include-message` y `spring.web.error.include-stacktrace`.
 
 ## Documentos relacionados
 
