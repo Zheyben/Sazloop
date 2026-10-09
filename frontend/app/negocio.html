@@ -10,20 +10,18 @@
   <script src="negocio.js" type="module"></script>
 </head>
 <body>
-  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a><a class="enlace-cabecera" href="index.html">Cambiar acceso</a></header>
+  <header class="cabecera-app"><a class="marca-app" href="../index.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a></header>
   <main class="pagina-acceso">
     <p class="etiqueta">ESPACIO DE LOCALES</p>
     <h1>Trabajemos para que <em>lo bueno siga.</em></h1>
-    <div class="pestanas-rol" role="group" aria-label="Tipo de acceso">
-      <button id="modoEmpresa" type="button" aria-pressed="true">Empresa</button>
-      <button id="modoTrabajador" type="button" aria-pressed="false">Trabajador</button>
-    </div>
     <section id="panelEmpresa">
+      <h2>Panel de empresa</h2>
       <p class="entradilla">Gestiona tu empresa y sus establecimientos.</p>
       <p id="mensaje" role="status" aria-live="polite"></p>
     <section id="cuenta" hidden aria-label="Sesión activa">
       <h2>Mi cuenta</h2>
       <p id="usuario"></p>
+      <a href="notificaciones.html?origen=empresa">Notificaciones</a>
       <button id="salir" type="button">Cerrar sesión</button>
 
       <section aria-label="Mi empresa y establecimientos">
@@ -54,6 +52,14 @@
           </form>
           <h3>Establecimientos registrados</h3>
           <ul id="locales"></ul>
+          <section id="indicadoresEmpresa">
+            <h3>Indicadores de la empresa</h3>
+            <button id="actualizarIndicadores" type="button">Actualizar indicadores</button>
+            <table>
+              <thead><tr><th>Establecimiento</th><th>Ventas</th><th>Importe vendido</th><th>Comisiones</th><th>Ingresos del local</th><th>Cancelaciones</th><th>No recogidas</th><th>Reseñas</th><th>Calificación media</th><th>Packs entregados</th></tr></thead>
+              <tbody id="filasIndicadores"></tbody>
+            </table>
+          </section>
           <section id="solicitudPanel" hidden aria-label="Documentos del establecimiento">
             <h3 id="solicitudTitulo"></h3>
             <p id="solicitudEstado"></p>
@@ -92,55 +98,69 @@
     </section>
     <section id="panelTrabajador" hidden>
       <p id="mensajeLocal" role="status" aria-live="polite"></p>
-      <section id="cuentaLocal" class="panel" hidden>
-        <div class="trabajador-cabecera">
-          <div>
-            <p class="etiqueta">PORTAL DEL TRABAJADOR</p>
-            <h2>Mi establecimiento<span>.</span></h2>
-            <p id="datosLocal"></p>
-          </div>
-          <button id="salirLocal" type="button" class="secundario">Cerrar sesión</button>
-        </div>
-        <section class="gestion-ofertas" aria-labelledby="tituloPublicacion">
-          <h3 id="tituloPublicacion">Nuevo <em>pack</em></h3>
-          <p>Ponle un nombre claro y cuenta qué productos suelen incluirse.</p>
-          <form id="formPack">
-            <label>Nombre del pack <input name="nombre" maxlength="120" required></label>
-            <label>Descripción <textarea name="descripcion" rows="3" maxlength="500" required></textarea></label>
-            <label>Podría incluir <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
-            <fieldset class="pack-grupo">
-              <legend>Alérgenos</legend>
-              <p>Toca los que apliquen. Si falta uno, agrégalo con «Otro».</p>
-              <div class="pack-alergenos">
-                <label><input type="checkbox" name="alergeno" value="Trigo (gluten)"><span>Trigo (gluten)</span></label>
-                <label><input type="checkbox" name="alergeno" value="Huevo"><span>Huevo</span></label>
-                <label><input type="checkbox" name="alergeno" value="Leche"><span>Leche</span></label>
-                <label><input type="checkbox" name="alergeno" value="Almendras"><span>Almendras</span></label>
-                <label><input type="checkbox" name="alergeno" value="Soya"><span>Soya</span></label>
-                <label><input type="checkbox" name="alergeno" value="Maní"><span>Maní</span></label>
-                <label><input type="checkbox" name="alergeno" value="Pescado"><span>Pescado</span></label>
-                <label><input type="checkbox" name="alergeno" value="Mariscos"><span>Mariscos</span></label>
-                <button id="agregarAlergeno" type="button" class="pack-otro">+ Otro</button>
-              </div>
-              <label id="otroAlergenoCampo" hidden>Otro alérgeno <input name="otroAlergeno" maxlength="80"></label>
+      <section id="cuentaLocal" hidden>
+        <header class="trabajador-cabecera">
+          <p class="etiqueta">PORTAL DEL TRABAJADOR</p>
+          <h2 id="datosLocal"></h2>
+        </header>
+        <div class="trabajador-estructura">
+          <nav class="trabajador-navegacion" aria-label="Panel del trabajador">
+            <button type="button" data-vista-local="vigente" aria-current="page">Pack sorpresa</button>
+            <button type="button" data-vista-local="crear">Crear nuevo pack</button>
+            <button type="button" data-vista-local="validar">Validar código</button>
+            <button id="salirLocal" type="button">Cerrar sesión</button>
+          </nav>
+          <div class="trabajador-contenido">
+            <section id="vistaVigente">
+              <h3>Pack sorpresa vigente</h3>
+              <div id="packVigente"><p>No hay una oferta vigente.</p></div>
+              <h3>Resumen del establecimiento</h3>
+              <p id="stockVigente"></p>
+              <table>
+                <thead><tr><th>Periodo</th><th>Ganancia neta</th><th>Unidades sin vender</th></tr></thead>
+                <tbody id="resumenPeriodos"></tbody>
+              </table>
+            </section>
+        <section id="vistaCrear" hidden aria-labelledby="tituloPublicacion">
+          <h3 id="tituloPublicacion">Crear nuevo pack y publicar oferta</h3>
+          <p>Completa los tres pasos y publica la oferta al final.</p>
+          <form id="formPublicacion">
+            <p id="progresoPublicacion" aria-live="polite">Paso 1 de 3: pack</p>
+            <fieldset id="pasoPack">
+              <legend>1. Datos del pack</legend>
+              <label><input type="radio" name="tipoPack" value="nuevo" checked> Crear pack nuevo</label>
+              <label><input type="radio" name="tipoPack" value="existente" id="usarPackExistente"> Usar un pack registrado</label>
+              <fieldset id="datosPackNuevo">
+                <label>Nombre del pack <input name="nombre" maxlength="120" required></label>
+                <label>Descripción <textarea name="descripcion" rows="3" maxlength="500" required></textarea></label>
+                <label>Podría incluir <textarea name="posiblesProductos" rows="3" maxlength="1000" required></textarea></label>
+                <fieldset>
+                  <legend>Alérgenos</legend>
+                  <label><input type="checkbox" name="alergeno" value="Trigo (gluten)"> Trigo (gluten)</label>
+                  <label><input type="checkbox" name="alergeno" value="Huevo"> Huevo</label>
+                  <label><input type="checkbox" name="alergeno" value="Leche"> Leche</label>
+                  <label><input type="checkbox" name="alergeno" value="Almendras"> Almendras</label>
+                  <label><input type="checkbox" name="alergeno" value="Soya"> Soya</label>
+                  <label><input type="checkbox" name="alergeno" value="Maní"> Maní</label>
+                  <label><input type="checkbox" name="alergeno" value="Pescado"> Pescado</label>
+                  <label><input type="checkbox" name="alergeno" value="Mariscos"> Mariscos</label>
+                  <button id="agregarAlergeno" type="button">Añadir otro alérgeno</button>
+                  <label id="otroAlergenoCampo" hidden>Otro alérgeno <input name="otroAlergeno" maxlength="80"></label>
+                </fieldset>
+                <fieldset>
+                  <legend>Este pack es apto para</legend>
+                  <label><input type="checkbox" name="aptoVegetarianos"> Vegetarianos</label>
+                  <label><input type="checkbox" name="aptoVeganos"> Veganos</label>
+                  <label><input type="checkbox" name="aptoCeliacos"> Personas con celiaquía</label>
+                </fieldset>
+              </fieldset>
+              <fieldset id="datosPackExistente" hidden disabled>
+                <label>Pack registrado <select name="packId" required></select></label>
+              </fieldset>
+              <button id="siguientePack" type="button">Siguiente: tamaños y precios</button>
             </fieldset>
-            <fieldset class="pack-grupo">
-              <legend>Este pack es apto para…</legend>
-              <p>Lo que no marques se mostrará como «No apto» en el detalle del pack.</p>
-              <div class="pack-dietas">
-                <label><input type="checkbox" name="aptoVegetarianos"> Vegetarianos</label>
-                <label><input type="checkbox" name="aptoVeganos"> Veganos</label>
-                <label><input type="checkbox" name="aptoCeliacos"> Celíacos</label>
-              </div>
-              <label>Otras restricciones, separadas por comas <input name="restricciones" placeholder="Si corresponde"></label>
-            </fieldset>
-            <button type="submit">Guardar datos del pack</button>
-            <p id="resultadoPack" role="status" aria-live="polite"></p>
-          </form>
-          <form id="formOferta">
-            <h4>Tamaños y precios</h4>
-            <p class="ayuda-formulario">Puedes usar el número del pack recién creado o el de uno registrado antes en este establecimiento.</p>
-            <label>Número del pack <input name="packId" type="number" min="1" step="1" required></label>
+            <fieldset id="pasoVariantes" hidden>
+              <legend>2. Tamaños, precios y stock</legend>
             <div class="variantes-oferta" aria-label="Tamaños, precios y stock">
               <fieldset class="variante-oferta" data-tamanio="PEQUENO">
                 <legend>Pequeño</legend>
@@ -164,23 +184,30 @@
                 <label>Unidades disponibles <input name="stock" type="number" min="1" step="1" disabled></label>
               </fieldset>
             </div>
-            <h4>Horario de recojo</h4>
-            <div class="pack-horario-publicacion">
+              <button type="button" data-paso-anterior="0">Volver</button>
+              <button id="siguienteVariantes" type="button">Siguiente: horario</button>
+            </fieldset>
+            <fieldset id="pasoHorario" hidden>
+              <legend>3. Horario de recojo</legend>
               <label>Inicio del recojo <input name="inicioRecojo" type="datetime-local" required></label>
               <label>Fin del recojo <input name="finRecojo" type="datetime-local" required></label>
-              <label>Límite definitivo de recojo <input name="limiteDefinitivo" type="datetime-local" required></label>
-            </div>
-            <p class="ayuda-formulario">El inicio debe ser futuro; el fin debe ser posterior al inicio y el límite definitivo posterior al fin. Solo puede haber una oferta activa por local.</p>
-            <button type="submit">Publicar oferta</button>
-            <p id="resultadoOferta" role="status" aria-live="polite"></p>
+              <p>El inicio debe ser futuro y el fin posterior al inicio. El fin es el límite para recoger o cancelar.</p>
+              <button type="button" data-paso-anterior="1">Volver</button>
+              <button type="submit">Publicar oferta</button>
+            </fieldset>
+            <p id="resultadoPublicacion" role="status" aria-live="polite"></p>
           </form>
         </section>
+        <section id="vistaValidar" hidden>
         <form id="consultarRecojo">
           <h3>Verificar un código de recojo</h3>
           <label>Código <input name="codigo" required></label>
           <button type="submit">Consultar código</button>
         </form>
         <section id="resultadoRecojo" role="status" aria-live="polite"></section>
+        </section>
+          </div>
+        </div>
       </section>
     </section>
   </main>

@@ -2,6 +2,7 @@ import { iniciarPortal, actualizarNav } from './portal.js';
 import { montarInicio } from './consumidor.js';
 import { montarCatalogo } from './catalogo.js';
 import { montarCompras } from './compras.js';
+import { avisarResenasPendientes } from './resenas-portal.js';
 import { montarPerfil } from './perfil.js';
 
 const vistas = new Map([
@@ -16,6 +17,7 @@ let navegacion = 0;
 
 if (usuario) {
   vistas.get(paginaInicial)?.(usuario);
+  avisarResenasPendientes();
 
   document.addEventListener('click', evento => {
     if (evento.defaultPrevented || evento.button !== 0 || evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;

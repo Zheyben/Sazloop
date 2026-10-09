@@ -41,7 +41,7 @@ public class RegistroUsuarioService {
         try {
             Usuario guardado = usuarios.saveAndFlush(usuario);
             return new UsuarioResponse(guardado.getId(), guardado.getNombres(),
-                    guardado.getApellidos(), guardado.getEmail());
+                    guardado.getApellidos(), guardado.getEmail(), guardado.getTelefono(), false);
         } catch (DataIntegrityViolationException ex) {
             // Protege también el caso de dos registros concurrentes con el mismo correo.
             throw new ResponseStatusException(HttpStatus.CONFLICT, "No se pudo registrar el correo", ex);

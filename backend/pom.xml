@@ -158,6 +158,7 @@
                     <include>app/*.html</include>
                     <include>app/*.css</include>
                     <include>app/*.js</include>
+                    <include>app/vendor/*.mjs</include>
                 </includes>
             </resource>
         </resources>

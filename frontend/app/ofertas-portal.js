@@ -121,7 +121,7 @@ export function iniciarOfertas(usuario, limite = null) {
       el('div', { className: 'pack-visual' },
         el('span', { className: 'pack-visual-marca', ariaHidden: 'true', textContent: '✳' }),
         el('span', { className: 'pack-visual-stock', textContent: `${stock} uds.` }),
-        o.calificacion != null ? el('span', { className: 'pack-visual-calificacion', textContent: `★  ${Number(o.calificacion).toFixed(1)}` }) : null),
+        el('span', { className: 'pack-visual-calificacion', textContent: `★  ${o.calificacion != null ? Number(o.calificacion).toFixed(1) : '-'}` })),
       el('div', { className: 'pack-contenido' },
         el('p', { className: 'pack-local' }, iconoDato('ubicacion'), `${o.establecimiento} · ${o.distrito}`),
         el('h3', {}, ...nombreDestacado(o.pack)),
@@ -146,10 +146,9 @@ export function iniciarOfertas(usuario, limite = null) {
       if (!detalle.isConnected) return;
       const avisoDetalle = el('p', { className: 'detalle-aviso', role: 'status', ariaLive: 'polite' });
       const total = el('strong', { className: 'detalle-total', ariaLive: 'polite' });
-      const primerDisponible = o.variantes.find(v => v.stockDisponible > 0);
       const filas = o.variantes.map(v => {
         const campo = el('input', { type: 'number', min: 0, max: v.stockDisponible,
-          value: v.id === primerDisponible?.id ? 1 : 0, name: 'v' + v.id,
+          value: 0, name: 'v' + v.id,
           disabled: v.stockDisponible === 0, ariaLabel: `Cantidad de ${tamanios[v.tamanio] || v.tamanio}` });
         const fila = el('div', { className: 'detalle-variante' },
           el('div', { className: 'detalle-variante-info' },
@@ -183,19 +182,21 @@ export function iniciarOfertas(usuario, limite = null) {
         if (!lineas.length || lineas.some(l => !Number.isInteger(l.cantidad))) {
           avisoDetalle.textContent = 'Elige al menos una unidad válida.'; return;
         }
-        const previo = leerCarrito(usuario.id);
-        if (previo && previo.ofertaId !== o.id) {
-          avisoDetalle.replaceChildren('Tu carrito ya contiene otro pack. ', el('a', { href: 'compras.html', textContent: 'Revisar mi carrito' }));
-          return;
+        const previos = leerCarrito(usuario.id);
+        const acumuladas = new Map();
+        for (const pedido of previos.filter(p => p.ofertaId === o.id)) {
+          for (const linea of pedido.lineas) acumuladas.set(linea.varianteId,
+            (acumuladas.get(linea.varianteId) || 0) + linea.cantidad);
         }
-        const acumuladas = new Map(previo?.lineas.map(l => [l.varianteId, l.cantidad]) || []);
-        for (const l of lineas) acumuladas.set(l.varianteId, (acumuladas.get(l.varianteId) || 0) + l.cantidad);
+        for (const linea of lineas) acumuladas.set(linea.varianteId,
+          (acumuladas.get(linea.varianteId) || 0) + linea.cantidad);
         if (o.variantes.some(v => (acumuladas.get(v.id) || 0) > v.stockDisponible)) {
           avisoDetalle.textContent = 'La cantidad supera las unidades disponibles.'; return;
         }
-        guardarCarrito(usuario.id, { ofertaId: o.id, lineas: [...acumuladas].map(([varianteId, cantidad]) => ({ varianteId, cantidad })) });
-        avisoDetalle.replaceChildren('Pack añadido. ', el('a', { href: 'compras.html', textContent: 'Ir a mi carrito' }));
-        form.reset(); actualizarTotal();
+        guardarCarrito(usuario.id, [...previos, {
+          clave: crypto.randomUUID(), ofertaId: o.id, lineas
+        }]);
+        detalle.close();
       });
       const restricciones = o.restricciones || [];
       const opcionesDieta = [
@@ -203,14 +204,14 @@ export function iniciarOfertas(usuario, limite = null) {
         ['veganos', 'Apto para veganos', 'No apto para veganos'],
         ['personas con celiaquía', 'Apto para personas con celiaquía', 'No apto para personas con celiaquía']
       ];
-      const estadosDieta = opcionesDieta.map(([nombre, positivo, negativo]) => restricciones.includes(positivo)
-        ? [true, positivo] : restricciones.includes(negativo) ? [false, negativo] : null).filter(Boolean);
+      const estadosDieta = opcionesDieta.map(([, positivo, negativo]) => restricciones.includes(positivo)
+        ? [true, positivo] : [false, negativo]);
       const otrasRestricciones = restricciones.filter(r => !opcionesDieta.some(([, positivo, negativo]) => r === positivo || r === negativo));
       const botonAgregar = el('button', { type: 'submit', className: 'detalle-agregar', textContent: 'Añadir al carrito' });
       botonAgregar.setAttribute('form', form.id);
       detalle.replaceChildren(
         el('div', { className: 'detalle-visual' },
-          el('span', { className: 'detalle-etiqueta', textContent: o.calificacion != null ? `★  ${Number(o.calificacion).toFixed(1)}` : 'Sin calificaciones' }),
+          el('span', { className: 'detalle-etiqueta', textContent: `★  ${o.calificacion != null ? Number(o.calificacion).toFixed(1) : '-'}` }),
           el('span', { className: 'detalle-visual-marca', ariaHidden: 'true', textContent: '✳' }),
           el('button', { type: 'button', className: 'detalle-cerrar', ariaLabel: 'Cerrar detalle', onclick: () => detalle.close() })),
         el('div', { className: 'detalle-cuerpo' },

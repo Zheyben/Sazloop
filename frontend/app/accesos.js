@@ -81,7 +81,13 @@ async function enviar(formulario, ruta, destino) {
 
 ingresoPersonal?.addEventListener('submit', evento => {
   evento.preventDefault();
-  enviar(ingresoPersonal, '/api/sesion', rol === 'empresa' ? 'negocio.html' : 'consumidor.html');
+  const continuar = new URLSearchParams(location.search).get('continuar');
+  let destino = 'consumidor.html';
+  if (continuar) {
+    const url = new URL(continuar, location.origin);
+    if (url.origin === location.origin && url.pathname === '/app/qr.html') destino = url.pathname + url.search;
+  }
+  enviar(ingresoPersonal, '/api/sesion', rol === 'empresa' ? 'negocio.html#empresa' : destino);
 });
 registroPersonal?.addEventListener('submit', evento => {
   evento.preventDefault();

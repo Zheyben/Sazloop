@@ -1,5 +1,8 @@
 package com.sazloop.reservas.service;
 
+import com.sazloop.experiencia.repository.ResenaRepository;
+import com.sazloop.experiencia.repository.ImpactoCO2EvitadoRepository;
+import com.sazloop.experiencia.domain.ImpactoCO2Evitado;
 import com.sazloop.identidad.domain.*;
 import com.sazloop.identidad.repository.*;
 import com.sazloop.ofertas.domain.*;
@@ -8,6 +11,7 @@ import com.sazloop.reservas.domain.*;
 import com.sazloop.reservas.dto.*;
 import com.sazloop.reservas.repository.*;
 import com.sazloop.transacciones.domain.*;
+import com.sazloop.transacciones.service.ComisionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +28,26 @@ public class CompraRecojoService {
     private final CodigoRecojoRepository codigos;
     private final ConsumidorRepository consumidores;
     private final UsuarioRepository usuarios;
+    private final ResenaRepository resenas;
+    private final ImpactoCO2EvitadoRepository impactos;
 
     public CompraRecojoService(OfertaPackRepository ofertas, ReservaRepository reservas,
-            CodigoRecojoRepository codigos, ConsumidorRepository consumidores, UsuarioRepository usuarios) {
+            CodigoRecojoRepository codigos, ConsumidorRepository consumidores, UsuarioRepository usuarios,
+            ResenaRepository resenas, ImpactoCO2EvitadoRepository impactos) {
         this.ofertas = ofertas; this.reservas = reservas; this.codigos = codigos;
-        this.consumidores = consumidores; this.usuarios = usuarios;
+        this.consumidores = consumidores; this.usuarios = usuarios; this.resenas = resenas;
+        this.impactos = impactos;
+    }
+
+    /** Una falla en cualquier pedido revierte el pago y todas las reservas del lote. */
+    @Transactional
+    public List<CompraResponse> comprarVarios(Long usuarioId, CompraMultipleRequest entrada) {
+        if (entrada.medioPago() == Pago.MedioPago.EFECTIVO)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El efectivo no es un pago remoto");
+        return entrada.pedidos().stream()
+                .map(pedido -> comprar(usuarioId,
+                        new CompraRequest(pedido.ofertaId(), entrada.medioPago(), pedido.lineas())))
+                .toList();
     }
 
     /** Bloquea la oferta hasta reservar el stock; dos compradores no pueden consumir la misma unidad. */
@@ -84,6 +103,7 @@ public class CompraRecojoService {
                 .numero("SIM-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase(Locale.ROOT)).build();
         CodigoRecojo codigo = CodigoRecojo.builder().reserva(reserva)
                 .codigo(UUID.randomUUID().toString().substring(0, 16).toUpperCase(Locale.ROOT)).build();
+        ComisionService.recalcular(pago, total);
         reserva.setPago(pago);
         reserva.setBoleta(boleta);
         reserva.setCodigoRecojo(codigo);
@@ -109,12 +129,14 @@ public class CompraRecojoService {
         if (reserva.getEstado() != Reserva.EstadoReserva.CONFIRMADA ||
                 reserva.getCodigoRecojo().getEstado() != CodigoRecojo.EstadoCodigo.PENDIENTE)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El código ya fue usado o la compra no está confirmada");
-        if (ahora.isBefore(oferta.getInicioRecojo()) || ahora.isAfter(oferta.getLimiteDefinitivo()))
+        if (ahora.isBefore(oferta.getInicioRecojo()) || !ahora.isBefore(oferta.getFinRecojo()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Fuera del horario permitido para recojo");
         reserva.getCodigoRecojo().setEstado(CodigoRecojo.EstadoCodigo.UTILIZADO);
         reserva.getCodigoRecojo().setFechaUso(ahora);
         reserva.setEstado(Reserva.EstadoReserva.RECOGIDA);
         reserva.setRecojo(Recojo.builder().reserva(reserva).confirmadoPor(cuenta).build());
+        reservas.saveAndFlush(reserva);
+        impactos.save(ImpactoCO2Evitado.builder().recojo(reserva.getRecojo()).build());
         return respuesta(reserva);
     }
 
@@ -134,10 +156,22 @@ public class CompraRecojoService {
     }
 
     private CompraResponse respuesta(Reserva reserva) {
-        return new CompraResponse(reserva.getId(), reserva.getEstado(), reserva.getMontoTotal(),
+        return new CompraResponse(reserva.getId(),
+                reserva.getOferta().getPackSorpresa().getEstablecimiento().getId(),
+                reserva.getOferta().getPackSorpresa().getEstablecimiento().getNombre(),
+                reserva.getEstado(), reserva.getMontoTotal(),
                 reserva.getPago().getMedioPago().name(), reserva.getPago().isSimulado(),
-                reserva.getBoleta().getNumero(), reserva.getBoleta().getMensajeLegal(),
+                reserva.getBoleta() == null ? null : reserva.getBoleta().getNumero(),
+                reserva.getBoleta() == null ? null : reserva.getBoleta().getMensajeLegal(),
                 reserva.getCodigoRecojo().getCodigo(), reserva.getOferta().getInicioRecojo(),
-                reserva.getOferta().getFinRecojo());
+                reserva.getOferta().getFinRecojo(),
+                reserva.getEstado() == Reserva.EstadoReserva.RECOGIDA
+                        && !reserva.isResenaOmitida()
+                        && !resenas.existsByReserva_Id(reserva.getId())
+                        && !resenas.existsByConsumidor_IdAndEstablecimiento_Id(
+                                reserva.getConsumidor().getId(),
+                                reserva.getOferta().getPackSorpresa().getEstablecimiento().getId()),
+                CancelacionService.puedeCancelar(reserva, LocalDateTime.now()),
+                reserva.getCancelacion() == null ? null : reserva.getCancelacion().getImporteReembolso());
     }
 }

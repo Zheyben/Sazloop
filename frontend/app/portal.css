@@ -208,6 +208,8 @@
 .tarjeta-compra .codigo { font-size: 1.15rem; }
 .perfil-datos { max-width: 630px; padding: clamp(1.5rem, 4vw, 2.5rem); border: 1px solid var(--borde); border-radius: 1.3rem; background: var(--marfil); }
 .perfil-datos h2 { margin-bottom: 1.5rem; }
+.avatar-foto { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+#perfil-foto { object-fit: cover; }
 .perfil-datos dl { margin: 0; }
 .perfil-datos dl div { padding: .8rem 0; border-top: 1px solid var(--borde); }
 .perfil-datos dt { color: var(--secundario); font-size: .83rem; }

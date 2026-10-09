@@ -60,6 +60,7 @@ async function cargarEmpresa() {
       document.querySelector("#empresaDatos").textContent =
         `${empresa.nombreComercial} · ${empresa.razonSocial} · RUC ${empresa.ruc}`;
       await cargarLocales();
+      await cargarIndicadores();
     }
   } catch (error) {
     mensaje.textContent = error.message;
@@ -86,6 +87,29 @@ async function cargarLocales() {
     lista.append(item);
   }
 }
+
+async function cargarIndicadores() {
+  try {
+    const resumen = await solicitar('/empresas/actual/indicadores');
+    const cuerpo = document.querySelector('#filasIndicadores');
+    cuerpo.replaceChildren();
+    for (const fila of [...resumen.establecimientos, resumen.total]) {
+      const valores = [fila.establecimiento, fila.ventas, `S/ ${fila.importeVentas}`,
+        `S/ ${fila.comisiones}`, `S/ ${fila.ingresos}`, fila.cancelaciones,
+        fila.noRecogidas, fila.cantidadResenas,
+        fila.cantidadResenas ? `${fila.calificacionPromedio} / 5` : '-', fila.packsEntregados];
+      const tr = document.createElement('tr');
+      for (const valor of valores) {
+        const td = document.createElement('td');
+        td.textContent = String(valor);
+        tr.append(td);
+      }
+      cuerpo.append(tr);
+    }
+  } catch (error) { mensaje.textContent = error.message; }
+}
+
+document.querySelector('#actualizarIndicadores').addEventListener('click', cargarIndicadores);
 
 async function abrirSolicitud(local) {
   localActivoId = local.id;

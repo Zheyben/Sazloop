@@ -40,18 +40,22 @@ function claveCarrito(usuarioId) { return `sazloop-carrito-${usuarioId}`; }
 export function leerCarrito(usuarioId) {
   try {
     const dato = JSON.parse(sessionStorage.getItem(claveCarrito(usuarioId)) || 'null');
-    if (!dato || !Number.isInteger(dato.ofertaId) || !Array.isArray(dato.lineas)) return null;
-    const lineas = dato.lineas.filter(l => Number.isInteger(l.varianteId) && Number.isInteger(l.cantidad) && l.cantidad > 0);
-    return lineas.length ? { ofertaId: dato.ofertaId, lineas } : null;
-  } catch { return null; }
+    const pedidos = Array.isArray(dato) ? dato : dato?.lineas ? [dato] : [];
+    return pedidos.map((pedido, indice) => ({
+      clave: typeof pedido.clave === 'string' ? pedido.clave : `anterior-${indice}`,
+      ofertaId: pedido.ofertaId,
+      lineas: Array.isArray(pedido.lineas) ? pedido.lineas.filter(linea =>
+        Number.isInteger(linea.varianteId) && Number.isInteger(linea.cantidad) && linea.cantidad > 0) : []
+    })).filter(pedido => Number.isInteger(pedido.ofertaId) && pedido.lineas.length);
+  } catch { return []; }
 }
 
-export function guardarCarrito(usuarioId, carrito) {
-  if (carrito?.lineas.length) sessionStorage.setItem(claveCarrito(usuarioId), JSON.stringify(carrito));
+export function guardarCarrito(usuarioId, pedidos) {
+  if (pedidos?.length) sessionStorage.setItem(claveCarrito(usuarioId), JSON.stringify(pedidos));
   else sessionStorage.removeItem(claveCarrito(usuarioId));
   const contador = document.querySelector('#contador-carrito');
   if (contador) {
-    const cantidad = carrito?.lineas.reduce((total, l) => total + l.cantidad, 0) || 0;
+    const cantidad = pedidos?.length || 0;
     contador.textContent = cantidad ? String(cantidad) : '';
     contador.hidden = !cantidad;
   }
@@ -79,13 +83,16 @@ export async function iniciarPortal(activa) {
       const enlace = el('a', { href }, icono(nombreIcono), el('span', { textContent: texto }));
       if (activa === href) enlace.setAttribute('aria-current', 'page');
       if (nombreIcono === 'compras') {
-        const cantidad = leerCarrito(usuario.id)?.lineas.reduce((total, l) => total + l.cantidad, 0) || 0;
+        const cantidad = leerCarrito(usuario.id).length;
         enlace.append(el('span', { id: 'contador-carrito', className: 'contador-carrito', textContent: cantidad ? String(cantidad) : '', hidden: !cantidad }));
       }
       return enlace;
     }));
+  const avatar = usuario.tieneFoto
+    ? el('img', { className: 'avatar-foto', src: '/api/perfil/foto', alt: '' })
+    : el('span', { className: 'avatar', textContent: iniciales });
   const perfil = el('details', { className: 'portal-perfil' },
-    el('summary', {}, el('span', { className: 'avatar', textContent: iniciales }), el('span', { className: 'nombre-perfil', textContent: nombre })),
+    el('summary', {}, avatar, el('span', { className: 'nombre-perfil', textContent: nombre })),
     el('div', { className: 'menu-perfil' },
       el('a', { href: 'perfil.html' }, icono('perfil'), 'Mi perfil'),
       el('button', { type: 'button', id: 'salir' }, icono('salir'), 'Cerrar sesión')));

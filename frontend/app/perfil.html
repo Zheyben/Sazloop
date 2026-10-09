@@ -11,17 +11,43 @@
 <body>
   <header id="portal-nav" class="portal-cabecera"></header>
   <main class="portal-principal">
+    <p><a href="notificaciones.html">Notificaciones</a></p>
     <section class="titulo-pagina">
       <p class="etiqueta">TU CUENTA</p>
       <h1>Mi <em>perfil.</em></h1>
     </section>
     <section class="perfil-datos" aria-labelledby="titulo-datos">
       <h2 id="titulo-datos">Datos de tu cuenta</h2>
-      <dl>
+      <img id="perfil-foto" alt="Tu foto de perfil" width="96" height="96" hidden>
+      <form id="form-foto" hidden>
+        <label>Foto de perfil (PNG o JPG, hasta 2 MB) <input name="archivo" type="file" accept="image/png,image/jpeg" required></label>
+        <button type="submit">Guardar foto</button>
+      </form>
+      <button id="editar-perfil" type="button">Modificar información</button>
+      <dl id="datos-perfil">
         <div><dt>Nombres</dt><dd id="perfil-nombres"></dd></div>
         <div><dt>Apellidos</dt><dd id="perfil-apellidos"></dd></div>
         <div><dt>Correo</dt><dd id="perfil-email"></dd></div>
+        <div><dt>Teléfono</dt><dd id="perfil-telefono"></dd></div>
+        <div><dt>Contraseña</dt><dd aria-label="Contraseña protegida">••••••••</dd></div>
       </dl>
+      <button id="editar-foto" type="button">Subir o cambiar foto</button>
+      <button id="editar-contrasena" type="button">Cambiar contraseña</button>
+      <form id="form-perfil" hidden>
+        <label>Nombres <input name="nombres" maxlength="80" required></label>
+        <label>Apellidos <input name="apellidos" maxlength="80" required></label>
+        <label>Correo <input name="email" type="email" maxlength="150" required></label>
+        <label>Teléfono <input name="telefono" type="tel" maxlength="20"></label>
+        <button type="submit">Guardar datos</button>
+        <button id="cancelar-perfil" type="button">Cancelar</button>
+      </form>
+      <form id="form-contrasena" hidden>
+        <h3>Cambiar contraseña</h3>
+        <label>Contraseña actual <input name="actual" type="password" autocomplete="current-password" required></label>
+        <label>Contraseña nueva <input name="nueva" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+        <button type="submit">Cambiar contraseña</button>
+      </form>
+      <p id="mensaje-perfil" role="status" aria-live="polite"></p>
     </section>
   </main>
 </body>

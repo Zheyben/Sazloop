@@ -79,6 +79,9 @@ public class Reserva {
             cascade = CascadeType.ALL, orphanRemoval = true)
     private Resena resena;
 
+    @Builder.Default @Column(name = "resena_omitida", nullable = false)
+    private boolean resenaOmitida = false;
+
     public enum EstadoReserva {
         PENDIENTE_PAGO, CONFIRMADA, RECOGIDA, CANCELADA, EXPIRADA
     }

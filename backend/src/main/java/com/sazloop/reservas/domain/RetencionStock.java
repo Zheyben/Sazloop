@@ -28,6 +28,10 @@ public class RetencionStock {
     @JoinColumn(name = "consumidor_id", nullable = false)
     private Consumidor consumidor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reserva_id")
+    private Reserva reserva;
+
     @Min(1)
     @Column(nullable = false)
     private int cantidad;
