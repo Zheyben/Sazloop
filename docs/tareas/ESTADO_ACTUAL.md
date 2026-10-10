@@ -38,7 +38,6 @@ Los 26 requisitos funcionales tienen backend y pantallas conectados. El sitio p�
 - Historial de packs entregados del trabajador, con su boleta: **no implementado** (pendiente de definir su alcance con el equipo).
 - Un error inesperado reportado en el portal de empresa no se pudo reproducir. Las respuestas del servidor ya muestran su código y la ruta, y el navegador lo registra en la consola.
 - Persistencia en MySQL: el perfil `mysql` existe, pero debe probarse en el equipo donde se hará la demostración. La base empieza vacía si no se restaura un respaldo.
-- La compra presencial (`qr.html`) y los términos (`terminos.html`) no tienen estilos; forman parte del portal del consumidor.
 - El sitio público menciona delivery con aplicaciones externas, aunque el informe lo deja fuera de la primera versión.
 - Las pantallas usan CSS propio y no Tailwind, aunque el informe menciona Tailwind.
 
