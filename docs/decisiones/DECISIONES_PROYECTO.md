@@ -222,7 +222,7 @@ El fin del horario es el único límite (DEC-008): el personal puede entregar un
 
 ## DEC-049 — Resolución de una solicitud en un solo paso
 
-El administrador revisa todos los documentos de una solicitud o renovación y la decide en una sola operación atómica (). La solicitud se aprueba únicamente si todos los documentos se aprueban; un documento vencido solo puede rechazarse. El motivo se arma con el comentario opcional del administrador o, si se rechaza, con las observaciones de cada documento. Ya no existe un paso de «decisión final» separado. El administrador no edita los datos transcritos: la fecha de vencimiento la declara el propietario al adjuntar el documento.
+El administrador revisa todos los documentos de una solicitud o renovación y la decide en una sola operación atómica (`POST /api/administradores/solicitudes/{id}/resolucion`). La solicitud se aprueba únicamente si todos los documentos se aprueban; un documento vencido solo puede rechazarse. El motivo se arma con el comentario opcional del administrador o, si se rechaza, con las observaciones de cada documento. Ya no existe un paso de «decisión final» separado. El administrador no edita los datos transcritos: la fecha de vencimiento la declara el propietario al adjuntar el documento.
 
 ## DEC-050 — Sesiones por rol
 
