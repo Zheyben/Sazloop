@@ -22,16 +22,34 @@ async function iniciar() {
   try {
     oferta = await solicitar(`/ofertas/${ofertaId}`);
     zona.replaceChildren(
-      el('h2', { textContent: `${oferta.pack} · ${oferta.establecimiento}` }),
-      el('p', { textContent: oferta.descripcion }),
-      el('p', { textContent: `Podría incluir: ${oferta.posiblesProductos}` }),
-      el('p', { textContent: `Recojo: ${fechaHora(oferta.inicioRecojo)} a ${fechaHora(oferta.finRecojo)}` }));
+      el('p', { className: 'pack-local', textContent: `${oferta.establecimiento} · ${oferta.distrito}` }),
+      el('h2', { textContent: oferta.pack }),
+      oferta.descripcion ? el('p', { className: 'detalle-descripcion', textContent: oferta.descripcion }) : null,
+      el('div', { className: 'detalle-posibles' },
+        el('span', { className: 'pack-dato-etiqueta', textContent: 'PODRÍA INCLUIR' }),
+        el('p', { textContent: oferta.posiblesProductos })),
+      el('p', { className: 'pack-horario', textContent: `Recojo: ${fechaHora(oferta.inicioRecojo)} a ${fechaHora(oferta.finRecojo)}` }));
     const variantes = document.querySelector('#variantesQr');
     for (const v of oferta.variantes) {
-      variantes.append(el('label', {},
-        `${tamanios[v.tamanio] || v.tamanio} · ${dinero(v.precioDescuento)} · ${v.stockDisponible} disponibles`,
-        el('input', { type: 'number', name: `v${v.id}`, min: 0, max: v.stockDisponible,
-          step: 1, value: 0, disabled: v.stockDisponible === 0 })));
+      const nombre = tamanios[v.tamanio] || v.tamanio;
+      const campo = el('input', { type: 'number', name: `v${v.id}`, min: 0, max: v.stockDisponible,
+        step: 1, value: 0, disabled: v.stockDisponible === 0, ariaLabel: `Cantidad de ${nombre}` });
+      const cambiar = delta => {
+        campo.value = Math.max(0, Math.min(v.stockDisponible, Math.trunc(Number(campo.value) || 0) + delta));
+        campo.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      variantes.append(el('div', { className: 'detalle-variante' },
+        el('div', { className: 'detalle-variante-info' },
+          el('strong', { textContent: nombre }),
+          el('span', {}, el('span', { className: 'detalle-variante-precio', textContent: dinero(v.precioDescuento) }),
+            ' ', el('s', { textContent: dinero(v.precioReferencial) })),
+          el('small', { textContent: `${v.stockDisponible} disponibles` })),
+        el('div', { className: 'detalle-cantidad' },
+          el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-menos', ariaLabel: `Quitar una unidad de ${nombre}`,
+            disabled: v.stockDisponible === 0, onclick: () => cambiar(-1) }),
+          campo,
+          el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-mas', ariaLabel: `Añadir una unidad de ${nombre}`,
+            disabled: v.stockDisponible === 0, onclick: () => cambiar(1) }))));
     }
     form.hidden = false;
     actualizarPago();
@@ -45,13 +63,17 @@ function lineas() {
 }
 
 function actualizarTotal() {
-  document.querySelector('#totalQr').textContent = `Total: ${dinero(lineas().reduce((s, l) =>
-    s + l.cantidad * Number(l.variante.precioDescuento), 0))}`;
+  document.querySelector('#totalQr').textContent = dinero(lineas().reduce((s, l) =>
+    s + l.cantidad * Number(l.variante.precioDescuento), 0));
+  for (const fila of document.querySelectorAll('#variantesQr .detalle-variante'))
+    fila.classList.toggle('seleccionada', Number(fila.querySelector('input').value) > 0);
 }
 
 function actualizarPago() {
   const medio = form.elements.medioPago.value;
   validado = medio === 'EFECTIVO';
+  for (const boton of document.querySelectorAll('#metodosQr .carrito-metodo'))
+    boton.setAttribute('aria-checked', String(boton.dataset.valor === medio));
   form.elements.terminos.checked = false;
   document.querySelector('#confirmarQr').disabled = true;
   for (const [id, activo] of [['yapeQr', medio === 'YAPE'], ['tarjetaQr', medio === 'TARJETA_DEBITO']]) {
@@ -70,6 +92,13 @@ form.addEventListener('input', evento => {
   if (evento.target.name?.startsWith('v')) actualizarTotal();
 });
 form.elements.medioPago.addEventListener('change', actualizarPago);
+for (const boton of document.querySelectorAll('#metodosQr .carrito-metodo')) {
+  boton.addEventListener('click', () => {
+    if (form.elements.medioPago.value === boton.dataset.valor) return;
+    form.elements.medioPago.value = boton.dataset.valor;
+    form.elements.medioPago.dispatchEvent(new Event('change'));
+  });
+}
 form.elements.terminos.addEventListener('change', () => {
   document.querySelector('#confirmarQr').disabled = !validado || !form.elements.terminos.checked;
 });
@@ -130,7 +159,9 @@ form.addEventListener('submit', async evento => {
       } })
     });
     form.hidden = true;
-    document.querySelector('#resultadoQr').replaceChildren(
+    const resultadoQr = document.querySelector('#resultadoQr');
+    resultadoQr.className = 'compra-confirmada';
+    resultadoQr.replaceChildren(
       el('h2', { textContent: medioPago === 'EFECTIVO' ? 'Entrega el efectivo al trabajador' : 'Compra confirmada' }),
       el('p', { textContent: `Código: ${respuesta.codigoRecojo}` }),
       el('p', { textContent: `Total: ${dinero(respuesta.total)}` }),

@@ -9,7 +9,9 @@ const detalle = document.querySelector('[data-panel-vista="locales:detalle"]');
 let empresa = null;
 
 pintarIconos();
+let vistaActual = ['resumen', null];
 const mostrar = crearNavegacion((vista, datos) => {
+  vistaActual = [vista, datos];
   const cargas = { resumen: cargarResumen, locales: cargarLocales, 'locales:detalle': () => abrirLocal(datos), avisos: cargarAvisos };
   cargas[vista]?.().catch(error => mensaje(error.message, true));
 });
@@ -56,8 +58,38 @@ document.querySelector('#form-empresa').addEventListener('submit', async evento 
 document.querySelector('#actualizar-resumen').addEventListener('click', () => cargarResumen().catch(e => mensaje(e.message, true)));
 
 async function cargarResumen() {
-  const [indicadores, locales] = await Promise.all([
+  // Cada consulta es independiente: si una falla, el resto del resumen se sigue mostrando.
+  const [resIndicadores, resLocales] = await Promise.allSettled([
     solicitar('/empresas/actual/indicadores'), solicitar('/empresas/actual/establecimientos')]);
+  const locales = resLocales.status === 'fulfilled' ? resLocales.value : [];
+  pintarAlertas(locales);
+  const cifras = document.querySelector('#cifras-empresa');
+  const detalle = document.querySelector('#detalle-establecimientos');
+  if (resIndicadores.status === 'rejected') {
+    const aviso = banda('peligro', 'No se pudieron cargar los indicadores', resIndicadores.reason.message);
+    cifras.replaceChildren(aviso);
+    detalle.replaceChildren();
+    return;
+  }
+  const { establecimientos, total } = resIndicadores.value;
+  cifras.replaceChildren(
+    cifra('Ventas', String(total.ventas), `${dinero(total.importeVentas)} vendidos`, true),
+    cifra('Ingresos de tus locales', dinero(total.ingresos), 'Después de la comisión'),
+    cifra('Comisión de Sazloop', dinero(total.comisiones), '10 % de lo cobrado'),
+    cifra('Cancelaciones', String(total.cancelaciones), 'Con reembolso del 50 %'),
+    cifra('No recogidas', String(total.noRecogidas), 'Pagadas y sin entrega'),
+    cifra('Calificación', total.cantidadResenas ? `${Number(total.calificacionPromedio).toFixed(1)} / 5` : '—',
+      `${total.cantidadResenas} ${total.cantidadResenas === 1 ? 'reseña' : 'reseñas'}`),
+    cifra('Packs entregados', String(total.packsEntregados), 'Entregados en vez de descartados'));
+  if (!establecimientos.length) {
+    detalle.replaceChildren(vacio('Aún no tienes locales', 'Registra tu primer establecimiento para empezar.',
+      el('button', { type: 'button', textContent: 'Agregar local', onclick: () => { mostrar('locales'); abrirFormularioLocal(); } })));
+    return;
+  }
+  detalle.replaceChildren(...establecimientos.map(i => tarjetaIndicadores(i, locales.find(l => l.id === i.establecimientoId))));
+}
+
+function pintarAlertas(locales) {
   const alertas = [];
   for (const local of locales.filter(l => l.estado === 'SUSPENDIDO')) {
     alertas.push(banda('peligro', `${local.nombre} está suspendido`,
@@ -65,37 +97,39 @@ async function cargarResumen() {
       el('button', { type: 'button', className: 'secundario', style: 'margin-top:.6rem', textContent: 'Ver documentos',
         onclick: () => mostrar('locales:detalle', local.id) })));
   }
-  const pendientes = locales.filter(l => l.estado === 'PENDIENTE_APROBACION').length;
-  if (pendientes) alertas.push(banda('alerta', `${pendientes} ${pendientes === 1 ? 'local espera' : 'locales esperan'} aprobación`,
-    'Adjunta sus documentos y envía la solicitud desde Mis locales.'));
+  const pendientes = locales.filter(l => l.estado === 'PENDIENTE_APROBACION');
+  if (pendientes.length) alertas.push(banda('alerta',
+    `${pendientes.length} ${pendientes.length === 1 ? 'local espera' : 'locales esperan'} aprobación`,
+    'Adjunta sus documentos y envía la solicitud desde Mis locales; el administrador la revisa y te avisa el resultado.'));
   const sinCuenta = locales.filter(l => l.estado === 'ACTIVO' && !l.cuentaTrabajador);
   if (sinCuenta.length) alertas.push(banda('info', 'Crea la cuenta del trabajador',
     `${sinCuenta.map(l => l.nombre).join(', ')} ya ${sinCuenta.length === 1 ? 'fue aprobado' : 'fueron aprobados'}; su personal necesita una cuenta para publicar packs y entregar pedidos.`));
   document.querySelector('#alertas-resumen').replaceChildren(...alertas);
+}
 
-  const t = indicadores.total;
-  document.querySelector('#cifras-empresa').replaceChildren(
-    cifra('Ventas', String(t.ventas), `${dinero(t.importeVentas)} vendidos`, true),
-    cifra('Ingresos de tus locales', dinero(t.ingresos), 'Después de la comisión'),
-    cifra('Comisión de Sazloop', dinero(t.comisiones), '10 % de lo cobrado'),
-    cifra('Cancelaciones', String(t.cancelaciones), 'Con reembolso del 50 %'),
-    cifra('No recogidas', String(t.noRecogidas), 'Pagadas y sin entrega'),
-    cifra('Calificación', t.cantidadResenas ? `${Number(t.calificacionPromedio).toFixed(1)} / 5` : '—',
-      `${t.cantidadResenas} ${t.cantidadResenas === 1 ? 'reseña' : 'reseñas'}`),
-    cifra('Impacto', `${t.packsEntregados} ${t.packsEntregados === 1 ? 'pack' : 'packs'}`, 'Entregados en vez de descartados'));
-
-  const zona = document.querySelector('#tabla-indicadores');
-  if (!indicadores.establecimientos.length) {
-    zona.replaceChildren(vacio('Aún no tienes locales', 'Registra tu primer establecimiento para empezar.',
-      el('button', { type: 'button', textContent: 'Agregar local', onclick: () => { mostrar('locales'); abrirFormularioLocal(); } })));
-    return;
-  }
-  const columnas = [['Local'], ['Ventas', 'numero'], ['Importe vendido', 'numero'], ['Comisión', 'numero'], ['Ingresos', 'numero'],
-    ['Cancelaciones', 'numero'], ['No recogidas', 'numero'], ['Calificación', 'numero'], ['Packs entregados', 'numero']];
-  const fila = i => [i.establecimiento, String(i.ventas), dinero(i.importeVentas), dinero(i.comisiones), dinero(i.ingresos),
-    String(i.cancelaciones), String(i.noRecogidas),
-    i.cantidadResenas ? `${Number(i.calificacionPromedio).toFixed(1)} (${i.cantidadResenas})` : '—', String(i.packsEntregados)];
-  zona.replaceChildren(tabla(columnas, indicadores.establecimientos.map(fila), fila({ ...t, establecimiento: 'Total empresa' })));
+function tarjetaIndicadores(i, local) {
+  const resenas = i.resenasRecientes || [];
+  return el('article', { className: 'tarjeta-panel', style: 'margin-top:1rem' },
+    el('div', { className: 'vista-encabezado', style: 'margin-bottom:1rem' },
+      el('div', {}, el('h3', { style: 'margin:0', textContent: i.establecimiento }),
+        local ? el('p', { className: 'nota', style: 'margin:.2rem 0 0', textContent: `${local.direccion}, ${local.distrito}` }) : null),
+      local ? insigniaLocal(local.estado) : null),
+    el('div', { className: 'cifras' },
+      cifra('Ventas', String(i.ventas), `${dinero(i.importeVentas)} vendidos`),
+      cifra('Ingresos del local', dinero(i.ingresos), 'Después de la comisión'),
+      cifra('Comisión de Sazloop', dinero(i.comisiones), '10 % de lo cobrado'),
+      cifra('Cancelaciones', String(i.cancelaciones), 'Con reembolso del 50 %'),
+      cifra('No recogidas', String(i.noRecogidas), 'Pagadas y sin entrega'),
+      cifra('Calificación', i.cantidadResenas ? `${Number(i.calificacionPromedio).toFixed(1)} / 5` : '—',
+        `${i.cantidadResenas} ${i.cantidadResenas === 1 ? 'reseña' : 'reseñas'}`),
+      cifra('Packs entregados', String(i.packsEntregados), 'Impacto de este local')),
+    el('h4', { style: 'margin:1.2rem 0 .6rem; color: var(--bosque); font: 400 1.2rem/1.2 var(--serif)', textContent: 'Reseñas recientes' }),
+    resenas.length
+      ? el('ul', { className: 'lista-avisos' }, ...resenas.map(r => el('li', { className: 'aviso-item', style: 'grid-template-columns:1fr' },
+        el('strong', { textContent: '★'.repeat(r.calificacion) + '☆'.repeat(5 - r.calificacion) }),
+        el('p', { textContent: r.comentario || 'Sin comentario.' }),
+        el('div', { className: 'pie-aviso' }, el('span', { textContent: fecha(r.fecha.slice(0, 10)) })))))
+      : el('p', { className: 'nota', style: 'margin:0', textContent: 'Todavía no hay reseñas para este local.' }));
 }
 
 // ---------- Locales ----------
@@ -306,3 +340,11 @@ function pintarContador(avisos) {
   const pendientes = avisos.filter(a => !a.leida).length;
   document.querySelector('#contador-avisos').textContent = pendientes ? String(pendientes) : '';
 }
+
+// Si el administrador aprueba o rechaza mientras esta pestaña estaba en segundo plano, se actualiza al volver.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !empresa || vistaActual[0] === 'registro') return;
+  if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+  actualizarContador();
+  if (vistaActual[0] !== 'locales:detalle' || !detalle.querySelector('form')) mostrar(vistaActual[0], vistaActual[1]);
+});

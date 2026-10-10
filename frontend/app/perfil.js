@@ -13,6 +13,10 @@ export function montarPerfil(usuario) {
     document.querySelector('#perfil-apellidos').textContent = usuario.apellidos;
     document.querySelector('#perfil-email').textContent = usuario.email;
     document.querySelector('#perfil-telefono').textContent = usuario.telefono || 'No registrado';
+    document.querySelector('#perfil-nombre-completo').textContent = `${usuario.nombres} ${usuario.apellidos}`.trim();
+    document.querySelector('#perfil-correo-corto').textContent = usuario.email;
+    document.querySelector('#perfil-iniciales').textContent = [usuario.nombres, usuario.apellidos]
+      .map(valor => valor.trim().charAt(0).toUpperCase()).join('');
   }
   pintarDatos();
   document.querySelector('#editar-perfil').addEventListener('click', () => {
@@ -41,11 +45,12 @@ export function montarPerfil(usuario) {
   function mostrarFoto() {
     foto.src = `/api/perfil/foto?t=${Date.now()}`;
     foto.hidden = false;
+    document.querySelector('#perfil-iniciales').hidden = true;
   }
 
   formulario.addEventListener('submit', async evento => {
     evento.preventDefault();
-    const boton = formulario.querySelector('button');
+    const boton = formulario.querySelector('button[type="submit"]');
     boton.disabled = true;
     try {
       const datos = await solicitar('/perfil', {
@@ -67,7 +72,7 @@ export function montarPerfil(usuario) {
   document.querySelector('#form-contrasena').addEventListener('submit', async evento => {
     evento.preventDefault();
     const form = evento.currentTarget;
-    const boton = form.querySelector('button');
+    const boton = form.querySelector('button[type="submit"]');
     boton.disabled = true;
     try {
       await solicitar('/perfil/contrasena', {
@@ -88,7 +93,7 @@ export function montarPerfil(usuario) {
       estado('Elige una foto PNG o JPG de hasta 2 MB.', true);
       return;
     }
-    const boton = form.querySelector('button');
+    const boton = form.querySelector('button[type="submit"]');
     boton.disabled = true;
     try {
       await solicitar('/perfil/foto', { method: 'POST', body: new FormData(form) });

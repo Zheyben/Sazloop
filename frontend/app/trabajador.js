@@ -22,7 +22,10 @@ let resumen = null;
 let packs = [];
 
 pintarIconos();
-const mostrarVista = crearNavegacion(vista => { if (vista === 'validar') document.querySelector('#form-codigo input').focus(); });
+const mostrarVista = crearNavegacion(vista => {
+  if (vista === 'validar') document.querySelector('#form-codigo input').focus();
+  if (vista === 'vigente' && resumen) cargar();
+});
 
 try {
   await solicitar('/local/sesion');
@@ -37,7 +40,6 @@ document.querySelector('#salir').addEventListener('click', async () => {
 });
 
 prepararFormulario();
-await cargar();
 
 async function cargar() {
   try {
@@ -71,15 +73,18 @@ function pintarVigente() {
   const porTamanio = oferta ? oferta.variantes.map(v => `${tamanios[v.tamanio]}: ${v.stockDisponible}`).join(' · ') : 'Sin pack publicado';
   document.querySelector('#cifras-stock').replaceChildren(
     cifra('Stock disponible', `${resumen.stockDisponible} ${resumen.stockDisponible === 1 ? 'unidad' : 'unidades'}`, porTamanio, true),
-    cifra('Ganancia neta de hoy', dinero(resumen.dia.ganancia), 'Pedidos entregados hoy'),
+    cifra('Ganancia neta de hoy', dinero(resumen.dia.ganancia), `${resumen.dia.packsEntregados} ${resumen.dia.packsEntregados === 1 ? 'pack entregado' : 'packs entregados'}`),
     cifra('Sin vender hoy', String(resumen.dia.unidadesNoVendidas), 'Ofertas cerradas hoy'));
   document.querySelector('#periodos').replaceChildren(...[
     ['Hoy', resumen.dia], ['Esta semana', resumen.semana], ['Este mes', resumen.mes]
   ].map(([nombre, periodo]) => el('article', { className: 'periodo' },
     el('h4', { textContent: nombre }),
     el('dl', {},
-      el('div', {}, el('dt', { textContent: 'Ganancia neta' }), el('dd', { textContent: dinero(periodo.ganancia) })),
-      el('div', {}, el('dt', { textContent: 'Unidades sin vender' }), el('dd', { textContent: String(periodo.unidadesNoVendidas) }))))));
+      fila('Venta de lo entregado', dinero(periodo.ventaBruta)),
+      fila('Comisión de Sazloop (10 %)', '− ' + dinero(periodo.comision)),
+      fila('Ganancia neta', dinero(periodo.ganancia), true),
+      fila('Packs entregados', String(periodo.packsEntregados)),
+      fila('Unidades sin vender', String(periodo.unidadesNoVendidas))))));
 
   const zona = document.querySelector('#pack-vigente');
   if (!oferta) {
@@ -107,7 +112,19 @@ function pintarVigente() {
     el('div', {}, el('span', { className: 'dato-titulo', textContent: 'Tamaños, precios y stock' }),
       tabla([['Tamaño'], ['Precio regular', 'numero'], ['Con descuento', 'numero'], ['Disponibles', 'numero']],
         oferta.variantes.map(v => [tamanios[v.tamanio], dinero(v.precioReferencial), dinero(v.precioDescuento), String(v.stockDisponible)]))),
-    qrOferta(oferta.id, resumen.tokenQr)));
+    qrSeguro(oferta.id, resumen.tokenQr)));
+}
+
+const fila = (titulo, valor, destacada = false) => el('div', { className: destacada ? 'fila-neta' : '' },
+  el('dt', { textContent: titulo }), el('dd', { textContent: valor }));
+
+/** Un fallo al dibujar el QR no debe ocultar la información del pack. */
+function qrSeguro(ofertaId, token) {
+  try { return qrOferta(ofertaId, token); }
+  catch (error) {
+    console.error('[Sazloop] No se pudo generar el QR', error);
+    return el('p', { className: 'nota', textContent: 'No se pudo generar el código QR de esta oferta.' });
+  }
 }
 
 function qrOferta(ofertaId, token) {
@@ -161,13 +178,13 @@ function construirCampos() {
 }
 
 function horarioSugerido() {
-  const inicio = new Date(Date.now() + 15 * 60000);
-  inicio.setMinutes(Math.ceil(inicio.getMinutes() / 15) * 15, 0, 0);
+  const inicio = new Date();
+  inicio.setSeconds(0, 0);
   const fin = new Date(inicio.getTime() + 3 * 3600000);
   const local = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   form.elements.inicioRecojo.value = local(inicio);
   form.elements.finRecojo.value = local(fin);
-  form.elements.inicioRecojo.min = local(new Date());
+  form.elements.inicioRecojo.removeAttribute('min');
 }
 
 function alternarOrigen() {
@@ -220,7 +237,7 @@ function validarPaso(indice) {
   if (indice === 2) {
     const inicio = new Date(form.elements.inicioRecojo.value);
     const fin = new Date(form.elements.finRecojo.value);
-    if (!(inicio > new Date())) { estadoEn(estado, 'El inicio del recojo debe ser posterior a este momento.', true); return false; }
+    if (inicio < new Date(Date.now() - 5 * 60000)) { estadoEn(estado, 'El inicio del recojo no puede estar en el pasado.', true); return false; }
     if (!(fin > inicio)) { estadoEn(estado, 'El fin del recojo debe ser posterior al inicio.', true); return false; }
   }
   return true;
@@ -307,35 +324,40 @@ document.querySelector('#form-codigo').addEventListener('submit', async evento =
   }
 });
 
-function pintarCompra(compra, codigo) {
+function pintarCompra(compra, codigo, recienEntregada = false) {
   const [texto, tono] = ESTADOS_COMPRA[compra.estado] || [compra.estado, ''];
-  const antesDeHorario = compra.estado === 'CONFIRMADA' && new Date(compra.inicioRecojo) > new Date();
   const zonaAccion = el('div', { className: 'acciones-formulario' });
   const estado = el('p', { className: 'estado-formulario', role: 'status' });
   if (compra.estado === 'CONFIRMADA') {
-    zonaAccion.append(el('button', { type: 'button', textContent: 'Confirmar entrega', disabled: antesDeHorario,
+    zonaAccion.append(el('button', { type: 'button', textContent: 'Confirmar entrega',
       onclick: e => confirmar(e.currentTarget, `/local/recojos/${encodeURIComponent(codigo)}/confirmar`, estado, codigo) }));
-    if (antesDeHorario) estadoEn(estado, `El horario de recojo empieza el ${fecha(compra.inicioRecojo)} a las ${hora(compra.inicioRecojo)}.`, true);
+    estadoEn(estado, `Entrega el pedido al cliente y luego confirma. Puedes entregarlo hasta las ${hora(compra.finRecojo)}.`);
   } else if (compra.estado === 'PENDIENTE_PAGO' && compra.medioPago === 'EFECTIVO') {
     zonaAccion.append(el('button', { type: 'button', textContent: 'Recibí el efectivo y entregué el pedido',
       onclick: e => confirmar(e.currentTarget, `/local/efectivo/${encodeURIComponent(codigo)}/confirmar`, estado, codigo) }));
     estadoEn(estado, 'Cobra el total en efectivo antes de confirmar. La reserva se libera a los 10 minutos si no se confirma.');
-  } else {
+  } else if (!recienEntregada) {
     estadoEn(estado, compra.estado === 'RECOGIDA' ? 'Este pedido ya fue entregado; el código no puede volver a usarse.'
       : 'Este pedido no tiene una entrega pendiente.', compra.estado !== 'RECOGIDA');
   }
-  resultado.replaceChildren(el('article', { className: 'tarjeta-panel' },
-    el('header', {}, el('span', { className: 'codigo-grande', textContent: compra.codigoRecojo }), insignia(texto, tono)),
-    el('span', { className: 'dato-titulo', textContent: 'Entregar' }),
-    el('ul', { className: 'entrega' }, ...(compra.lineas || []).map(l =>
-      el('li', {}, el('span', { textContent: `${l.cantidad} × ${tamanios[l.tamanio] || l.tamanio}` }),
-        el('span', { textContent: dinero(l.precioUnitario * l.cantidad) })))),
-    el('dl', { className: 'datos-lista' },
-      dato('Cliente', compra.cliente),
-      dato('Total', dinero(compra.total)),
-      dato('Medio de pago', MEDIOS[compra.medioPago] || compra.medioPago),
-      dato('Horario de recojo', rangoHorario(compra.inicioRecojo, compra.finRecojo))),
-    zonaAccion, estado));
+  const comision = Math.round(Number(compra.total) * 10) / 100;
+  resultado.replaceChildren(
+    recienEntregada ? el('div', { className: 'confirmado', role: 'status' }, el('span', { ariaHidden: 'true', textContent: '✓' }),
+      el('div', {}, el('strong', { textContent: 'Entrega confirmada correctamente' }),
+        el('p', { style: 'margin:.2rem 0 0; font-weight:500', textContent:
+          `El código quedó utilizado. Venta ${dinero(compra.total)} − comisión de Sazloop ${dinero(comision)} = ganancia neta ${dinero(Number(compra.total) - comision)}; ya figura en «Pack sorpresa».` }))) : null,
+    el('article', { className: 'tarjeta-panel', style: recienEntregada ? 'margin-top:1rem' : '' },
+      el('header', {}, el('span', { className: 'codigo-grande', textContent: compra.codigoRecojo }), insignia(texto, tono)),
+      el('span', { className: 'dato-titulo', textContent: 'Entregar' }),
+      el('ul', { className: 'entrega' }, ...(compra.lineas || []).map(l =>
+        el('li', {}, el('span', { textContent: `${l.cantidad} × ${tamanios[l.tamanio] || l.tamanio}` }),
+          el('span', { textContent: dinero(l.precioUnitario * l.cantidad) })))),
+      el('dl', { className: 'datos-lista' },
+        dato('Cliente', compra.cliente),
+        dato('Total', dinero(compra.total)),
+        dato('Medio de pago', MEDIOS[compra.medioPago] || compra.medioPago),
+        dato('Horario de recojo', rangoHorario(compra.inicioRecojo, compra.finRecojo))),
+      zonaAccion, estado));
 }
 
 const dato = (titulo, valor) => el('div', {}, el('dt', { textContent: titulo }), el('dd', { textContent: valor || '—' }));
@@ -344,14 +366,15 @@ async function confirmar(boton, ruta, estado, codigo) {
   boton.disabled = true;
   try {
     const compra = await solicitar(ruta, { method: 'POST' });
-    pintarCompra(compra, codigo);
-    resultado.querySelector('.acciones-formulario').replaceWith(el('div', { className: 'confirmado' },
-      el('span', { ariaHidden: 'true', textContent: '✓' }), 'Entrega confirmada. El código quedó utilizado.'));
-    resultado.querySelector('.estado-formulario').remove();
+    pintarCompra(compra, codigo, true);
     document.querySelector('#form-codigo').reset();
+    mensaje('Entrega confirmada. La ganancia del día se actualizó en «Pack sorpresa».');
     await cargar();
   } catch (error) {
     estadoEn(estado, error.message, true);
     boton.disabled = false;
   }
 }
+
+// La primera carga va al final: las constantes y los manejadores de arriba deben estar definidos antes de usarse.
+await cargar();

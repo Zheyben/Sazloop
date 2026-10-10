@@ -29,12 +29,14 @@ Los 26 requisitos funcionales tienen backend y pantallas conectados. El sitio p�
 
 ## Cómo se comprobó
 
-- **Pruebas automáticas** (`mvnw.cmd test`): 7 pruebas en 4 clases, todas en verde. `FlujoAfp2Tests` recorre afiliación, publicación, compra, cancelación, efectivo, vencimiento e indicadores; `VigenciaYAvisosTests` comprueba suspensión, entrega durante la suspensión, renovación, avisos e impacto.
+- **Pruebas automáticas** (`mvnw.cmd test`): 11 pruebas en 6 clases, todas en verde. `FlujoAfp2Tests` recorre afiliación, publicación, compra, cancelación, efectivo, vencimiento e indicadores; `VigenciaYAvisosTests` comprueba suspensión, renovación, avisos e impacto; `ResolucionYSesionesTests` comprueba la resolución en un paso, la entrega desde el pago con la comisión del 10 % y las sesiones simultáneas; `PortalEmpresaEtapasTests` comprueba que las consultas del portal de empresa respondan en cada etapa de la afiliación.
 - **Recorrido completo por la API** con la aplicación en ejecución (perfil `dev`, 9 de octubre de 2026): registro, afiliación, revisión, cuenta del trabajador, publicación, compra de dos pedidos, validación del código, entrega, cancelación, indicadores, notificaciones y suspensión real provocada al vencer un documento desde la consola de H2, seguida de su renovación.
 
 ## Pendiente o limitado
 
-- Falta revisar en el navegador las pantallas nuevas en celular y escritorio (la comprobación anterior fue por API).
+- **Las pantallas no se han visto en un navegador real.** Se comprobaron por API, con un simulador del DOM que ejecuta cada script y con revisión de código (así se detectó que `trabajador.js` usaba constantes antes de definirlas). Falta revisarlas en celular y escritorio.
+- Historial de packs entregados del trabajador, con su boleta: **no implementado** (pendiente de definir su alcance con el equipo).
+- Un error inesperado reportado en el portal de empresa no se pudo reproducir. Las respuestas del servidor ya muestran su código y la ruta, y el navegador lo registra en la consola.
 - Persistencia en MySQL: el perfil `mysql` existe, pero debe probarse en el equipo donde se hará la demostración. La base empieza vacía si no se restaura un respaldo.
 - La compra presencial (`qr.html`) y los términos (`terminos.html`) no tienen estilos; forman parte del portal del consumidor.
 - El sitio público menciona delivery con aplicaciones externas, aunque el informe lo deja fuera de la primera versión.

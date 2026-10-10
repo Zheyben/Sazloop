@@ -4,42 +4,66 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sazloop | Compra presencial</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal.css">
   <script type="module" src="qr.js"></script>
 </head>
-<body>
-  <header><a href="consumidor.html">Sazloop</a></header>
-  <main>
-    <h1>Oferta del establecimiento</h1>
-    <section id="ofertaQr" aria-live="polite">Cargando oferta…</section>
-    <form id="formQr" hidden>
-      <fieldset id="variantesQr"><legend>Elige las unidades</legend></fieldset>
-      <p id="totalQr"></p>
-      <label>Medio de pago
-        <select name="medioPago">
+<body class="pagina-qr">
+  <header class="cabecera-app">
+    <a class="marca-app" href="consumidor.html"><span class="marca-icono">✳</span> Sazloop<span class="marca-punto">.</span></a>
+    <a class="enlace-cabecera" href="compras.html">Mis compras</a>
+  </header>
+  <main class="qr-principal">
+    <section class="titulo-pagina">
+      <p class="etiqueta">COMPRA PRESENCIAL</p>
+      <h1>Tu pack, <em>aquí y ahora.</em></h1>
+      <p>Elige tus unidades y paga con Yape, tarjeta o efectivo en el mismo local.</p>
+    </section>
+
+    <section id="ofertaQr" class="qr-oferta" aria-live="polite">Cargando oferta…</section>
+
+    <form id="formQr" class="qr-formulario" hidden>
+      <fieldset id="variantesQr" class="qr-grupo">
+        <legend>Elige tus unidades</legend>
+      </fieldset>
+      <div class="qr-total"><span>Total</span><strong id="totalQr"></strong></div>
+
+      <fieldset class="qr-grupo">
+        <legend>Medio de pago</legend>
+        <select name="medioPago" hidden tabindex="-1">
           <option value="YAPE">Yape</option>
           <option value="TARJETA_DEBITO">Tarjeta de débito</option>
           <option value="EFECTIVO">Efectivo en el establecimiento</option>
         </select>
-      </label>
-      <fieldset id="yapeQr">
-        <legend>Yape</legend>
-        <label>Número peruano <input name="telefonoYape" type="tel" inputmode="numeric" pattern="9[0-9]{8}" maxlength="9" required></label>
-        <button id="siguienteYapeQr" type="button">Siguiente</button>
-        <div id="codigoYapeQr" hidden>
-          <label>Código de seis dígitos <input name="codigoYape" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
-          <button id="validarYapeQr" type="button">Validar</button>
+        <div id="metodosQr" class="carrito-metodos tres" role="radiogroup" aria-label="Medio de pago">
+          <button type="button" class="carrito-metodo" role="radio" aria-checked="true" data-valor="YAPE"><strong>Yape</strong><small>Con tu celular</small></button>
+          <button type="button" class="carrito-metodo" role="radio" aria-checked="false" data-valor="TARJETA_DEBITO"><strong>Tarjeta de débito</strong><small>Con tu tarjeta</small></button>
+          <button type="button" class="carrito-metodo" role="radio" aria-checked="false" data-valor="EFECTIVO"><strong>Efectivo</strong><small>Pagas al trabajador</small></button>
         </div>
+
+        <fieldset id="yapeQr" class="qr-subgrupo">
+          <legend>Yape</legend>
+          <label>Número peruano <input name="telefonoYape" type="tel" inputmode="numeric" pattern="9[0-9]{8}" maxlength="9" required></label>
+          <button id="siguienteYapeQr" type="button">Siguiente</button>
+          <div id="codigoYapeQr" hidden>
+            <label>Código de seis dígitos <input name="codigoYape" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label>
+            <button id="validarYapeQr" type="button">Validar</button>
+          </div>
+        </fieldset>
+        <fieldset id="tarjetaQr" class="qr-subgrupo" hidden disabled>
+          <legend>Tarjeta de débito</legend>
+          <label>Número de tarjeta <input name="numeroTarjeta" inputmode="numeric" autocomplete="cc-number" required></label>
+          <label>Nombre del titular <input name="titular" autocomplete="cc-name" required></label>
+          <div class="qr-dos">
+            <label>Vencimiento <input name="vencimiento" type="month" autocomplete="cc-exp" required></label>
+            <label>CVV o CVC <input name="cvv" type="password" inputmode="numeric" minlength="3" maxlength="4" required></label>
+          </div>
+          <button id="validarTarjetaQr" type="button">Validar</button>
+        </fieldset>
+        <p id="ayudaEfectivoQr" class="qr-ayuda" hidden>Entrega el dinero al trabajador antes de que venza la reserva (10 minutos). El pedido se confirma cuando él cobra.</p>
       </fieldset>
-      <fieldset id="tarjetaQr" hidden disabled>
-        <legend>Tarjeta de débito</legend>
-        <label>Número de tarjeta <input name="numeroTarjeta" inputmode="numeric" autocomplete="cc-number" required></label>
-        <label>Nombre del titular <input name="titular" autocomplete="cc-name" required></label>
-        <label>Vencimiento <input name="vencimiento" type="month" autocomplete="cc-exp" required></label>
-        <label>CVV o CVC <input name="cvv" type="password" inputmode="numeric" minlength="3" maxlength="4" required></label>
-        <button id="validarTarjetaQr" type="button">Validar</button>
-      </fieldset>
-      <p id="ayudaEfectivoQr" hidden>Entrega el dinero al trabajador antes de que venza la reserva.</p>
-      <label><input name="terminos" type="checkbox" required> Acepto los <a href="terminos.html" target="_blank">términos y condiciones</a>.</label>
+
+      <label class="carrito-terminos"><input name="terminos" type="checkbox" required> Acepto los <a href="terminos.html" target="_blank" rel="noopener">términos y condiciones</a>.</label>
       <button id="confirmarQr" type="submit" disabled>Confirmar compra</button>
       <p id="mensajeQr" role="status" aria-live="polite"></p>
     </form>

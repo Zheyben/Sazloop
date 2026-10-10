@@ -263,3 +263,144 @@
   .panel-filtros:not([hidden]) { animation: none; }
   .detalle-pack[open] { animation: none; }
 }
+
+/* ===== Avance 2: carrito, historial, reseña, perfil y compra presencial ===== */
+.avatar-foto { width: 42px; height: 42px; }
+
+/* Carrito: pedidos a la izquierda, resumen y pago a la derecha */
+.carrito-formulario { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: start; gap: 1.4rem; }
+.carrito-pedidos { display: grid; gap: 1rem; min-width: 0; }
+.carrito-pedido { display: grid; gap: 1rem; padding: 1.4rem; border: 1px solid #dbe3cf; border-radius: 1.3rem; background: var(--marfil); box-shadow: 0 10px 26px rgba(24, 58, 43, .045); }
+.carrito-pedido.no-disponible { border-style: dashed; background: #f6efe5; }
+.carrito-pedido-cabecera .etiqueta { margin: 0 0 .2rem; }
+.carrito-pedido-cabecera h3 { margin: 0; color: var(--bosque-oscuro); font: 400 1.7rem/1.15 var(--serif); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.carrito-local, .carrito-horario { margin: .25rem 0 0; color: var(--secundario); font-size: .88rem; }
+.carrito-lineas { display: grid; gap: .7rem; }
+.carrito-pedido-pie { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .8rem; padding-top: 1rem; border-top: 1px solid var(--borde); }
+.carrito-pedido-pie > div { display: grid; }
+.carrito-pedido-pie span { color: var(--secundario); font-size: .78rem; }
+.carrito-subtotal { color: var(--bosque); font: 400 1.5rem/1.2 var(--serif); }
+.carrito-quitar { min-height: 40px; padding: .4rem 1rem; font-size: .84rem; }
+.carrito-pago-panel { position: sticky; top: 100px; min-width: 0; padding: 1.5rem; border: 1px solid #dbe3cf; border-radius: 1.3rem; background: var(--marfil); box-shadow: 0 10px 26px rgba(24, 58, 43, .045); }
+.carrito-pago-panel h3 { margin: 0 0 1rem; color: var(--bosque); font: 400 1.7rem/1.2 var(--serif); }
+.carrito-total-fila { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1rem 1.1rem; border-radius: 1rem; background: var(--bosque); color: #fff; }
+.carrito-total-fila span { color: #dfebd9; font-size: .85rem; }
+.carrito-total-fila .carrito-total { color: #fff; font: 400 1.8rem/1.1 var(--serif); }
+.carrito-nota { margin: .8rem 0 1.2rem; color: var(--secundario); font-size: .84rem; }
+.carrito-metodos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin: .5rem 0 1rem; }
+.carrito-metodos.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.carrito-metodo { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: .15rem; min-height: 64px; padding: .8rem .9rem; border: 1px solid #becdb6; border-radius: 1rem; background: var(--crema); color: var(--bosque); text-align: left; }
+.carrito-metodo strong { font-size: .92rem; }
+.carrito-metodo small { color: var(--secundario); font-size: .76rem; font-weight: 500; }
+.carrito-metodo:hover { background: #edf2e4; color: var(--bosque); }
+.carrito-metodo[aria-checked="true"] { border: 2px solid var(--bosque); background: #e9f0dc; padding: calc(.8rem - 1px) calc(.9rem - 1px); }
+.carrito-pago-panel fieldset { min-width: 0; margin: 0 0 1rem; padding: 1rem; border: 1px solid var(--borde); border-radius: 1rem; }
+.carrito-pago-panel legend { padding: 0 .4rem; color: var(--bosque); font-weight: 750; }
+.carrito-pago-panel fieldset label { margin: .7rem 0; font-size: .88rem; }
+.carrito-pago-panel fieldset button { margin-top: .4rem; min-height: 42px; font-size: .88rem; }
+.carrito-pago-panel details { margin: .4rem 0; color: var(--secundario); font-size: .86rem; }
+.carrito-terminos { display: flex; align-items: center; gap: .55rem; margin: 1rem 0; font-size: .88rem; font-weight: 600; }
+.carrito-terminos input { display: inline-block; width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--bosque); }
+.carrito-pago-panel > button[type="submit"] { width: 100%; }
+.compra-confirmada h4 { margin: 1rem 0 .3rem; color: var(--bosque); font: 400 1.3rem/1.2 var(--serif); }
+.compra-confirmada article { margin-top: .8rem; padding-top: .8rem; border-top: 1px solid rgba(24, 58, 43, .15); }
+
+/* Historial de compras */
+.tarjeta-compra { display: grid; align-content: start; gap: .1rem; border-top: 5px solid #c9d3bf; box-shadow: 0 8px 22px rgba(24, 58, 43, .04); }
+.tarjeta-compra.estado-confirmada { border-top-color: var(--hoja); }
+.tarjeta-compra.estado-recogida { border-top-color: var(--bosque); }
+.tarjeta-compra.estado-cancelada, .tarjeta-compra.estado-expirada { border-top-color: #c97b5a; }
+.tarjeta-compra.estado-pendiente_pago { border-top-color: var(--coral); }
+.estado-etiqueta { display: inline-flex; width: fit-content; margin: 0 0 .3rem; padding: .25rem .75rem; border-radius: 99px; background: #edf2e4; color: var(--bosque); font-size: .76rem; font-weight: 800; }
+.estado-cancelada .estado-etiqueta, .estado-expirada .estado-etiqueta { background: #fbe4df; color: #8e2a1f; }
+.estado-confirmada .estado-etiqueta { background: var(--menta); }
+.estado-recogida .estado-etiqueta { background: var(--bosque); color: #fff; }
+.compra-local { margin: 0 0 .4rem; color: var(--hoja); font-weight: 750; }
+.tarjeta-compra button { margin-top: .6rem; min-height: 42px; font-size: .88rem; }
+
+/* Diálogos: confirmación y reseña */
+.dialogo-confirmar, .dialogo-resena { width: min(calc(100% - 2rem), 460px); padding: 1.8rem; border: 1px solid #dbe3cf; border-radius: 1.4rem; background: var(--crema); box-shadow: 0 30px 85px rgba(16, 41, 31, .25); }
+.dialogo-confirmar::backdrop, .dialogo-resena::backdrop { background: rgba(16, 41, 31, .55); backdrop-filter: blur(5px); }
+.dialogo-confirmar h2, .dialogo-resena h2 { margin: 0 0 .6rem; padding-right: 2.2rem; font-size: 1.8rem; }
+.dialogo-confirmar p { margin: 0 0 1.3rem; color: var(--secundario); }
+.dialogo-acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; }
+.dialogo-resena form { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+.resena-cerrar { position: absolute; top: 1rem; right: 1rem; display: grid; place-items: center; width: 40px; height: 40px; min-height: 40px; padding: 0; border: 0; border-radius: 50%; background: #edf2e4; color: var(--bosque); }
+.resena-cerrar::before, .resena-cerrar::after { content: ''; position: absolute; width: 17px; height: 2px; border-radius: 2px; background: currentColor; }
+.resena-cerrar::before { transform: rotate(45deg); }
+.resena-cerrar::after { transform: rotate(-45deg); }
+.resena-cerrar:hover { background: var(--menta); color: var(--bosque); }
+.resena-estrellas { display: flex; justify-content: center; gap: .35rem; margin: .8rem 0 .2rem; }
+.resena-estrella { min-height: 52px; width: 52px; padding: 0; border: 0; border-radius: 12px; background: transparent; color: #cfd8c4; font-size: 2.6rem; line-height: 1; }
+.resena-estrella:hover { background: #edf2e4; color: #d9a441; }
+.resena-estrella.activa { color: #e0a82e; }
+.resena-leyenda { margin: 0 0 1rem; text-align: center; color: var(--secundario); font-size: .88rem; font-weight: 650; }
+.dialogo-resena textarea { resize: vertical; }
+.dialogo-resena form > button[type="submit"] { width: 100%; margin-top: .4rem; }
+
+/* Mi perfil */
+.perfil-layout { display: grid; grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+.perfil-identidad { display: grid; justify-items: center; gap: .3rem; padding: 2rem 1.5rem; border: 1px solid #dbe3cf; border-radius: 1.4rem; background: var(--marfil); text-align: center; box-shadow: 0 10px 26px rgba(24, 58, 43, .045); }
+.perfil-foto-marco { position: relative; display: grid; place-items: center; width: 140px; height: 140px; margin-bottom: .6rem; overflow: hidden; border: 4px solid var(--menta); border-radius: 50%; background: #dce9ca; }
+.perfil-foto-marco img { width: 100%; height: 100%; object-fit: cover; }
+.perfil-iniciales { color: var(--bosque); font: 400 3rem/1 var(--serif); letter-spacing: -.02em; }
+.perfil-identidad h2 { margin: 0; font-size: 1.6rem; overflow-wrap: anywhere; }
+.perfil-identidad p { margin: 0 0 .8rem; color: var(--secundario); font-size: .9rem; overflow-wrap: anywhere; }
+.perfil-identidad form { width: 100%; margin-top: .8rem; padding: 1rem; text-align: left; border-radius: 1rem; box-shadow: none; }
+.perfil-identidad form label { margin: 0 0 .8rem; font-size: .85rem; }
+.perfil-identidad form small { display: block; color: var(--secundario); font-weight: 500; }
+.perfil-identidad form button { width: 100%; }
+.perfil-columna { display: grid; gap: 1.2rem; min-width: 0; }
+.perfil-datos { max-width: none; }
+.perfil-datos-encabezado { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .8rem; margin-bottom: 1.2rem; }
+.perfil-datos-encabezado h2 { margin: 0; font-size: 1.7rem; }
+.perfil-ayuda { margin: .2rem 0 0; color: var(--secundario); font-size: .86rem; }
+.perfil-datos-encabezado button { min-height: 42px; font-size: .88rem; }
+.perfil-datos dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem 1.4rem; }
+.perfil-datos dl div { padding: .8rem 0 0; }
+.perfil-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .2rem 1.2rem; }
+.perfil-acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; margin-top: 1rem; }
+.perfil-datos form { padding: 0; border: 0; box-shadow: none; background: transparent; }
+.perfil-seguridad { padding-block: 1.5rem; }
+#mensaje-perfil { margin: 0 0 1rem; }
+#mensaje-perfil:empty { display: none; }
+#mensaje-perfil.ok { padding: .8rem 1rem; border-radius: .9rem; background: #e6f0d8; color: var(--bosque); font-weight: 650; }
+#mensaje-perfil.error { padding: .8rem 1rem; border-radius: .9rem; background: #fbe4df; font-weight: 650; }
+
+/* Compra presencial por QR y términos */
+.pagina-qr { background: var(--crema); }
+.qr-principal { width: min(100% - 2rem, 760px); padding-block: clamp(1.5rem, 4vw, 3rem) 4rem; }
+.qr-oferta { margin-bottom: 1.2rem; padding: clamp(1.3rem, 4vw, 2rem); border: 1px solid #dbe3cf; border-radius: 1.4rem; background: var(--marfil); box-shadow: 0 12px 28px rgba(24, 58, 43, .055); }
+.qr-oferta h2 { margin: .3rem 0 .6rem; color: var(--bosque-oscuro); font-size: clamp(2rem, 6vw, 2.8rem); overflow-wrap: anywhere; }
+.qr-oferta .pack-horario { margin-top: 1rem; }
+.qr-formulario { display: grid; gap: 1.2rem; }
+.qr-grupo { min-width: 0; margin: 0; padding: 0; border: 0; }
+.qr-grupo > legend { margin-bottom: .7rem; padding: 0; color: var(--bosque); font: 400 1.5rem/1.2 var(--serif); }
+#variantesQr { display: grid; gap: .7rem; }
+.qr-total { display: flex; justify-content: space-between; align-items: baseline; padding: 1rem 1.2rem; border-radius: 1rem; background: var(--bosque); color: #fff; }
+.qr-total span { color: #dfebd9; }
+.qr-total strong { font: 400 1.8rem/1.1 var(--serif); }
+.qr-subgrupo { min-width: 0; margin: 0 0 .5rem; padding: 1rem; border: 1px solid var(--borde); border-radius: 1rem; }
+.qr-subgrupo legend { padding: 0 .4rem; color: var(--bosque); font-weight: 750; }
+.qr-subgrupo label { margin: .7rem 0; font-size: .88rem; }
+.qr-subgrupo button { margin-top: .3rem; min-height: 42px; font-size: .88rem; }
+.qr-dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
+.qr-ayuda { margin: 0; padding: .9rem 1rem; border-radius: 1rem; background: #fdf4ea; color: #6b3a10; font-size: .88rem; }
+.qr-formulario > button[type="submit"] { width: 100%; }
+.qr-formulario .carrito-terminos { margin: 0; }
+#resultadoQr.compra-confirmada { margin-top: 1rem; padding: 1.6rem; border-radius: 1.3rem; background: #e9f0dc; }
+.terminos-tarjeta { padding: clamp(1.3rem, 4vw, 2.2rem); border: 1px solid #dbe3cf; border-radius: 1.4rem; background: var(--marfil); }
+.terminos-tarjeta p { margin: 0 0 1rem; color: var(--secundario); }
+.terminos-tarjeta p:last-child { margin-bottom: 0; }
+
+@media (max-width: 900px) {
+  .carrito-formulario { grid-template-columns: 1fr; }
+  .carrito-pago-panel { position: static; }
+  .perfil-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .perfil-datos dl, .perfil-campos, .qr-dos { grid-template-columns: 1fr; }
+  .carrito-metodos.tres { grid-template-columns: 1fr; }
+  .resena-estrella { width: 46px; font-size: 2.3rem; }
+  .carrito-pedido { padding: 1.1rem; }
+}

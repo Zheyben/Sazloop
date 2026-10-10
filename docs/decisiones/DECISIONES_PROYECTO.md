@@ -216,6 +216,18 @@ Cada recojo completado, tanto por entrega con código como por compra presencial
 
 Las respuestas de error de la API incluyen el motivo de negocio (por ejemplo, «Stock insuficiente») y nunca la traza interna; las pantallas muestran ese motivo. En Spring Boot 4 se configura con `spring.web.error.include-message` y `spring.web.error.include-stacktrace`.
 
+## DEC-048 — Entrega desde el pago
+
+El fin del horario es el único límite (DEC-008): el personal puede entregar un pedido pagado desde el momento de la compra, aunque el inicio del horario aún no haya llegado. Para que una oferta pueda publicarse con inicio «ahora», se tolera un inicio de hasta cinco minutos en el pasado (desfase del reloj del navegador). El formulario sugiere inicio ahora y fin tres horas después.
+
+## DEC-049 — Resolución de una solicitud en un solo paso
+
+El administrador revisa todos los documentos de una solicitud o renovación y la decide en una sola operación atómica (). La solicitud se aprueba únicamente si todos los documentos se aprueban; un documento vencido solo puede rechazarse. El motivo se arma con el comentario opcional del administrador o, si se rechaza, con las observaciones de cada documento. Ya no existe un paso de «decisión final» separado. El administrador no edita los datos transcritos: la fecha de vencimiento la declara el propietario al adjuntar el documento.
+
+## DEC-050 — Sesiones por rol
+
+La persona (consumidor o propietario), la cuenta del local y el administrador comparten la cookie del navegador, pero cada rol guarda su propio atributo de sesión. Iniciar o cerrar sesión en un rol no afecta a los demás, de modo que pueden estar abiertos a la vez los portales de empresa, trabajador y administración en un mismo navegador.
+
 ## Documentos relacionados
 
 - [Visión y alcance](../PROYECTO.md)

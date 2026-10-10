@@ -23,8 +23,13 @@ export async function solicitar(ruta, opciones = {}) {
     try { motivo = (await r.json())?.message || ''; } catch { /* respuesta sin cuerpo JSON */ }
     const util = motivo && r.status < 500 && motivo !== 'No message available'
       && !/^(\d{3} [A-Z_]+$|Validation failed|Bad Request|Not Found|Conflict|Unauthorized|Forbidden|Required)/i.test(motivo);
-    const error = new Error(util ? motivo : textos[r.status] || 'Ocurrió un error inesperado. Intenta de nuevo.');
+    // Un error del servidor (5xx) se identifica con su código y la ruta, para poder diagnosticarlo.
+    const generico = r.status >= 500 ? `Ocurrió un error inesperado en el servidor (código ${r.status}). Intenta de nuevo; si continúa, avisa al equipo.`
+      : textos[r.status] || 'Ocurrió un error inesperado. Intenta de nuevo.';
+    if (r.status >= 500) console.error('[Sazloop]', opciones.method || 'GET', ruta, '→', r.status, motivo);
+    const error = new Error(util ? motivo : generico);
     error.status = r.status;
+    error.ruta = ruta;
     throw error;
   }
   return r.status === 204 ? null : r.json();

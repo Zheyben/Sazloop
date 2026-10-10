@@ -54,6 +54,7 @@ Endpoints nuevos o ampliados:
 - `POST /api/establecimientos/{id}/documentos`: en un local aprobado o suspendido, crea una renovación y solo acepta tipos vencidos o por vencer. `POST .../solicitud/enviar` exige, si el local está suspendido, todos los tipos vencidos.
 - `GET /api/administradores/establecimientos`: estado de todos los locales y motivo de suspensión.
 - `GET /api/administradores/solicitudes`: incluye `renovacion`, empresa, RUC, dirección y estado del local.
+- `POST /api/administradores/solicitudes/{id}/resolucion`: revisa todos los documentos y decide la solicitud en un solo paso (`documentos`: id, resultado y observaciones; `comentario` opcional).
 - `POST /api/notificaciones/leer-todas`: marca todos los avisos como leídos.
 - `GET /api/local/recojos/{codigo}`: devuelve `cliente` y `lineas` (tamaño y cantidad a entregar).
 - `GET /api/local/resumen`: incluye `estadoLocal` y `motivoSuspension`. La cuenta del local puede ingresar con el local suspendido para entregar reservas pagadas, pero no publicar.

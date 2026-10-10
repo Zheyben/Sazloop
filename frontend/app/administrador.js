@@ -50,10 +50,9 @@ async function cargarSolicitudes() {
   }));
 }
 
-async function abrirSolicitud(id, aviso = '') {
+async function abrirSolicitud(id) {
   detalle.replaceChildren(el('p', { className: 'nota', textContent: 'Cargando la solicitud…' }));
   const s = await solicitar(`/administradores/solicitudes/${id}`);
-  const todosRevisados = s.documentos.length && s.documentos.every(d => d.resultado);
   detalle.replaceChildren(
     el('button', { type: 'button', className: 'secundario volver', textContent: '← Solicitudes', onclick: () => mostrar('solicitudes') }),
     el('div', { className: 'vista-encabezado' },
@@ -64,93 +63,105 @@ async function abrirSolicitud(id, aviso = '') {
       insigniaLocal(s.estadoLocal)),
     s.renovacion ? banda('info', 'Renovación',
       'Al aprobarla, estos documentos reemplazan a los anteriores del mismo tipo. Si el local está suspendido y ya no le quedan documentos vencidos, se reactiva automáticamente.') : null,
-    el('div', { style: 'display:grid; gap:1rem' }, ...s.documentos.map(doc => tarjetaDocumento(doc, s))),
-    s.estado === 'EN_REVISION'
-      ? (todosRevisados ? formularioDecision(s) : el('p', { className: 'nota', style: 'margin-top:1.2rem', textContent: 'Revisa todos los documentos para registrar la decisión final.' }))
-      : banda('info', 'Solicitud resuelta', s.motivoDecision ? `Motivo: ${s.motivoDecision}` : ''));
-  if (aviso) mensaje(aviso);
+    s.estado === 'EN_REVISION' ? formularioResolucion(s)
+      : el('div', {}, ...s.documentos.map(tarjetaLectura),
+        banda('info', 'Solicitud resuelta', s.motivoDecision ? `Motivo: ${s.motivoDecision}` : '')));
 }
 
-function tarjetaDocumento(doc, solicitud) {
-  const resultado = { APROBADO: ['Aprobado', 'ok'], RECHAZADO: ['Rechazado', 'peligro'] }[doc.resultado] || ['Pendiente de revisión', 'alerta'];
-  const tarjeta = el('article', { className: 'tarjeta-panel documento-revision' },
+const hoyLocal = () => {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+};
+const dato = (titulo, valor) => el('div', {}, el('dt', { textContent: titulo }), el('dd', { textContent: valor || '—' }));
+
+/** Datos del documento tal como los presentó el propietario (solo lectura). */
+function datosDocumento(doc) {
+  const vencido = Boolean(doc.vencimiento) && doc.vencimiento < hoyLocal();
+  return {
+    vencido,
+    lista: el('dl', { className: 'datos-lista' },
+      dato('Número', doc.numero), dato('Emisión', fecha(doc.emision)),
+      dato('Vencimiento', vencido ? `${fecha(doc.vencimiento)} (vencido)` : fecha(doc.vencimiento)))
+  };
+}
+
+/** Documento ya revisado: solo se muestra. */
+function tarjetaLectura(doc) {
+  const resultado = { APROBADO: ['Aprobado', 'ok'], RECHAZADO: ['Rechazado', 'peligro'] }[doc.resultado] || ['Sin revisar', 'alerta'];
+  return el('article', { className: 'tarjeta-panel documento-revision', style: 'margin-bottom:1rem' },
     el('header', {}, el('h4', { textContent: tiposDocumento[doc.tipo] || doc.tipo }), insignia(...resultado)),
-    el('dl', { className: 'datos-lista' },
-      dato('Número', doc.numero), dato('Emisión', fecha(doc.emision)), dato('Vencimiento', fecha(doc.vencimiento))),
-    el('a', { className: 'enlace-archivo', href: `/api/administradores/documentos/${doc.id}/archivo`, textContent: 'Descargar el documento para revisarlo' }));
-  if (doc.resultado) {
-    if (doc.observaciones) tarjeta.append(el('p', { className: 'nota', style: 'margin:0', textContent: `Observaciones: ${doc.observaciones}` }));
-    return tarjeta;
-  }
-  const formulario = el('form', { className: 'formulario-plano' },
-    el('fieldset', { className: 'opciones-radio' }, el('legend', { textContent: 'Resultado de la revisión' }),
-      el('label', { className: 'opcion' }, el('input', { type: 'radio', name: 'resultado', value: 'APROBADO', checked: true }), 'Aprobar documento'),
-      el('label', { className: 'opcion' }, el('input', { type: 'radio', name: 'resultado', value: 'RECHAZADO' }), 'Rechazar documento')),
-    el('fieldset', { className: 'grupo' }, el('legend', { textContent: 'Datos del documento' }),
-      el('p', { className: 'ayuda', textContent: 'Corrige lo que no coincida con el archivo. La fecha de vencimiento activa el aviso previo y la suspensión automática.' }),
-      el('div', { className: 'campos' },
-        el('label', {}, 'Tipo', el('select', { name: 'tipo' }, ...Object.entries(tiposDocumento).map(([valor, texto]) =>
-          el('option', { value: valor, textContent: texto, selected: valor === doc.tipo })))),
-        el('label', {}, 'Número', el('input', { name: 'numero', maxLength: 80, value: doc.numero || '' })),
-        el('label', {}, 'Emisión', el('input', { name: 'emision', type: 'date', value: doc.emision || '' })),
-        el('label', {}, 'Vencimiento', el('input', { name: 'vencimiento', type: 'date', value: doc.vencimiento || '' })))),
-    el('label', { style: 'margin-top:1rem' }, 'Observaciones',
-      el('textarea', { name: 'observaciones', rows: 2, maxLength: 500, placeholder: 'Obligatorias si rechazas el documento' })),
-    el('p', { className: 'estado-formulario', role: 'status' }),
-    el('div', { className: 'acciones-formulario' }, el('button', { type: 'submit', textContent: 'Guardar revisión' })));
+    datosDocumento(doc).lista,
+    doc.observaciones ? el('p', { className: 'nota', style: 'margin:0', textContent: `Observaciones: ${doc.observaciones}` }) : null,
+    el('a', { className: 'enlace-archivo', href: `/api/administradores/documentos/${doc.id}/archivo`, textContent: 'Descargar el documento' }));
+}
+
+/** Una sola pantalla: se marca cada documento y se guarda una única decisión. */
+function formularioResolucion(s) {
+  const formulario = el('form', { className: 'formulario-plano', style: 'display:grid; gap:1rem' });
+  const filas = s.documentos.map(doc => {
+    if (doc.resultado) return { doc, tarjeta: tarjetaLectura(doc), previa: true };
+    const { vencido, lista } = datosDocumento(doc);
+    const nombre = `resultado-${doc.id}`;
+    const aprobar = el('input', { type: 'radio', name: nombre, value: 'APROBADO', checked: !vencido, disabled: vencido });
+    const rechazar = el('input', { type: 'radio', name: nombre, value: 'RECHAZADO', checked: vencido });
+    const observaciones = el('textarea', { rows: 2, maxLength: 500, placeholder: 'Obligatorias si rechazas el documento' });
+    const tarjeta = el('article', { className: 'tarjeta-panel documento-revision' },
+      el('header', {}, el('h4', { textContent: tiposDocumento[doc.tipo] || doc.tipo }),
+        insignia(vencido ? 'Vencido' : 'Por revisar', vencido ? 'peligro' : 'alerta')),
+      lista,
+      el('a', { className: 'enlace-archivo', href: `/api/administradores/documentos/${doc.id}/archivo`, textContent: 'Descargar el documento para revisarlo' }),
+      vencido ? el('p', { className: 'nota', style: 'margin:0', textContent: 'Un documento vencido solo puede rechazarse.' }) : null,
+      el('fieldset', { className: 'opciones-radio' }, el('legend', { textContent: 'Resultado' }),
+        el('label', { className: 'opcion' }, aprobar, 'Aprobar'),
+        el('label', { className: 'opcion' }, rechazar, 'Rechazar')),
+      el('label', {}, 'Observaciones', observaciones));
+    return { doc, tarjeta, previa: false, aprobar, rechazar, observaciones };
+  });
+  const comentario = el('textarea', { rows: 2, maxLength: 500, placeholder: 'Opcional: se enviará al propietario junto con la decisión' });
+  const resultadoFinal = el('p', { className: 'nota', style: 'margin:0', role: 'status' });
+  const estado = el('p', { className: 'estado-formulario', role: 'status' });
+  const boton = el('button', { type: 'submit', textContent: 'Guardar decisión' });
+  const aprobado = fila => fila.previa ? fila.doc.resultado === 'APROBADO' : fila.aprobar.checked;
+  const actualizar = () => {
+    resultadoFinal.textContent = filas.every(aprobado)
+      ? (s.renovacion ? 'Se aprobará la renovación del local.' : 'Se aprobará el local.')
+      : (s.renovacion ? 'Se rechazará la renovación porque hay documentos rechazados.'
+        : 'Se rechazará la solicitud porque hay documentos rechazados.');
+  };
+  formulario.addEventListener('change', actualizar);
+  actualizar();
+  formulario.append(...filas.map(f => f.tarjeta),
+    el('label', { style: 'margin:0' }, 'Comentario general (opcional)', comentario), resultadoFinal, estado,
+    el('div', { className: 'acciones-formulario', style: 'margin-top:0' }, boton));
   formulario.addEventListener('submit', async evento => {
     evento.preventDefault();
-    const datos = Object.fromEntries(new FormData(formulario));
-    const estado = formulario.querySelector('.estado-formulario');
-    if (datos.resultado === 'RECHAZADO' && !datos.observaciones.trim()) {
-      estadoEn(estado, 'Indica por qué se rechaza el documento.', true);
+    const pendientes = filas.filter(f => !f.previa);
+    const sinMotivo = pendientes.find(f => f.rechazar.checked && !f.observaciones.value.trim());
+    if (sinMotivo) {
+      estadoEn(estado, `Indica por qué se rechaza: ${tiposDocumento[sinMotivo.doc.tipo] || sinMotivo.doc.tipo}.`, true);
+      sinMotivo.observaciones.focus();
       return;
     }
-    const cuerpo = { resultado: datos.resultado, observaciones: datos.observaciones.trim() || null, tipo: datos.tipo,
-      numero: datos.numero.trim() || null, emision: datos.emision || null, vencimiento: datos.vencimiento || null };
+    boton.disabled = true;
     try {
-      await solicitar(`/administradores/documentos/${doc.id}/revision`, { method: 'POST', body: JSON.stringify(cuerpo) });
-      await abrirSolicitud(solicitud.id, 'Revisión guardada.');
-    } catch (error) { estadoEn(estado, error.message, true); }
-  });
-  tarjeta.append(formulario);
-  return tarjeta;
-}
-
-function formularioDecision(s) {
-  const ahora = new Date();
-  const hoy = new Date(ahora.getTime() - ahora.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-  const rechazados = s.documentos.some(d => d.resultado !== 'APROBADO');
-  const vencidos = s.documentos.some(d => d.vencimiento && d.vencimiento < hoy);
-  const noAprobable = rechazados || vencidos;
-  const formulario = el('form', { className: 'formulario-panel', style: 'margin-top:1.4rem' },
-    el('h3', { style: 'margin-top:0', textContent: 'Decisión final' }),
-    noAprobable ? banda('alerta', rechazados ? 'Hay documentos rechazados' : 'Hay documentos vencidos', 'Solo puedes rechazar esta solicitud e indicar el motivo.') : null,
-    el('fieldset', { className: 'opciones-radio' }, el('legend', { textContent: 'Decisión' }),
-      el('label', { className: 'opcion' }, el('input', { type: 'radio', name: 'decision', value: 'APROBADA', checked: !noAprobable, disabled: noAprobable }),
-        s.renovacion ? 'Aprobar renovación' : 'Aprobar local'),
-      el('label', { className: 'opcion' }, el('input', { type: 'radio', name: 'decision', value: 'RECHAZADA', checked: noAprobable }),
-        s.renovacion ? 'Rechazar renovación' : 'Rechazar solicitud')),
-    el('label', { style: 'margin-top:1rem' }, 'Motivo', el('textarea', { name: 'motivo', rows: 3, maxLength: 500, required: true,
-      placeholder: 'Se enviará al propietario junto con la decisión' })),
-    el('p', { className: 'estado-formulario', role: 'status' }),
-    el('div', { className: 'acciones-formulario' }, el('button', { type: 'submit', textContent: 'Guardar decisión' })));
-  formulario.addEventListener('submit', async evento => {
-    evento.preventDefault();
-    const datos = Object.fromEntries(new FormData(formulario));
-    try {
-      await solicitar(`/administradores/solicitudes/${s.id}/decision`, { method: 'POST',
-        body: JSON.stringify({ decision: datos.decision, motivo: datos.motivo.trim() }) });
+      await solicitar(`/administradores/solicitudes/${s.id}/resolucion`, { method: 'POST', body: JSON.stringify({
+        documentos: pendientes.map(f => ({ id: f.doc.id, resultado: f.aprobar.checked ? 'APROBADO' : 'RECHAZADO',
+          observaciones: f.observaciones.value.trim() || null })),
+        comentario: comentario.value.trim() || null
+      }) });
+      const aprobo = filas.every(aprobado);
       mostrar('solicitudes');
-      mensaje(datos.decision === 'APROBADA'
-        ? (s.renovacion ? 'Renovación aprobada. El propietario fue notificado.' : 'Local aprobado. El propietario ya puede crear la cuenta del trabajador.')
+      mensaje(aprobo
+        ? (s.renovacion ? 'Renovación aprobada. El propietario fue notificado.'
+          : 'Local aprobado. El propietario ya puede crear la cuenta del trabajador.')
         : 'Solicitud rechazada. El propietario recibirá el motivo.');
-    } catch (error) { estadoEn(formulario.querySelector('.estado-formulario'), error.message, true); }
+    } catch (error) {
+      estadoEn(estado, error.message, true);
+      boton.disabled = false;
+    }
   });
   return formulario;
 }
-
-const dato = (titulo, valor) => el('div', {}, el('dt', { textContent: titulo }), el('dd', { textContent: valor || '—' }));
 
 // ---------- Establecimientos ----------
 async function cargarEstablecimientos() {

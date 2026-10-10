@@ -43,6 +43,7 @@ async function mostrarCarrito() {
   const ofertas = new Map(ids.map((id, indice) => [id,
     consultas[indice].status === 'fulfilled' ? consultas[indice].value : null]));
   const formulario = el('form', { className: 'carrito-formulario' });
+  const pedidosZona = el('div', { className: 'carrito-pedidos' });
   const mensaje = el('p', { role: 'status', ariaLive: 'polite' });
   const total = el('strong', { className: 'carrito-total' });
   const entradas = [];
@@ -50,14 +51,14 @@ async function mostrarCarrito() {
 
   for (const [indice, pedido] of pedidos.entries()) {
     const oferta = ofertas.get(pedido.ofertaId);
-    const quitar = el('button', { type: 'button', textContent: 'Quitar del carrito', onclick: () => {
+    const quitar = el('button', { type: 'button', className: 'secundario carrito-quitar', textContent: 'Quitar del carrito', onclick: () => {
       guardarCarrito(usuario.id, leerCarrito(usuario.id).filter(p => p.clave !== pedido.clave));
       mostrarCarrito();
     } });
     if (!oferta) {
       noDisponibles = true;
-      formulario.append(el('article', {},
-        el('h3', { textContent: `Pedido ${indice + 1}` }),
+      pedidosZona.append(el('article', { className: 'carrito-pedido no-disponible' },
+        el('span', { className: 'etiqueta', textContent: `PEDIDO ${indice + 1}` }),
         el('p', { textContent: 'Esta oferta ya no está disponible. Quita el pedido para continuar.' }), quitar));
       continue;
     }
@@ -70,23 +71,42 @@ async function mostrarCarrito() {
     }).filter(Boolean);
     if (!campos.length) {
       noDisponibles = true;
-      formulario.append(el('article', {}, el('h3', { textContent: `Pedido ${indice + 1}` }),
+      pedidosZona.append(el('article', { className: 'carrito-pedido no-disponible' },
+        el('span', { className: 'etiqueta', textContent: `PEDIDO ${indice + 1}` }),
         el('p', { textContent: 'Las variantes de este pedido ya no están disponibles.' }), quitar));
       continue;
     }
-    entradas.push({ pedido, oferta, campos });
-    formulario.append(el('article', { className: 'carrito-panel' },
-      el('h3', { textContent: `Pedido ${indice + 1}: ${oferta.pack}` }),
-      el('p', { textContent: `${oferta.establecimiento} · ${oferta.distrito}` }),
-      el('p', { textContent: `Recojo: ${fechaHora(oferta.inicioRecojo)} a ${fechaHora(oferta.finRecojo)}` }),
-      ...campos.map(({ variante, input }) => el('label', {},
-        `${tamanios[variante.tamanio] || variante.tamanio} · ${dinero(variante.precioDescuento)} · quedan ${variante.stockDisponible}`, input)),
-      quitar));
+    const subtotal = el('strong', { className: 'carrito-subtotal' });
+    entradas.push({ pedido, oferta, campos, subtotal });
+    pedidosZona.append(el('article', { className: 'carrito-pedido' },
+      el('header', { className: 'carrito-pedido-cabecera' },
+        el('span', { className: 'etiqueta', textContent: `PEDIDO ${indice + 1}` }),
+        el('h3', { textContent: oferta.pack }),
+        el('p', { className: 'carrito-local', textContent: `${oferta.establecimiento} · ${oferta.distrito}` }),
+        el('p', { className: 'carrito-horario', textContent: `Recojo: ${fechaHora(oferta.inicioRecojo)} a ${fechaHora(oferta.finRecojo)}` })),
+      el('div', { className: 'carrito-lineas' }, ...campos.map(({ variante, input }) => filaVariante(variante, input))),
+      el('div', { className: 'carrito-pedido-pie' },
+        el('div', {}, el('span', { textContent: 'Subtotal' }), subtotal), quitar)));
   }
 
-  const medio = el('select', { name: 'medioPago' },
+  const medio = el('select', { name: 'medioPago', hidden: true, tabIndex: -1 },
     el('option', { value: 'YAPE', textContent: 'Yape' }),
     el('option', { value: 'TARJETA_DEBITO', textContent: 'Tarjeta de débito' }));
+  const metodos = el('div', { className: 'carrito-metodos', role: 'radiogroup', ariaLabel: 'Medio de pago' },
+    ...[['YAPE', 'Yape', 'Con tu número de celular'], ['TARJETA_DEBITO', 'Tarjeta de débito', 'Con los datos de tu tarjeta']]
+      .map(([valor, titulo, ayuda]) => {
+        const boton = el('button', { type: 'button', className: 'carrito-metodo', role: 'radio', ariaChecked: 'false' },
+          el('strong', { textContent: titulo }), el('small', { textContent: ayuda }));
+        boton.dataset.valor = valor;
+        boton.addEventListener('click', () => {
+          if (medio.value === valor) return;
+          medio.value = valor;
+          medio.dispatchEvent(new Event('change'));
+        });
+        return boton;
+      }));
+  const marcarMetodo = () => metodos.querySelectorAll('.carrito-metodo')
+    .forEach(boton => boton.setAttribute('aria-checked', String(boton.dataset.valor === medio.value)));
   const telefono = el('input', { type: 'tel', inputMode: 'numeric', maxLength: 9,
     pattern: '9[0-9]{8}', required: true, ariaLabel: 'Número de Yape' });
   const codigo = el('input', { type: 'text', inputMode: 'numeric', maxLength: 6,
@@ -123,6 +143,7 @@ async function mostrarCarrito() {
     confirmar.disabled = !pagoValidado || !terminos.checked || noDisponibles;
   }
   function resetPago() {
+    marcarMetodo();
     pagoValidado = false;
     terminos.checked = false;
     terminos.disabled = true;
@@ -189,7 +210,14 @@ async function mostrarCarrito() {
     const guardados = [];
     const vendidos = new Map();
     let suma = 0;
-    for (const { pedido, oferta, campos } of entradas) {
+    for (const { pedido, oferta, campos, subtotal } of entradas) {
+      let parcial = 0;
+      for (const { variante, input } of campos) {
+        const unidades = Number(input.value);
+        if (Number.isFinite(unidades) && unidades > 0) parcial += unidades * Number(variante.precioDescuento);
+        input.closest('.detalle-variante')?.classList.toggle('seleccionada', unidades > 0);
+      }
+      subtotal.textContent = dinero(parcial);
       const lineas = [];
       for (const { variante, input } of campos) {
         const cantidad = Number(input.value);
@@ -239,7 +267,7 @@ async function mostrarCarrito() {
       }) });
       guardarCarrito(usuario.id, []);
       if (!zona.isConnected) return;
-      zona.replaceChildren(el('section', {},
+      zona.replaceChildren(el('section', { className: 'compra-confirmada' },
         el('h3', { textContent: 'Compra confirmada' }),
         el('p', { textContent: `Total: ${dinero(compras.reduce((s, c) => s + Number(c.total), 0))}` }),
         ...compras.map((compra, indice) => el('article', {},
@@ -254,13 +282,15 @@ async function mostrarCarrito() {
     }
   });
 
-  formulario.append(el('section', {},
-    el('h3', { textContent: 'Pago de todos los pedidos' }),
-    el('label', {}, 'Medio de pago', medio), yape, tarjeta,
+  formulario.append(pedidosZona, el('section', { className: 'carrito-pago-panel' },
+    el('h3', { textContent: 'Resumen y pago' }),
+    el('div', { className: 'carrito-total-fila' }, el('span', { textContent: 'Total de todos los pedidos' }), total),
+    el('p', { className: 'carrito-nota', textContent: 'Todos los pedidos se pagan en una sola operación; cada uno genera su propia boleta y su código de recojo.' }),
+    el('span', { className: 'pack-dato-etiqueta', textContent: 'MEDIO DE PAGO' }), medio, metodos, yape, tarjeta,
     el('details', {}, el('summary', { textContent: 'Términos y condiciones' }),
       el('p', { textContent: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aceptar para confirmar la compra.' })),
-    el('label', {}, terminos, ' Acepto los términos y condiciones'),
-    el('p', {}, 'Total de todos los pedidos: ', total), mensajePago, confirmar, mensaje));
+    el('label', { className: 'carrito-terminos' }, terminos, ' Acepto los términos y condiciones'),
+    mensajePago, confirmar, mensaje));
   zona.replaceChildren(formulario);
   resetPago();
   pedidoActualizado();
@@ -268,7 +298,7 @@ async function mostrarCarrito() {
 
 async function cancelarCompra(compra) {
   const reembolso = dinero(Number(compra.total) * 0.5);
-  if (!confirm(`Si cancelas esta compra, recibirás ${reembolso} de reembolso (50 % del total). ¿Quieres continuar?`)) return;
+  if (!await confirmarDialogo('¿Cancelar esta compra?', `Recibirás ${reembolso} de reembolso (50 % del total) y el código de recojo dejará de ser válido.`, 'Sí, cancelar compra')) return;
   try {
     await solicitar(`/compras/${compra.reservaId}/cancelar`, { method: 'POST' });
     await mostrarHistorial();
@@ -281,9 +311,10 @@ async function mostrarHistorial() {
     const compras = await solicitar('/compras/mias');
     if (!lista.isConnected) return;
     lista.replaceChildren(...(compras.length
-      ? compras.map(c => el('article', { className: 'tarjeta-compra' },
-        el('p', { className: 'etiqueta', textContent: estados[c.estado] || c.estado }),
+      ? compras.map(c => el('article', { className: `tarjeta-compra estado-${c.estado.toLowerCase()}` },
+        el('p', { className: 'estado-etiqueta', textContent: estados[c.estado] || c.estado }),
         el('h3', { textContent: dinero(c.total) }),
+        el('p', { className: 'compra-local', textContent: c.establecimiento }),
         el('p', { textContent: `Medio de pago: ${c.medioPago === 'TARJETA_DEBITO' ? 'Tarjeta de débito' : c.medioPago}` }),
         c.estado === 'CANCELADA' ? null : el('p', { className: 'codigo', textContent: c.codigoRecojo }),
         c.numeroBoleta ? el('p', { textContent: `Boleta ${c.numeroBoleta}` })
@@ -297,4 +328,38 @@ async function mostrarHistorial() {
       : [el('div', { className: 'estado-vacio', textContent: 'Aún no tienes compras realizadas.' })]));
     aviso('');
   } catch (error) { if (lista.isConnected) aviso(error.message, true); }
+}
+
+/** Contador +/− de una variante dentro de un pedido del carrito. */
+function filaVariante(variante, input) {
+  const nombre = tamanios[variante.tamanio] || variante.tamanio;
+  const cambiar = delta => {
+    input.value = Math.max(0, Math.min(variante.stockDisponible, Math.trunc(Number(input.value) || 0) + delta));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  return el('div', { className: 'detalle-variante' },
+    el('div', { className: 'detalle-variante-info' },
+      el('strong', { textContent: nombre }),
+      el('span', {}, el('span', { className: 'detalle-variante-precio', textContent: dinero(variante.precioDescuento) }),
+        ' ', el('s', { textContent: dinero(variante.precioReferencial) })),
+      el('small', { textContent: `Quedan ${variante.stockDisponible}` })),
+    el('div', { className: 'detalle-cantidad' },
+      el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-menos', ariaLabel: `Quitar una unidad de ${nombre}`, onclick: () => cambiar(-1) }),
+      input,
+      el('button', { type: 'button', className: 'detalle-cantidad-boton detalle-mas', ariaLabel: `Añadir una unidad de ${nombre}`, onclick: () => cambiar(1) })));
+}
+
+/** Confirmación con el diseño de la plataforma, en lugar de la ventana nativa del navegador. */
+function confirmarDialogo(titulo, texto, aceptar) {
+  return new Promise(resolver => {
+    const dialogo = el('dialog', { className: 'dialogo-confirmar' });
+    const cerrar = valor => { dialogo.close(); dialogo.remove(); resolver(valor); };
+    dialogo.append(el('h2', { textContent: titulo }), el('p', { textContent: texto }),
+      el('div', { className: 'dialogo-acciones' },
+        el('button', { type: 'button', className: 'secundario', textContent: 'Volver', onclick: () => cerrar(false) }),
+        el('button', { type: 'button', textContent: aceptar, onclick: () => cerrar(true) })));
+    dialogo.addEventListener('cancel', evento => { evento.preventDefault(); cerrar(false); });
+    document.body.append(dialogo);
+    dialogo.showModal();
+  });
 }
