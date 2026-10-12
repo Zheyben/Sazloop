@@ -7,27 +7,39 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="portal.css">
   <script type="module" src="portal-main.js"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
 </head>
 <body>
-  <header id="portal-nav" class="portal-cabecera"></header>
-  <main class="portal-principal">
-    <section class="bienvenida" aria-labelledby="titulo-inicio">
-      <div>
-        <p class="etiqueta">TU ESPACIO SAZLOOP</p>
-        <h1 id="titulo-inicio">Hola, <span id="usuario"></span><em>.</em></h1>
-        <p>Encuentra un pack sorpresa disponible para ti.</p>
-      </div>
-      <span class="bienvenida-marca" aria-hidden="true">✳</span>
-    </section>
-    <section class="seccion-resultados" aria-labelledby="titulo-packs">
-      <div class="seccion-encabezado">
-        <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Novedades</h2></div>
-        <a id="ver-todas" class="enlace-ver-todas" href="catalogo.html">Ver todas</a>
-      </div>
-      <p id="mensaje" role="status" aria-live="polite"></p>
-      <div id="lista" class="grid-packs" aria-label="Packs disponibles"></div>
-    </section>
-  </main>
-  <dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
+<!-- 1. El menú superior baja suavemente apenas carga la página -->
+<header id="portal-nav" class="portal-cabecera animate__animated animate__fadeInDown"></header>
+
+<main class="portal-principal">
+  <section class="bienvenida" aria-labelledby="titulo-inicio">
+    <!-- 2. El bloque de saludo entra deslizándose desde la izquierda -->
+    <div class="animate__animated animate__fadeInLeft">
+      <p class="etiqueta">TU ESPACIO SAZLOOP</p>
+      <h1 id="titulo-inicio">Hola, <span id="usuario"></span><em>.</em></h1>
+      <p>Encuentra un pack sorpresa disponible para ti.</p>
+    </div>
+    <!-- 3. El ícono decorativo hace un giro de entrada sutil con 1 segundo de retraso -->
+    <span class="bienvenida-marca animate__animated animate__rotateIn " aria-hidden="true">✳</span>
+  </section>
+
+  <!-- 4. Los resultados suben desde abajo después del saludo (delay-1s) para guiar la vista del usuario -->
+  <section class="seccion-resultados animate__animated animate__fadeInUp " aria-labelledby="titulo-packs">
+    <div class="seccion-encabezado">
+      <div><p class="etiqueta">PACKS SORPRESA</p><h2 id="titulo-packs">Novedades</h2></div>
+      <a id="ver-todas" class="enlace-ver-todas" href="catalogo.html">Ver todas</a>
+    </div>
+    <p id="mensaje" role="status" aria-live="polite"></p>
+
+    <!-- El contenedor donde el JS inyectará las tarjetas de comida -->
+    <div id="lista" class="grid-packs" aria-label="Packs disponibles"></div>
+  </section>
+</main>
+<dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
 </body>
 </html>

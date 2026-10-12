@@ -75,7 +75,19 @@ async function enviar(formulario, ruta, destino) {
       ingresoPersonal.elements.email.value = correo;
       aviso('Cuenta creada. Ya puedes iniciar sesión.');
     }
-  } catch (error) { aviso(error.message, true); }
+  } catch (error) {
+    if (error.message === 'Failed to fetch' || error.message.includes('Network')) {
+      Swal.fire({
+        title: '¡Ups! Sin conexión',
+        text: 'Parece que no tienes internet. Revisa tu conexión y vuelve a intentarlo.',
+        icon: 'error',
+        confirmButtonColor: '#183a2b', // Usa el verde oscuro de la marca Sazloop
+        confirmButtonText: 'Entendido'
+      });
+    } else {
+      aviso(error.message, true);
+    }
+  }
   finally { boton.disabled = false; }
 }
 

@@ -8,175 +8,186 @@
   <title>Sazloop | Lo bueno sigue fluyendo</title>
   <link rel="stylesheet" href="css/estilos.css">
   <script src="js/acceso.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
 </head>
 <body>
-  <a class="salto" href="#contenido">Saltar al contenido</a>
+<a class="salto" href="#contenido">Saltar al contenido</a>
 
-  <header class="cabecera">
-    <div class="contenedor barra">
-      <a class="marca" href="#inicio" aria-label="Sazloop, ir al inicio">
-        <span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span>
-      </a>
+<!-- 1. El Header cae suavemente desde arriba apenas carga la página -->
+<header class="cabecera animate__animated animate__fadeInDown">
+  <div class="contenedor barra">
+    <a class="marca" href="#inicio" aria-label="Sazloop, ir al inicio">
+      <span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span>
+    </a>
 
-      <nav class="menu-escritorio" aria-label="Navegación principal">
+    <nav class="menu-escritorio" aria-label="Navegación principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#como-funciona">¿Cómo funciona?</a>
+      <a href="#afiliados">Deliverys</a>
+      <a href="#sobre-los-packs">Productos</a>
+      <a href="#para-locales">Afíliate</a>
+    </nav>
+
+    <a class="boton boton-contorno ingreso-escritorio" href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
+
+    <details class="menu-movil">
+      <summary><span>Menú</span><span class="menu-icono" aria-hidden="true">☰</span></summary>
+      <nav aria-label="Navegación móvil">
         <a href="#inicio">Inicio</a>
         <a href="#como-funciona">¿Cómo funciona?</a>
         <a href="#afiliados">Deliverys</a>
         <a href="#sobre-los-packs">Productos</a>
         <a href="#para-locales">Afíliate</a>
+        <a href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
       </nav>
+    </details>
+  </div>
+</header>
 
-      <a class="boton boton-contorno ingreso-escritorio" href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
+<main id="contenido">
+  <!-- Le quité la animación a la sección completa para animar sus hijos -->
+  <section class="portada" id="inicio" aria-labelledby="titulo-principal">
+    <div class="contenedor portada-interior">
 
-      <details class="menu-movil">
-        <summary><span>Menú</span><span class="menu-icono" aria-hidden="true">☰</span></summary>
-        <nav aria-label="Navegación móvil">
-          <a href="#inicio">Inicio</a>
-          <a href="#como-funciona">¿Cómo funciona?</a>
-          <a href="#afiliados">Deliverys</a>
-          <a href="#sobre-los-packs">Productos</a>
-          <a href="#para-locales">Afíliate</a>
-          <a href="app/index.html" data-abrir-acceso>Iniciar sesión</a>
-        </nav>
-      </details>
+      <!-- 2. Los textos entran deslizándose desde la izquierda -->
+      <div class="portada-texto animate__animated animate__fadeInLeft">
+        <h1 id="titulo-principal">Lo bueno sigue <em>fluyendo.</em></h1>
+        <p class="portada-descripcion">Descubre excedentes de comida preparada aptos para consumo en packs sorpresa con descuento.</p>
+        <div class="acciones">
+          <a class="boton boton-principal" href="app/catalogo.html">Explorar ofertas</a>
+          <a class="enlace-texto" href="#como-funciona">Descubre cómo funciona</a>
+        </div>
+        <div class="portada-nota"><span class="nota-icono" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.7"/></svg></span> Recojo en el local · Entrega por delivery</div>
+      </div>
+
+      <!-- 3. La ilustración entra con un zoom elegante, pero le damos un retraso (delay-1s) para que aparezca DESPUÉS del texto -->
+      <figure class="portada-arte animate__animated animate__zoomIn animate__delay-1s">
+        <div class="arte-sol" aria-hidden="true"></div>
+        <svg class="ilustracion" viewBox="0 0 580 520" role="img" aria-labelledby="arte-titulo arte-descripcion" xmlns="http://www.w3.org/2000/svg">
+          <title id="arte-titulo">Ilustración de un pack sorpresa</title>
+          <desc id="arte-descripcion">Bolsa de papel con pan y vegetales. El contenido es ilustrativo y varía según la oferta.</desc>
+          <ellipse cx="292" cy="458" rx="210" ry="27" fill="#85492f" opacity=".16"/>
+          <path d="M140 297c-44-58-16-133 63-158 99-31 126 62 217 38 77-20 118 42 102 113-19 85-117 123-219 119-89-3-129-59-163-112Z" fill="#f4aa73"/>
+          <path d="M106 310c-34-14-47-51-35-85 29 8 55 33 60 65" fill="#386a48"/>
+          <path d="M112 304c-11-35-4-69 20-91 19 18 25 50 10 80" fill="#4d8657"/>
+          <path d="M132 286c8-35 31-57 61-60 2 28-13 52-44 70" fill="#27623d"/>
+          <path d="M138 310c-7-31-23-58-42-77" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
+          <path d="M378 287c7-53 29-86 67-101 12 38-1 72-43 108" fill="#497c4a"/>
+          <path d="M396 287c28-46 66-63 100-51-2 39-33 64-91 67" fill="#2f6c43"/>
+          <path d="M400 306c13-42 38-72 69-90" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
+          <g transform="translate(161 100) rotate(-13 130 170)">
+            <path d="M66 189C31 148 44 74 95 54c54-20 120 12 128 65 9 55-46 129-95 131-22 1-47-28-62-61Z" fill="#bc642d"/>
+            <path d="M70 174c-24-38-18-92 23-109 43-18 108 11 116 57 6 41-36 100-82 113-20 5-44-36-57-61Z" fill="#e9a45c"/>
+            <path d="M95 78c-5 10-7 22-5 34m48-38c0 10 3 22 9 32m41-11c-1 11-5 22-11 31" fill="none" stroke="#a04c24" stroke-width="7" stroke-linecap="round"/>
+          </g>
+          <g transform="translate(263 72) rotate(25 70 140)">
+            <path d="M62 6c25-5 45 11 49 34l30 175c5 28-3 43-25 46-21 3-34-11-39-37L47 49C42 26 43 10 62 6Z" fill="#c8783d"/>
+            <path d="M63 11c17-4 33 10 37 31l29 173c4 21-1 33-15 35-14 2-22-10-26-29L58 47c-4-20-8-33 5-36Z" fill="#efb66d"/>
+            <path d="M79 58l17 20m-7 32 18 20m-11 32 17 20" fill="none" stroke="#b96d37" stroke-width="7" stroke-linecap="round"/>
+          </g>
+          <path d="M183 248h219l-17 193c-2 17-13 25-29 25H229c-16 0-27-8-29-25l-17-193Z" fill="#d6a676"/>
+          <path d="M183 248h219l-8 44H191l-8-44Z" fill="#e9c7a0"/>
+          <path d="M197 289h194l-13 143c-2 15-9 23-24 23H232c-15 0-22-8-24-23l-11-143Z" fill="#e8bd8d"/>
+          <path d="M231 251c1-49 24-74 62-74s61 25 62 74" fill="none" stroke="#aa744d" stroke-width="12" stroke-linecap="round"/>
+          <circle cx="292" cy="366" r="49" fill="#faf1df"/>
+          <path d="M266 372c16-26 28-30 47-20-4 15-20 28-43 27" fill="#2e6343"/>
+          <path d="M276 380c14-25 25-38 42-46" fill="none" stroke="#2e6343" stroke-width="5" stroke-linecap="round"/>
+          <path d="M337 428h25" stroke="#bc9268" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="466" cy="172" r="5" fill="#fff2dc"/>
+          <circle cx="105" cy="166" r="7" fill="#fff2dc"/>
+          <path d="m440 110 7 15 15 7-15 7-7 15-7-15-15-7 15-7 7-15Z" fill="#fff2dc"/>
+        </svg>
+        <div class="arte-etiqueta"><span class="arte-etiqueta-icono" aria-hidden="true">✳</span><span>Un pack.<br><strong>Otra oportunidad.</strong></span></div>
+      </figure>
     </div>
-  </header>
+  </section>
 
-  <main id="contenido">
-    <section class="portada" id="inicio" aria-labelledby="titulo-principal">
-      <div class="contenedor portada-interior">
-        <div class="portada-texto">
-          <h1 id="titulo-principal">Lo bueno sigue <em>fluyendo.</em></h1>
-          <p class="portada-descripcion">Descubre excedentes de comida preparada aptos para consumo en packs sorpresa con descuento.</p>
-          <div class="acciones">
-            <a class="boton boton-principal" href="app/catalogo.html">Explorar ofertas</a>
-            <a class="enlace-texto" href="#como-funciona">Descubre cómo funciona</a>
-          </div>
-          <div class="portada-nota"><span class="nota-icono" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.7"/></svg></span> Recojo en el local · Entrega por delivery</div>
-        </div>
-
-        <figure class="portada-arte">
-          <div class="arte-sol" aria-hidden="true"></div>
-          <svg class="ilustracion" viewBox="0 0 580 520" role="img" aria-labelledby="arte-titulo arte-descripcion" xmlns="http://www.w3.org/2000/svg">
-            <title id="arte-titulo">Ilustración de un pack sorpresa</title>
-            <desc id="arte-descripcion">Bolsa de papel con pan y vegetales. El contenido es ilustrativo y varía según la oferta.</desc>
-            <ellipse cx="292" cy="458" rx="210" ry="27" fill="#85492f" opacity=".16"/>
-            <path d="M140 297c-44-58-16-133 63-158 99-31 126 62 217 38 77-20 118 42 102 113-19 85-117 123-219 119-89-3-129-59-163-112Z" fill="#f4aa73"/>
-            <path d="M106 310c-34-14-47-51-35-85 29 8 55 33 60 65" fill="#386a48"/>
-            <path d="M112 304c-11-35-4-69 20-91 19 18 25 50 10 80" fill="#4d8657"/>
-            <path d="M132 286c8-35 31-57 61-60 2 28-13 52-44 70" fill="#27623d"/>
-            <path d="M138 310c-7-31-23-58-42-77" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
-            <path d="M378 287c7-53 29-86 67-101 12 38-1 72-43 108" fill="#497c4a"/>
-            <path d="M396 287c28-46 66-63 100-51-2 39-33 64-91 67" fill="#2f6c43"/>
-            <path d="M400 306c13-42 38-72 69-90" fill="none" stroke="#1c4f35" stroke-width="5" stroke-linecap="round"/>
-            <g transform="translate(161 100) rotate(-13 130 170)">
-              <path d="M66 189C31 148 44 74 95 54c54-20 120 12 128 65 9 55-46 129-95 131-22 1-47-28-62-61Z" fill="#bc642d"/>
-              <path d="M70 174c-24-38-18-92 23-109 43-18 108 11 116 57 6 41-36 100-82 113-20 5-44-36-57-61Z" fill="#e9a45c"/>
-              <path d="M95 78c-5 10-7 22-5 34m48-38c0 10 3 22 9 32m41-11c-1 11-5 22-11 31" fill="none" stroke="#a04c24" stroke-width="7" stroke-linecap="round"/>
-            </g>
-            <g transform="translate(263 72) rotate(25 70 140)">
-              <path d="M62 6c25-5 45 11 49 34l30 175c5 28-3 43-25 46-21 3-34-11-39-37L47 49C42 26 43 10 62 6Z" fill="#c8783d"/>
-              <path d="M63 11c17-4 33 10 37 31l29 173c4 21-1 33-15 35-14 2-22-10-26-29L58 47c-4-20-8-33 5-36Z" fill="#efb66d"/>
-              <path d="M79 58l17 20m-7 32 18 20m-11 32 17 20" fill="none" stroke="#b96d37" stroke-width="7" stroke-linecap="round"/>
-            </g>
-            <path d="M183 248h219l-17 193c-2 17-13 25-29 25H229c-16 0-27-8-29-25l-17-193Z" fill="#d6a676"/>
-            <path d="M183 248h219l-8 44H191l-8-44Z" fill="#e9c7a0"/>
-            <path d="M197 289h194l-13 143c-2 15-9 23-24 23H232c-15 0-22-8-24-23l-11-143Z" fill="#e8bd8d"/>
-            <path d="M231 251c1-49 24-74 62-74s61 25 62 74" fill="none" stroke="#aa744d" stroke-width="12" stroke-linecap="round"/>
-            <circle cx="292" cy="366" r="49" fill="#faf1df"/>
-            <path d="M266 372c16-26 28-30 47-20-4 15-20 28-43 27" fill="#2e6343"/>
-            <path d="M276 380c14-25 25-38 42-46" fill="none" stroke="#2e6343" stroke-width="5" stroke-linecap="round"/>
-            <path d="M337 428h25" stroke="#bc9268" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="466" cy="172" r="5" fill="#fff2dc"/>
-            <circle cx="105" cy="166" r="7" fill="#fff2dc"/>
-            <path d="m440 110 7 15 15 7-15 7-7 15-7-15-15-7 15-7 7-15Z" fill="#fff2dc"/>
-          </svg>
-          <div class="arte-etiqueta"><span class="arte-etiqueta-icono" aria-hidden="true">✳</span><span>Un pack.<br><strong>Otra oportunidad.</strong></span></div>
-        </figure>
-      </div>
-    </section>
-
-    <section class="seccion pasos-seccion" id="como-funciona" aria-labelledby="pasos-titulo">
-      <div class="contenedor">
-        <div class="encabezado-seccion"><p class="eyebrow">PARA QUIENES COMPRAN</p><h2 id="pasos-titulo">Así de simple es <em>sumarte.</em></h2></div>
-        <ol class="pasos">
-          <li><span class="paso-numero">01 / DESCUBRE</span><span class="paso-dibujo" aria-hidden="true">⌕</span><h3>Encuentra un pack</h3><p>Explora ofertas disponibles y revisa el local, el precio y los detalles antes de elegir.</p></li>
-          <li><span class="paso-numero">02 / ELIGE</span><span class="paso-dibujo" aria-hidden="true">◒</span><h3>Haz tu compra</h3><p>Selecciona el tamaño y la cantidad. Al confirmar, recibes un código único de recojo.</p></li>
-          <li><span class="paso-numero">03 / RECOGE</span><span class="paso-dibujo" aria-hidden="true">⌂</span><h3>Recoge o recibe</h3><p>Recoge tu pack en el local con tu código o recíbelo mediante delivery.</p></li>
-        </ol>
-        <p class="pasos-remate">Del hallazgo al recojo: tú eliges el pack, el establecimiento prepara la sorpresa.</p>
-      </div>
-    </section>
-
-    <section class="seccion delivery-seccion" id="afiliados" aria-labelledby="delivery-titulo">
-      <div class="contenedor delivery-interior">
-        <div class="delivery-texto">
-          <p class="eyebrow">ENTREGA A DOMICILIO</p>
-          <h2 id="delivery-titulo">Lo bueno también <em>llega a ti.</em></h2>
-          <p>Además del recojo en el local, puedes recibir tu pack por delivery con PedidosYa, Rappi o inDrive. Elige la modalidad que prefieras al comprar.</p>
-        </div>
-        <div class="delivery-marcas" aria-label="Servicios de delivery afiliados">
-          <p>Servicios de delivery afiliados</p>
-          <div class="delivery-logos">
-            <div class="delivery-logo"><img src="img/pedidosya.svg" alt="PedidosYa" loading="lazy" width="166" height="48"></div>
-            <div class="delivery-logo"><img src="img/rappi.svg" alt="Rappi" loading="lazy" width="140" height="58"></div>
-            <div class="delivery-logo"><img src="img/indrive.svg" alt="inDrive" loading="lazy" width="166" height="55"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="seccion detalle-seccion" id="sobre-los-packs" aria-labelledby="detalle-titulo">
-      <div class="contenedor detalle-interior">
-        <div class="detalle-tarjeta" aria-hidden="true">
-          <div class="detalle-trazo detalle-trazo-uno"></div><div class="detalle-trazo detalle-trazo-dos"></div>
-          <div class="detalle-tarjeta-contenido"><span class="detalle-sello">PACK SORPRESA</span><span class="detalle-circulo">?</span><span class="detalle-pie">Algo bueno te espera.</span></div>
-        </div>
-        <div class="detalle-texto">
-          <p class="eyebrow">LA SORPRESA ESTÁ EN EL CONTENIDO</p>
-          <h2 id="detalle-titulo">Sorpresa sí.<br><em>Información también.</em></h2>
-          <p>No sabrás exactamente qué alimentos habrá en el pack. Antes de comprar podrás consultar sus posibles productos, alérgenos, restricciones alimentarias y horario de recojo.</p>
-          <a class="enlace-texto" href="app/catalogo.html">Ver ofertas disponibles</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="seccion locales-seccion" id="para-locales" aria-labelledby="locales-titulo">
-      <div class="contenedor locales-interior">
-        <div class="locales-texto">
-          <p class="eyebrow eyebrow-claro">PARA LOS ESTABLECIMIENTOS</p>
-          <h2 id="locales-titulo">Tu excedente todavía tiene <em>valor.</em></h2>
-          <p>Registra tu empresa y cada local, presenta sus documentos para revisión y, una vez aprobado, publica packs con tamaños, precios, existencias y horario de recojo.</p>
-          <a class="boton boton-menta" href="app/acceso-locales.html#empresa">Registrar mi local</a>
-        </div>
-        <div class="locales-visual" aria-hidden="true"><span class="locales-visual-orbita"></span><div class="locales-tarjeta"><span class="locales-icono">✳</span><span class="locales-tarjeta-titulo">De tu local<br>para alguien más.</span><span class="locales-tarjeta-linea"></span><span class="locales-tarjeta-pie">Lo bueno sigue fluyendo</span></div></div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="pie">
-    <div class="contenedor pie-interior"><div><a class="marca marca-pie" href="#inicio"><span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span></a><p>Lo bueno sigue fluyendo.</p></div><p>Lima Metropolitana · Proyecto académico</p><a href="#inicio">Volver arriba</a></div>
-  </footer>
-  <dialog id="modal-acceso" class="modal-acceso" aria-labelledby="modal-acceso-titulo">
-    <button class="modal-cerrar" type="button" aria-label="Cerrar acceso">×</button>
-    <p class="modal-etiqueta">BIENVENIDO A SAZLOOP</p>
-    <h2 id="modal-acceso-titulo">Lo bueno sigue <em>fluyendo.</em></h2>
-    <p class="modal-intro">Elige cómo quieres ingresar a la plataforma.</p>
-    <div class="modal-opciones">
-      <a class="modal-opcion" href="app/acceso-consumidor.html">
-        <span class="modal-numero">01 / PARA COMPRAR</span>
-        <strong>Soy consumidor</strong>
-        <span>Explora ofertas, compra packs sorpresa y consulta tus compras.</span>
-        <span class="modal-accion">Ingresar como consumidor</span>
-      </a>
-      <a class="modal-opcion modal-opcion-local" href="app/acceso-locales.html">
-        <span class="modal-numero">02 / PARA LOCALES</span>
-        <strong>Empresa o trabajador</strong>
-        <span>Gestiona tu empresa y sus establecimientos, o ingresa con la cuenta de tu local.</span>
-        <span class="modal-accion">Ingresar al espacio de locales</span>
-      </a>
+  <!-- Resto del código intacto -->
+  <section class="seccion pasos-seccion" id="como-funciona" aria-labelledby="pasos-titulo">
+    <div class="contenedor">
+      <div class="encabezado-seccion"><p class="eyebrow">PARA QUIENES COMPRAN</p><h2 id="pasos-titulo">Así de simple es <em>sumarte.</em></h2></div>
+      <ol class="pasos">
+        <li><span class="paso-numero">01 / DESCUBRE</span><span class="paso-dibujo" aria-hidden="true">⌕</span><h3>Encuentra un pack</h3><p>Explora ofertas disponibles y revisa el local, el precio y los detalles antes de elegir.</p></li>
+        <li><span class="paso-numero">02 / ELIGE</span><span class="paso-dibujo" aria-hidden="true">◒</span><h3>Haz tu compra</h3><p>Selecciona el tamaño y la cantidad. Al confirmar, recibes un código único de recojo.</p></li>
+        <li><span class="paso-numero">03 / RECOGE</span><span class="paso-dibujo" aria-hidden="true">⌂</span><h3>Recoge o recibe</h3><p>Recoge tu pack en el local con tu código o recíbelo mediante delivery.</p></li>
+      </ol>
+      <p class="pasos-remate">Del hallazgo al recojo: tú eliges el pack, el establecimiento prepara la sorpresa.</p>
     </div>
-    <p class="modal-admin">¿Administras la plataforma? <a href="app/acceso-administrador.html">Acceso de administrador</a></p>
-  </dialog>
+  </section>
+
+  <section class="seccion delivery-seccion" id="afiliados" aria-labelledby="delivery-titulo">
+    <div class="contenedor delivery-interior">
+      <div class="delivery-texto">
+        <p class="eyebrow">ENTREGA A DOMICILIO</p>
+        <h2 id="delivery-titulo">Lo bueno también <em>llega a ti.</em></h2>
+        <p>Además del recojo en el local, puedes recibir tu pack por delivery con PedidosYa, Rappi o inDrive. Elige la modalidad que prefieras al comprar.</p>
+      </div>
+      <div class="delivery-marcas" aria-label="Servicios de delivery afiliados">
+        <p>Servicios de delivery afiliados</p>
+        <div class="delivery-logos">
+          <div class="delivery-logo"><img src="img/pedidosya.svg" alt="PedidosYa" loading="lazy" width="166" height="48"></div>
+          <div class="delivery-logo"><img src="img/rappi.svg" alt="Rappi" loading="lazy" width="140" height="58"></div>
+          <div class="delivery-logo"><img src="img/indrive.svg" alt="inDrive" loading="lazy" width="166" height="55"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion detalle-seccion" id="sobre-los-packs" aria-labelledby="detalle-titulo">
+    <div class="contenedor detalle-interior">
+      <div class="detalle-tarjeta" aria-hidden="true">
+        <div class="detalle-trazo detalle-trazo-uno"></div><div class="detalle-trazo detalle-trazo-dos"></div>
+        <div class="detalle-tarjeta-contenido"><span class="detalle-sello">PACK SORPRESA</span><span class="detalle-circulo">?</span><span class="detalle-pie">Algo bueno te espera.</span></div>
+      </div>
+      <div class="detalle-texto">
+        <p class="eyebrow">LA SORPRESA ESTÁ EN EL CONTENIDO</p>
+        <h2 id="detalle-titulo">Sorpresa sí.<br><em>Información también.</em></h2>
+        <p>No sabrás exactamente qué alimentos habrá en el pack. Antes de comprar podrás consultar sus posibles productos, alérgenos, restricciones alimentarias y horario de recojo.</p>
+        <a class="enlace-texto" href="app/catalogo.html">Ver ofertas disponibles</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion locales-seccion" id="para-locales" aria-labelledby="locales-titulo">
+    <div class="contenedor locales-interior">
+      <div class="locales-texto">
+        <p class="eyebrow eyebrow-claro">PARA LOS ESTABLECIMIENTOS</p>
+        <h2 id="locales-titulo">Tu excedente todavía tiene <em>valor.</em></h2>
+        <p>Registra tu empresa y cada local, presenta sus documentos para revisión y, una vez aprobado, publica packs con tamaños, precios, existencias y horario de recojo.</p>
+        <a class="boton boton-menta" href="app/acceso-locales.html#empresa">Registrar mi local</a>
+      </div>
+      <div class="locales-visual" aria-hidden="true"><span class="locales-visual-orbita"></span><div class="locales-tarjeta"><span class="locales-icono">✳</span><span class="locales-tarjeta-titulo">De tu local<br>para alguien más.</span><span class="locales-tarjeta-linea"></span><span class="locales-tarjeta-pie">Lo bueno sigue fluyendo</span></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="contenedor pie-interior"><div><a class="marca marca-pie" href="#inicio"><span class="marca-simbolo" aria-hidden="true">✳</span><span>Sazloop<span class="marca-punto">.</span></span></a><p>Lo bueno sigue fluyendo.</p></div><p>Lima Metropolitana · Proyecto académico</p><a href="#inicio">Volver arriba</a></div>
+</footer>
+<dialog id="modal-acceso" class="modal-acceso" aria-labelledby="modal-acceso-titulo">
+  <button class="modal-cerrar" type="button" aria-label="Cerrar acceso">×</button>
+  <p class="modal-etiqueta">BIENVENIDO A SAZLOOP</p>
+  <h2 id="modal-acceso-titulo">Lo bueno sigue <em>fluyendo.</em></h2>
+  <p class="modal-intro">Elige cómo quieres ingresar a la plataforma.</p>
+  <div class="modal-opciones">
+    <a class="modal-opcion" href="app/acceso-consumidor.html">
+      <span class="modal-numero">01 / PARA COMPRAR</span>
+      <strong>Soy consumidor</strong>
+      <span>Explora ofertas, compra packs sorpresa y consulta tus compras.</span>
+      <span class="modal-accion">Ingresar como consumidor</span>
+    </a>
+    <a class="modal-opcion modal-opcion-local" href="app/acceso-locales.html">
+      <span class="modal-numero">02 / PARA LOCALES</span>
+      <strong>Empresa o trabajador</strong>
+      <span>Gestiona tu empresa y sus establecimientos, o ingresa con la cuenta de tu local.</span>
+      <span class="modal-accion">Ingresar al espacio de locales</span>
+    </a>
+  </div>
+  <p class="modal-admin">¿Administras la plataforma? <a href="app/acceso-administrador.html">Acceso de administrador</a></p>
+</dialog>
 </body>
 </html>

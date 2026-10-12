@@ -7,36 +7,49 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="portal.css">
   <script type="module" src="portal-main.js"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
 </head>
 <body>
-  <header id="portal-nav" class="portal-cabecera"></header>
-  <main class="portal-principal">
-    <section class="titulo-pagina">
-      <p class="etiqueta">PRODUCTOS</p>
-      <h1>Todos los <em>packs sorpresa.</em></h1>
-      <p>Consulta las ofertas disponibles y elige la que prefieras.</p>
-    </section>
-    <section class="seccion-resultados" aria-label="Ofertas disponibles">
-      <div class="seccion-encabezado">
-        <button id="alternar-filtros" class="boton-filtros" type="button" aria-expanded="false" aria-controls="panel-filtros">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6m6 4v6"/></svg>
-          Filtros <span id="contador-filtros" hidden></span>
-        </button>
-      </div>
-      <div id="panel-filtros" class="panel-filtros" hidden>
-        <form id="filtros" class="filtros-portal">
-          <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
-          <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
-          <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
-          <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
-          <label class="filtro-cercania"><input type="checkbox" disabled> Cerca de mí <small>Próximamente</small></label>
-          <button type="submit">Aplicar filtros</button>
-        </form>
-      </div>
-      <p id="mensaje" role="status" aria-live="polite"></p>
-      <div id="lista" class="grid-packs" aria-label="Ofertas disponibles"></div>
-    </section>
-  </main>
-  <dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
+<!-- 1. Mantenemos la identidad visual: el menú baja suavemente igual que en la otra pantalla -->
+<header id="portal-nav" class="portal-cabecera animate__animated animate__fadeInDown"></header>
+
+<main class="portal-principal">
+  <!-- 2. El título principal entra desde la izquierda, dándole continuidad a la navegación -->
+  <section class="titulo-pagina animate__animated animate__fadeInLeft">
+    <p class="etiqueta">PRODUCTOS</p>
+    <h1>Todos los <em>packs sorpresa.</em></h1>
+    <p>Consulta las ofertas disponibles y elige la que prefieras.</p>
+  </section>
+
+  <!-- 3. Los filtros y la grilla de productos suben desde abajo INMEDIATAMENTE, sin retrasos, para dar sensación de rapidez -->
+  <section class="seccion-resultados animate__animated animate__fadeInUp" aria-label="Ofertas disponibles">
+    <div class="seccion-encabezado">
+      <button id="alternar-filtros" class="boton-filtros" type="button" aria-expanded="false" aria-controls="panel-filtros">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6m6 4v6"/></svg>
+        Filtros <span id="contador-filtros" hidden></span>
+      </button>
+    </div>
+    <div id="panel-filtros" class="panel-filtros" hidden>
+      <form id="filtros" class="filtros-portal">
+        <label>Distrito <input name="distrito" autocomplete="off" placeholder="Escribe un distrito"></label>
+        <label>Dirección <input name="direccion" autocomplete="off" placeholder="Escribe una dirección"></label>
+        <label>Precio máximo (S/) <input name="precioMaximo" type="number" min="0.01" step="0.01" placeholder="Sin límite"></label>
+        <label>Calificación mínima <input name="calificacionMinima" type="number" min="0" max="5" step="0.5" placeholder="Sin mínimo"></label>
+        <label class="filtro-cercania"><input type="checkbox" disabled> Cerca de mí <small>Próximamente</small></label>
+        <button type="submit">Aplicar filtros</button>
+      </form>
+    </div>
+    <p id="mensaje" role="status" aria-live="polite"></p>
+
+    <!-- Aquí es donde tu JavaScript insertará las tarjetas de comida dinámicamente -->
+    <div id="lista" class="grid-packs" aria-label="Ofertas disponibles"></div>
+  </section>
+</main>
+
+<!-- El modal (dialog) no lo animamos con clases estáticas porque se rompería al abrirlo/cerrarlo con JS -->
+<dialog id="detalle" class="detalle-pack" aria-label="Detalle del pack"></dialog>
 </body>
 </html>

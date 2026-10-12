@@ -189,7 +189,7 @@ async function abrirLocal(id, aviso = '') {
     local.estado === 'SUSPENDIDO' ? banda('peligro', 'Local suspendido',
       `${doc.motivoSuspension || 'Un documento obligatorio venció.'}${doc.suspendidoDesde ? ` Suspendido desde el ${fecha(doc.suspendidoDesde)}.` : ''} `
       + 'No aparece en la búsqueda ni puede publicar packs; el trabajador sí puede entregar las reservas ya pagadas. '
-      + 'Presenta la renovación de los documentos vencidos para reactivarlo.') : null,
+      + 'Presenta la renovación de los documentos vencidos para reactivarlo.') : '',
     el('section', { className: 'tarjeta-panel' },
       el('h3', { textContent: aprobado ? 'Documentos del local' : 'Solicitud de afiliación' }),
       ...(aprobado ? seccionVigentes(doc, id) : seccionAfiliacion(doc, id))),

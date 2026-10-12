@@ -38,6 +38,19 @@ export function montarPerfil(usuario) {
   if (usuario.tieneFoto) mostrarFoto();
 
   function estado(texto, error = false) {
+    // Si detecta falla de red, lanza el SweetAlert y detiene la función
+    if (texto === 'Failed to fetch' || texto.includes('Network') || texto.includes('NetworkError')) {
+      Swal.fire({
+        title: '¡Ups! Sin conexión',
+        text: 'Parece que no tienes internet. Revisa tu red y vuelve a intentarlo.',
+        icon: 'error',
+        confirmButtonColor: '#183a2b',
+        confirmButtonText: 'Entendido'
+      });
+      return;
+    }
+
+    // Si es un error normal (ej. contraseña corta), lo pinta normal en el HTML
     mensaje.textContent = texto;
     mensaje.className = error ? 'error' : 'ok';
   }

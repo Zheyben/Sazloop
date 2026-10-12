@@ -62,6 +62,7 @@
   .panel-lateral button { width: 100%; }
   .panel-lateral .contador { margin-left: auto; }
   .panel-contenido { padding-top: 1.5rem; }
+  .panel-lateral[hidden] + .panel-contenido { grid-column: 1 / -1; }
 }
 @media (max-width: 640px) {
   .panel-barra { grid-template-columns: auto auto; }
