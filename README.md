@@ -2,82 +2,96 @@
 
 > **Lo bueno sigue fluyendo.**
 
-Proyecto final del curso Desarrollo Web Integrado.
+Proyecto académico del curso **Desarrollo Web Integrado**, basado en el tema asignado **N.º 91 — SalvemosLaComida**.
 
-**Proyecto asignado:** N.º 91 — SalvemosLaComida. **Nombre de la plataforma:** Sazloop.
+Sazloop es una plataforma web para que establecimientos de comida ofrezcan excedentes aptos para consumo en packs sorpresa con descuento. Los consumidores pueden explorar ofertas, comprarlas y recoger sus packs en el establecimiento.
 
-El repositorio está disponible en `Zheyben/Sazloop`.
+## Estado del proyecto
 
-Sazloop es una plataforma web mobile-first para reducir el desperdicio alimentario. Los establecimientos afiliados ofrecerán sus excedentes mediante packs sorpresa con descuento y los consumidores los recogerán presencialmente.
+El repositorio contiene el avance 2 en desarrollo. El sitio público, los portales por rol y el backend comparten un mismo proyecto; la interfaz se sirve desde Spring Boot.
 
-## Empieza aquí
+El código actual permite:
 
-Toda la información necesaria para comprender y continuar el proyecto se encuentra en la [portada de documentación](docs/README.md).
+- **Consumidor:** registrarse e iniciar sesión, explorar y filtrar ofertas, consultar sus detalles, agregar packs al carrito, realizar compras con pagos simulados, consultar compras y dejar reseñas después del recojo.
+- **Empresa:** registrar su empresa y establecimientos, enviar documentos de afiliación, consultar el estado de sus locales y solicitar renovaciones.
+- **Trabajador del local:** gestionar packs, publicar ofertas con tamaños, precios, existencias y horario, y validar entregas mediante códigos de recojo. También se contempla la compra presencial con pago digital simulado o efectivo.
+- **Administración:** revisar documentos y solicitudes, aprobar o rechazar establecimientos y consultar su estado.
 
-Antes de comenzar una tarea:
+La **entrega por delivery no está implementada en el backend**. Aunque el sitio público la menciona, las compras operativas de esta versión terminan con el recojo en el establecimiento. No se debe presentar la integración con empresas de reparto como una función ya comprobada.
 
-1. Lee la visión general y el glosario.
-2. Revisa el estado actual.
-3. Consulta las decisiones, los requisitos y el [estado actual](docs/tareas/ESTADO_ACTUAL.md).
-4. Sigue la [guía de colaboración](CONTRIBUTING.md). Los planes de las semanas 4 y 5 son históricos.
+## Tecnologías y estructura
 
-## Estado
+- **Backend:** Java 21, Spring Boot 4.1.1, Maven, API REST, Spring Data JPA e Hibernate; Tomcat viene integrado.
+- **Base de datos:** MySQL para datos persistentes y H2 en memoria para pruebas locales.
+- **Frontend:** HTML, CSS y JavaScript. Maven copia `frontend/` a los recursos estáticos servidos por el backend; no se necesita iniciar un servidor de frontend aparte.
 
-**Avance 2.** Los 26 requisitos funcionales tienen backend y pantallas conectados: sitio público, portal del consumidor, portal del trabajador, portal de empresa y portal de administración. Las reglas aprobadas están en el anexo del [informe del segundo avance](docs/informe/Avance_del_proyecto_02.docx).
-
-Consulta el estado por requisito y cómo se comprobó en [docs/tareas/ESTADO_ACTUAL.md](docs/tareas/ESTADO_ACTUAL.md).
-
-## Función principal
-
-- Los establecimientos publican una oferta activa con variantes de tamaño, precio y stock.
-- Los consumidores buscan, compran mediante pagos simulados y recogen el pack en el local.
-- La plataforma no realiza delivery.
-- Cada establecimiento es revisado y aprobado de forma independiente.
-
-El alcance completo se encuentra en [docs/PROYECTO.md](docs/PROYECTO.md).
-
-## Tecnologías
-
-- Java 21
-- Spring Boot 4.1.1 (declarado en el POM)
-- Maven
-- Spring Data JPA
-- MySQL; H2 para desarrollo local
-- HTML, CSS y JavaScript (módulos ES) en el frontend, servidos por el mismo backend
-
-## Arquitectura
-
-Monolito modular organizado por capas. Consulta [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
-
-## Estructura
-
-- `backend/`: aplicación Spring Boot.
-- `frontend/`: sitio público (`index.html`) y aplicación web (`app/`): accesos, portal del consumidor (`consumidor.html`), del trabajador (`trabajador.html`), de empresa (`empresa.html`) y de administración (`administrador.html`). Maven los copia como contenido estático del backend.
-- `docs/`: conocimiento, decisiones y entregables del proyecto.
+```text
+backend/   Aplicación Java, configuración y pruebas
+frontend/  Sitio público y portales de consumidor, empresa, trabajador y administración
+```
 
 ## Equipo
 
-- Emanuel
-- Daniel
-- Franco
-- Piero
-- Alejandro
+Emanuel, Daniel, Franco, Piero y Alejandro.
 
-## Ejecutar la plataforma
+## Ejecutar en Windows (CMD)
 
-Requiere JDK 21 y acceso a Maven Central (no hace falta instalar Tomcat: viene incluido). Desde `backend/`, en Windows (CMD):
+Se requiere **JDK 21**. La primera ejecución del wrapper de Maven necesita acceso a internet para descargar sus dependencias. Abre CMD en la carpeta del repositorio y entra a `backend`:
 
 ```bat
+cd backend
+java -version
+```
+
+### Opción 1: probar sin MySQL
+
+H2 guarda los datos temporalmente: al detener la aplicación se pierden.
+
+```bat
+set "SPRING_PROFILES_ACTIVE=dev"
 mvnw.cmd test
-set SAZLOOP_ADMIN_EMAIL=admin@sazloop.test
-set SAZLOOP_ADMIN_PASSWORD=una-clave-de-prueba
 mvnw.cmd spring-boot:run
 ```
 
-Luego abre `http://localhost:8080/`. El acceso de cada rol está en «Iniciar sesión»; el administrador usa el correo y la clave de las variables anteriores, que solo crean la cuenta si aún no existe.
+### Opción 2: usar MySQL
 
-- **Perfil `dev` (por defecto):** H2 en memoria; los datos se borran al detener la aplicación. Consola de la base en `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:sazloop`, usuario `sa`, sin contraseña).
-- **Perfil `mysql`:** crea la base `sazloop` en MySQL 8 y ejecuta `mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mysql`, con `SAZLOOP_DB_USER` y `SAZLOOP_DB_PASSWORD` si no usas `root` sin contraseña. Hibernate crea las tablas al iniciar.
+Inicia MySQL y crea la base de datos una sola vez:
 
-Las tareas programadas revisan cada minuto las reservas no recogidas, las retenciones de efectivo y la vigencia de los documentos. Los cambios en `frontend/` se ven después de reiniciar la aplicación.
+```sql
+CREATE DATABASE IF NOT EXISTS sazloop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
+En CMD, dentro de `backend`, utiliza las credenciales **de tu instalación local**:
+
+```bat
+set "SPRING_PROFILES_ACTIVE=mysql"
+set "SPRING_DATASOURCE_USERNAME=tu_usuario_mysql"
+set "SPRING_DATASOURCE_PASSWORD=tu_clave_mysql"
+mvnw.cmd spring-boot:run
+```
+
+El perfil configurado por defecto en `application.properties` es `mysql`; las variables anteriores permiten escoger el perfil y las credenciales sin editar archivos para cada ejecución. Al iniciar, Hibernate crea o actualiza las tablas, pero **no traslada datos de otras bases**.
+
+Cuando la consola muestre que Tomcat arrancó en el puerto 8080, abre **http://localhost:8080/**. En «Iniciar sesión» puedes elegir el acceso correspondiente. Para ver cambios hechos en `frontend/`, reinicia la aplicación y recarga el navegador.
+
+### Cuenta de administración local
+
+Antes de arrancar el servidor, puedes definir el correo y la contraseña de la cuenta administrativa mediante variables de entorno de esa ventana de CMD:
+
+```bat
+set "SAZLOOP_ADMIN_EMAIL=tu_correo_admin"
+set "SAZLOOP_ADMIN_PASSWORD=tu_clave_admin"
+```
+
+La cuenta se crea **solo si ese correo todavía no existe** en la base de datos activa. Cambiar estas variables más tarde no modifica la contraseña de una cuenta existente. No subas credenciales reales al repositorio.
+
+## Pruebas
+
+Para ejecutar las pruebas automatizadas con la base temporal H2 desde `backend/`:
+
+```bat
+set "SPRING_PROFILES_ACTIVE=dev"
+mvnw.cmd test
+```
+
+Las pruebas cubren flujos de afiliación, ofertas, compra, recojo y consultas de los portales. El resultado de `mvnw.cmd test` corresponde a tu ejecución local.
