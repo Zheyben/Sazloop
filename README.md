@@ -4,10 +4,9 @@
 
 ## Requisitos para una computadora nueva
 
-- Windows con **JDK 21** instalado (`java -version` debe mostrar 21).
+- Windows con **JDK 21**.
 - **Git** para descargar el repositorio y conexión a internet en el primer inicio para que el proyecto descargue sus dependencias.
-- Para **MySQL**, un servidor MySQL 8 en ejecución en `localhost:3306`. **Para H2 no se instala ningún servidor de base de datos.**
-- No es necesario instalar Maven ni Node.js: se usa `mvnw.cmd` y Spring Boot sirve el frontend desde `frontend/` junto con el backend.
+- Para **MySQL**, un servidor MySQL 8.
 
 En CMD, descarga el proyecto y entra en la carpeta correcta:
 
@@ -19,9 +18,11 @@ java -version
 
 Si ya tienes el repositorio, actualízalo con `git pull origin main` desde la carpeta `Sazloop` y luego entra a `backend`.
 
+**Tambien puedes descargar el código por .zip y ahorrarte lo anterior.**
+
 ## Opción A: H2 con datos para la exposición
 
-Desde `backend` en **CMD**:
+Desde la ruta `C:\Users\Emanuel\Documents\Proyectos\Sazloop\backend` abrimos el **CMD** y ejecutamos el siguiente comando:
 
 ```bat
 mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev,demo
@@ -50,28 +51,16 @@ H2 funciona en memoria: al detener el programa con `Ctrl + C` se pierden los cam
 Inicia MySQL y ejecuta una sola vez en MySQL Workbench o en la consola de MySQL:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS sazloop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS sazloop;
 ```
 
-El proyecto espera MySQL en `localhost:3306`. Desde `backend` en **CMD**, configura las credenciales **de MySQL de esa computadora** y una cuenta administradora nueva, luego inicia:
+Debes modificar en `Sazloop\backend\src\main\resources\application-mysql.properties` la contraseña que esta escrita por tu contraseña root de tu mysql:
 
-```bat
-set "SPRING_DATASOURCE_USERNAME=tu_usuario_mysql"
-set "SPRING_DATASOURCE_PASSWORD=tu_clave_mysql"
-set "SAZLOOP_ADMIN_EMAIL=tu_correo_admin"
-set "SAZLOOP_ADMIN_PASSWORD=tu_clave_admin"
-mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mysql
+```java
+spring.datasource.username=root
+spring.datasource.password=CONTRASEÑA_TUYA <---
 ```
 
-Sustituye los valores `tu_...` por los tuyos en esa ventana de CMD; no publiques contraseñas reales en Git. Abre [http://localhost:8080/](http://localhost:8080/) cuando arranque Tomcat. Las tablas se crean o actualizan automáticamente. **MySQL conserva sus datos** al detener la aplicación, pero una instalación nueva no recibe las cuentas de H2 ni las de otra computadora. La cuenta administradora se crea solamente si el correo indicado todavía no existe en esa base; cambiar la variable después no modifica su contraseña.
+Ejecuta el proyecto desde IntelliJ IDEA, dandole RUN en el archivo de SazloopApplication.
 
-## Pruebas automatizadas
-
-Desde `backend` con JDK 21:
-
-```bat
-set "SPRING_PROFILES_ACTIVE=dev"
-mvnw.cmd test
-```
-
-Si necesitas más detalle sobre los datos de exposición, consulta [la demostración H2](backend/DEMO_H2.md) y [sus accesos](backend/ACCESOS_H2.md).
+Abre [http://localhost:8080/](http://localhost:8080/) cuando arranque Tomcat. Las tablas se crean o actualizan automáticamente. **MySQL conserva sus datos** al detener la aplicación, pero una instalación nueva no recibe las cuentas de H2 ni las de otra computadora. La cuenta administradora se crea solamente si el correo indicado todavía no existe en esa base; cambiar la variable después no modifica su contraseña.
