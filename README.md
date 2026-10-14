@@ -1,99 +1,77 @@
 # Sazloop
 
-> **Lo bueno sigue fluyendo.**
+**Lo bueno sigue fluyendo.** Proyecto académico de Desarrollo Web Integrado basado en el tema N.º 91, SalvemosLaComida. Los establecimientos ofrecen excedentes de comida aptos para consumo en packs sorpresa con descuento. Esta versión permite comprar y recoger en el local; la entrega por delivery aún no está implementada en el backend.
 
-Proyecto académico del curso **Desarrollo Web Integrado**, basado en el tema asignado **N.º 91 — SalvemosLaComida**.
+## Requisitos para una computadora nueva
 
-Sazloop es una plataforma web para que establecimientos de comida ofrezcan excedentes aptos para consumo en packs sorpresa con descuento. Los consumidores pueden explorar ofertas, comprarlas y recoger sus packs en el establecimiento.
+- Windows con **JDK 21** instalado (`java -version` debe mostrar 21).
+- **Git** para descargar el repositorio y conexión a internet en el primer inicio para que el proyecto descargue sus dependencias.
+- Para **MySQL**, un servidor MySQL 8 en ejecución en `localhost:3306`. **Para H2 no se instala ningún servidor de base de datos.**
+- No es necesario instalar Maven ni Node.js: se usa `mvnw.cmd` y Spring Boot sirve el frontend desde `frontend/` junto con el backend.
 
-## Estado del proyecto
-
-El repositorio contiene el avance 2 en desarrollo. El sitio público, los portales por rol y el backend comparten un mismo proyecto; la interfaz se sirve desde Spring Boot.
-
-El código actual permite:
-
-- **Consumidor:** registrarse e iniciar sesión, explorar y filtrar ofertas, consultar sus detalles, agregar packs al carrito, realizar compras con pagos simulados, consultar compras y dejar reseñas después del recojo.
-- **Empresa:** registrar su empresa y establecimientos, enviar documentos de afiliación, consultar el estado de sus locales y solicitar renovaciones.
-- **Trabajador del local:** gestionar packs, publicar ofertas con tamaños, precios, existencias y horario, y validar entregas mediante códigos de recojo. También se contempla la compra presencial con pago digital simulado o efectivo.
-- **Administración:** revisar documentos y solicitudes, aprobar o rechazar establecimientos y consultar su estado.
-
-La **entrega por delivery no está implementada en el backend**. Aunque el sitio público la menciona, las compras operativas de esta versión terminan con el recojo en el establecimiento. No se debe presentar la integración con empresas de reparto como una función ya comprobada.
-
-## Tecnologías y estructura
-
-- **Backend:** Java 21, Spring Boot 4.1.1, Maven, API REST, Spring Data JPA e Hibernate; Tomcat viene integrado.
-- **Base de datos:** MySQL para datos persistentes y H2 en memoria para pruebas locales.
-- **Frontend:** HTML, CSS y JavaScript. Maven copia `frontend/` a los recursos estáticos servidos por el backend; no se necesita iniciar un servidor de frontend aparte.
-
-```text
-backend/   Aplicación Java, configuración y pruebas
-frontend/  Sitio público y portales de consumidor, empresa, trabajador y administración
-```
-
-## Equipo
-
-Emanuel, Daniel, Franco, Piero y Alejandro.
-
-## Ejecutar en Windows (CMD)
-
-Se requiere **JDK 21**. La primera ejecución del wrapper de Maven necesita acceso a internet para descargar sus dependencias. Abre CMD en la carpeta del repositorio y entra a `backend`:
+En CMD, descarga el proyecto y entra en la carpeta correcta:
 
 ```bat
-cd backend
+git clone https://github.com/Zheyben/Sazloop.git
+cd Sazloop\backend
 java -version
 ```
 
-### Opción 1: probar sin MySQL
+Si ya tienes el repositorio, actualízalo con `git pull origin main` desde la carpeta `Sazloop` y luego entra a `backend`.
 
-H2 guarda los datos temporalmente: al detener la aplicación se pierden.
+## Opción A: H2 con datos para la exposición
+
+Desde `backend` en **CMD**:
 
 ```bat
-set "SPRING_PROFILES_ACTIVE=dev"
-mvnw.cmd test
-mvnw.cmd spring-boot:run
+mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev,demo
 ```
 
-### Opción 2: usar MySQL
+Cuando aparezca `Tomcat started on port 8080`, abre [http://localhost:8080/](http://localhost:8080/). El sitio público y los portales se abren desde esa misma dirección.
 
-Inicia MySQL y crea la base de datos una sola vez:
+| Acceso | Establecimiento o persona | Usuario o correo | Contraseña |
+| --- | --- | --- | --- |
+| Administrador | Administración de prueba | `demo.admin@sazloop.test` | `SazloopDemo2026!` |
+| Empresa | Aurora Cocina (Miraflores y San Borja) | `duena.aurora@sazloop.test` | `SazloopDemo2026!` |
+| Empresa | Oriente Pan (Ate) | `dueno.oriente@sazloop.test` | `SazloopDemo2026!` |
+| Empresa | Sazón Urbano (Ate) | `duena.sazon@sazloop.test` | `SazloopDemo2026!` |
+| Trabajador | Aurora Miraflores | `demo.miraflores` | `SazloopDemo2026!` |
+| Trabajador | Oriente Pan Ate | `demo.ayllon1` | `SazloopDemo2026!` |
+| Trabajador | Sazón Urbano Ate | `demo.ayllon2` | `SazloopDemo2026!` |
+| Consumidor | Valeria Quispe | `demo.consumidor1@sazloop.test` | `SazloopDemo2026!` |
+| Consumidor | Diego Flores | `demo.consumidor2@sazloop.test` | `SazloopDemo2026!` |
+
+La demo carga **tres empresas, cuatro establecimientos, dos consumidores y tres ofertas**, una por cada establecimiento activo. Aurora San Borja queda pendiente de revisión administrativa, sin cuenta de trabajador ni oferta hasta que se apruebe.
+
+H2 funciona en memoria: al detener el programa con `Ctrl + C` se pierden los cambios y, al volver a iniciarlo con `dev,demo`, se cargan otra vez los datos iniciales. **El perfil `dev` por sí solo inicia H2 vacía**, sin estas cuentas. Los datos de H2 no se copian a MySQL ni se comparten entre computadoras. La consola para consultar sus tablas está en [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:sazloop`; usuario: `sa`; contraseña: vacía).
+
+## Opción B: MySQL local
+
+Inicia MySQL y ejecuta una sola vez en MySQL Workbench o en la consola de MySQL:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS sazloop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-En CMD, dentro de `backend`, utiliza las credenciales **de tu instalación local**:
+El proyecto espera MySQL en `localhost:3306`. Desde `backend` en **CMD**, configura las credenciales **de MySQL de esa computadora** y una cuenta administradora nueva, luego inicia:
 
 ```bat
-set "SPRING_PROFILES_ACTIVE=mysql"
 set "SPRING_DATASOURCE_USERNAME=tu_usuario_mysql"
 set "SPRING_DATASOURCE_PASSWORD=tu_clave_mysql"
-mvnw.cmd spring-boot:run
-```
-
-El perfil configurado por defecto en `application.properties` es `mysql`; las variables anteriores permiten escoger el perfil y las credenciales sin editar archivos para cada ejecución. Al iniciar, Hibernate crea o actualiza las tablas, pero **no traslada datos de otras bases**.
-
-Cuando la consola muestre que Tomcat arrancó en el puerto 8080, abre **http://localhost:8080/**. En «Iniciar sesión» puedes elegir el acceso correspondiente. Para ver cambios hechos en `frontend/`, reinicia la aplicación y recarga el navegador.
-
-### Cuenta de administración local
-
-Antes de arrancar el servidor, puedes definir el correo y la contraseña de la cuenta administrativa mediante variables de entorno de esa ventana de CMD:
-
-```bat
 set "SAZLOOP_ADMIN_EMAIL=tu_correo_admin"
 set "SAZLOOP_ADMIN_PASSWORD=tu_clave_admin"
+mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mysql
 ```
 
-La cuenta se crea **solo si ese correo todavía no existe** en la base de datos activa. Cambiar estas variables más tarde no modifica la contraseña de una cuenta existente. No subas credenciales reales al repositorio.
+Sustituye los valores `tu_...` por los tuyos en esa ventana de CMD; no publiques contraseñas reales en Git. Abre [http://localhost:8080/](http://localhost:8080/) cuando arranque Tomcat. Las tablas se crean o actualizan automáticamente. **MySQL conserva sus datos** al detener la aplicación, pero una instalación nueva no recibe las cuentas de H2 ni las de otra computadora. La cuenta administradora se crea solamente si el correo indicado todavía no existe en esa base; cambiar la variable después no modifica su contraseña.
 
-## Pruebas
+## Pruebas automatizadas
 
-Para ejecutar las pruebas automatizadas con la base temporal H2 desde `backend/`:
+Desde `backend` con JDK 21:
 
 ```bat
 set "SPRING_PROFILES_ACTIVE=dev"
 mvnw.cmd test
 ```
 
-Las pruebas cubren flujos de afiliación, ofertas, compra, recojo y consultas de los portales. El resultado de `mvnw.cmd test` corresponde a tu ejecución local.
-
-Para la exposición con tres empresas, cuatro locales, dos consumidores y tres ofertas precargadas en H2, consulta la [guía de demostración](backend/DEMO_H2.md).
+Si necesitas más detalle sobre los datos de exposición, consulta [la demostración H2](backend/DEMO_H2.md) y [sus accesos](backend/ACCESOS_H2.md).
