@@ -95,3 +95,5 @@ mvnw.cmd test
 ```
 
 Las pruebas cubren flujos de afiliación, ofertas, compra, recojo y consultas de los portales. El resultado de `mvnw.cmd test` corresponde a tu ejecución local.
+
+Para la exposición con tres empresas, cuatro locales, dos consumidores y tres ofertas precargadas en H2, consulta la [guía de demostración](backend/DEMO_H2.md).
