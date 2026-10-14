@@ -20,7 +20,8 @@ Si ya tienes el repositorio, actualízalo con `git pull origin main` desde la ca
 
 **Tambien puedes descargar el código por .zip y ahorrarte lo anterior.**
 
-## Opción A: H2 con datos para la exposición
+## Opción A: H2 con datos
+Creado para ver una demostración de las cuentas ya registradas para todos los portales y evitar crear cuentas uno por uno. Esto se realizó para probar la plataforma y las funcionalidades que trae.
 
 Desde la ruta `C:\Users\Emanuel\Documents\Proyectos\Sazloop\backend` abrimos el **CMD** y ejecutamos el siguiente comando:
 
@@ -29,6 +30,7 @@ mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev,demo
 ```
 
 Cuando aparezca `Tomcat started on port 8080`, abre [http://localhost:8080/](http://localhost:8080/). El sitio público y los portales se abren desde esa misma dirección.
+Utiliza los siguientes accesos para ingresar a las cuentas:
 
 | Acceso | Establecimiento o persona | Usuario o correo | Contraseña |
 | --- | --- | --- | --- |
@@ -44,8 +46,6 @@ Cuando aparezca `Tomcat started on port 8080`, abre [http://localhost:8080/](htt
 
 La demo carga **tres empresas, cuatro establecimientos, dos consumidores y tres ofertas**, una por cada establecimiento activo. Aurora San Borja queda pendiente de revisión administrativa, sin cuenta de trabajador ni oferta hasta que se apruebe.
 
-H2 funciona en memoria: al detener el programa con `Ctrl + C` se pierden los cambios y, al volver a iniciarlo con `dev,demo`, se cargan otra vez los datos iniciales. **El perfil `dev` por sí solo inicia H2 vacía**, sin estas cuentas. Los datos de H2 no se copian a MySQL ni se comparten entre computadoras. La consola para consultar sus tablas está en [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:sazloop`; usuario: `sa`; contraseña: vacía).
-
 ## Opción B: MySQL local
 
 Inicia MySQL y ejecuta una sola vez en MySQL Workbench o en la consola de MySQL:
@@ -58,9 +58,13 @@ Debes modificar en `Sazloop\backend\src\main\resources\application-mysql.propert
 
 ```java
 spring.datasource.username=root
-spring.datasource.password=CONTRASEÑA_TUYA <---
+spring.datasource.password=CONTRASEÑA <--- Cambia esta contraseña
 ```
 
 Ejecuta el proyecto desde IntelliJ IDEA, dandole RUN en el archivo de SazloopApplication.
+
+Para ingresar al administrador debes ingresar estas credenciales:
+- Email: admin@correo.com
+- Contraseña: admin123
 
 Abre [http://localhost:8080/](http://localhost:8080/) cuando arranque Tomcat. Las tablas se crean o actualizan automáticamente. **MySQL conserva sus datos** al detener la aplicación, pero una instalación nueva no recibe las cuentas de H2 ni las de otra computadora. La cuenta administradora se crea solamente si el correo indicado todavía no existe en esa base; cambiar la variable después no modifica su contraseña.
