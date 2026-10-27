@@ -1,26 +1,14 @@
 # Sazloop
 
-**Lo bueno sigue fluyendo.** Proyecto académico de Desarrollo Web Integrado basado en el tema N.º 91, SalvemosLaComida. Los establecimientos ofrecen excedentes de comida aptos para consumo en packs sorpresa con descuento. Esta versión permite comprar y recoger en el local; la entrega por delivery aún no está implementada en el backend.
+Este es un proyecto académico universitario del curso "Desarrollo Web Integrado" basado en el tema N.º 91 "SalvemosLaComida". Los establecimientos ofrecen excedentes de comida aptos para consumo envueltos en packs sorpresa con descuento para los consumidores.
 
-## Requisitos para una computadora nueva
+## Requisitos para una computadora nueva y opciones de prueba del proyecto
 
 - Windows con **JDK 21**.
-- **Git** para descargar el repositorio y conexión a internet en el primer inicio para que el proyecto descargue sus dependencias.
-- Para **MySQL**, un servidor MySQL 8.
+- MySQL versión 8.0.
 
-En CMD, descarga el proyecto y entra en la carpeta correcta:
+### Opción A: H2 con datos
 
-```bat
-git clone https://github.com/Zheyben/Sazloop.git
-cd Sazloop\backend
-java -version
-```
-
-Si ya tienes el repositorio, actualízalo con `git pull origin main` desde la carpeta `Sazloop` y luego entra a `backend`.
-
-**Tambien puedes descargar el código por .zip y ahorrarte lo anterior.**
-
-## Opción A: H2 con datos
 Creado para ver una demostración de las cuentas ya registradas para todos los portales y evitar crear cuentas uno por uno. Esto se realizó para probar la plataforma y las funcionalidades que trae.
 
 Desde la ruta `C:\Users\Emanuel\Documents\Proyectos\Sazloop\backend` abrimos el **CMD** y ejecutamos el siguiente comando:
