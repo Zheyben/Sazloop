@@ -22,7 +22,7 @@ El objetivo es reducir desperdicio de alimentos mediante una plataforma que perm
 
 Una persona puede comprar y administrar su empresa desde la misma identidad. El propietario registra locales y presenta sus documentos; cada local se aprueba por separado y utiliza una cuenta operativa compartida para publicar y entregar. El administrador de plataforma revisa las solicitudes. Los resultados empresariales se consultan por local y de forma consolidada.
 
-V1 no incluye delivery, pagos reales, GPS/mapas, OCR, certificación sanitaria propia, aplicación móvil nativa, Google Sign-In, registro individual de empleados, varios tipos de oferta activos a la vez por local ni microservicios. La fórmula científica del impacto sigue postergada. La portada contiene menciones de delivery que no corresponden a una integración implementada; se registran como problema de la interfaz, sin ampliar el alcance.
+V1 no incluye delivery, pagos reales, GPS/mapas, OCR, certificación sanitaria propia, aplicación móvil nativa, Google Sign-In, registro individual de empleados ni microservicios. La fórmula científica del impacto sigue postergada. La portada contiene menciones de delivery que no corresponden a una integración implementada; se registran como problema de la interfaz, sin ampliar el alcance.
 
 ## Estado por requisito
 
