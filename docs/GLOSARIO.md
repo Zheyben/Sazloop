@@ -1,48 +1,40 @@
-# Glosario del proyecto
+# Glosario de Sazloop
 
-Este glosario establece los términos que utilizarán el informe, los diagramas, los prototipos y el código.
+Vocabulario común para documentos, código y conversaciones del equipo. Las relaciones detalladas están en el [Modelo de dominio](decisiones/MODELO_DOMINIO.md).
 
 | Término | Significado |
 |---|---|
-| Sazloop | Nombre de la plataforma del proyecto N.º 91 — SalvemosLaComida. |
-| Usuario | Identidad principal utilizada para registrarse e iniciar sesión. |
-| Consumidor | Perfil que busca, compra, recoge y califica packs. |
-| Propietario de empresa | Perfil que administra la empresa y observa sus establecimientos. |
-| Empresa | Organización comercial que puede poseer uno o varios establecimientos. |
-| Establecimiento | Local físico individual con ubicación, documentos, oferta y operación propias. |
-| Cuenta del establecimiento | Acceso operativo compartido por el personal de un único local. |
-| Afiliación | Proceso mediante el cual se solicita que un establecimiento pueda operar en la plataforma. |
-| Documento del establecimiento | Archivo y datos presentados para comprobar un requisito del local. |
-| Revisión documental | Evaluación manual de un documento por un administrador. |
-| Pack sorpresa | Definición general del conjunto de alimentos cuyo contenido exacto no se garantiza antes de la compra. |
-| Oferta de pack | Publicación del pack para una fecha, horario y disponibilidad determinados. |
-| Variante de pack | Tamaño disponible dentro de la oferta, con precio y stock propios. |
-| Stock | Cantidad de unidades disponibles de una variante. |
-| Retención de stock | Separación temporal de unidades mientras se confirma una compra. |
-| Reserva | Registro de una operación de compra. El modelo contempla un estado inicial pendiente de pago; la reserva solo queda confirmada después de confirmar el pago. |
-| Detalle de reserva | Variante, cantidad y precio conservados dentro de una reserva. |
-| Pago simulado | Registro académico de un pago que no mueve dinero real. |
-| Boleta simulada | Resumen interno de la compra sin validez tributaria. |
-| Código de recojo | Código único que el consumidor presenta para recibir el pack. |
-| Recojo | Entrega presencial del pack y cierre satisfactorio de la reserva. |
-| No recojo | Reserva pagada que llegó al fin del horario de recojo sin ser entregada. |
-| Renovación | Nueva solicitud de un local aprobado con los documentos vencidos o por vencer; al aprobarse reemplaza a los anteriores y reactiva el local suspendido. |
-| Suspensión automática | Suspensión que aplica el sistema cuando vence un documento obligatorio sin renovación aprobada. |
-| Notificación | Aviso del buzón de un usuario sobre su solicitud, sus documentos, una suspensión o sus pedidos. |
-| Cancelación | Finalización solicitada de una reserva remota antes de su recojo y dentro del tiempo permitido. |
-| Reembolso simulado | Registro de la devolución del 50 % del importe pagado cuando corresponde. |
-| Comisión | Porción del importe cobrado que corresponde a la plataforma. |
-| Reseña | Calificación y comentario habilitados después de un recojo completado. |
-| QR presencial | Enlace físico del establecimiento que abre directamente su oferta activa. |
-| Administrador de plataforma | Cuenta interna que revisa documentos y solicitudes. |
-| Mobile-first | Diseño que comienza por la experiencia en celulares y se adapta a pantallas mayores. |
-| V1 | Primera versión académica y funcional del sistema. |
+| Usuario / persona | Identidad personal para ingresar como consumidor, propietario o ambos. |
+| Consumidor | Perfil que compra y recoge packs. |
+| Propietario | Perfil de la persona que registra una empresa y administra sus locales. |
+| Empresa | Organización que agrupa establecimientos. |
+| Establecimiento / local | Punto físico con ubicación, documentos, aprobación y operación propias. |
+| Cuenta operativa / trabajador | Acceso compartido del personal de un local; no representa empleados registrados individualmente. |
+| Administrador | Cuenta interna que revisa documentos y decide solicitudes. |
+| Afiliación | Solicitud y revisión necesarias para permitir operar a un establecimiento. |
+| Aprobación del local | Decisión administrativa que habilita su operación; no debe confundirse con una afirmación permanente de vigencia documental. |
+| Vigencia documental | Situación de las fechas de los documentos aprobados: vigente, por vencer, vencido o sin vencimiento. |
+| Renovación | Nueva solicitud con documentos vencidos o por vencer; conserva el historial anterior. |
+| Suspensión | Bloqueo de nuevas ventas y publicaciones; conserva historial y entrega de compras ya pagadas. |
+| Pack sorpresa | Descripción reutilizable; no garantiza un contenido exacto. |
+| Oferta | Publicación concreta de un pack con horario, variantes y QR propios. |
+| Variante | Tamaño con precio y stock propios dentro de una oferta. |
+| Stock disponible | Unidades que todavía pueden comprarse; no incluye las retenidas para efectivo. |
+| Carrito | Selección temporal en el navegador; no reserva ni retiene unidades. |
+| Retención | Unidades apartadas temporalmente mientras el trabajador confirma un pago en efectivo. |
+| Reserva / compra | Registro de la operación. `PENDIENTE_PAGO` no es una compra confirmada. |
+| Pago simulado | Registro académico sin movimiento de dinero real; validar un formato no confirma un pago bancario. |
+| Boleta simulada | Resumen interno sin validez tributaria. |
+| Código de recojo | Código único de una reserva; se utiliza una sola vez para su entrega o cobro presencial. |
+| Recojo / entrega | Recepción física confirmada por el trabajador; pagar por sí solo no acredita entrega. |
+| No recojo | Compra pagada cuyo horario terminó sin entrega. |
+| Cancelación | Finalización permitida de una reserva remota todavía confirmada y antes del fin del horario. |
+| Reembolso / comisión | Importes simulados; reglas económicas en DEC-036 y DEC-035. |
+| Reseña | Nota y comentario sobre una compra recogida. D2 permite una por compra; el código aún limita una por consumidor/local. |
+| QR de oferta | Enlace a una publicación concreta; no es el código de recojo ni un QR permanente del establecimiento. |
+| Notificación | Aviso guardado en el buzón personal, con estado de lectura. |
+| Impacto conceptual | Registro posterior al recojo; por ahora se muestran packs entregados, sin estimación de kilos ni CO₂. |
+| Mobile-first | Diseño que parte de celulares y se adapta a pantallas mayores. |
+| V1 | Primera versión académica del sistema. |
 
-## Diferencias que no deben confundirse
-
-- **Empresa y establecimiento:** la empresa agrupa; el establecimiento es un local físico.
-- **Pack y oferta:** el pack describe; la oferta publica esa descripción para un día y horario.
-- **Oferta y variante:** la oferta es una publicación; la variante es un tamaño con precio y stock.
-- **Retención y reserva:** la retención es temporal; la reserva solo queda confirmada cuando el pago queda confirmado. Un registro en estado `PENDIENTE_PAGO` no equivale a una compra confirmada.
-- **Pago y recojo:** pagar no demuestra que el consumidor recibió el pack.
-- **Rechazo y suspensión:** se rechaza una solicitud pendiente; se suspende un establecimiento que ya estaba aprobado.
+Un requisito describe lo que debe cumplirse; una decisión registra un acuerdo; encontrar código acredita implementación, y una prueba ejecutada solo acredita el escenario y entorno comprobados. El [estado del proyecto](PROYECTO.md) mantiene esa separación.

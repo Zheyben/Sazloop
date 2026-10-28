@@ -1,6 +1,8 @@
 # Decisiones del proyecto
 
-Este documento registra las decisiones aprobadas durante el desarrollo del proyecto y la justificación necesaria para comprenderlas y sustentarlas.
+Registro de acuerdos y sus razones. Una decisión aprobada no demuestra que esté implementada ni probada: el estado real está en [Proyecto](../PROYECTO.md) y la evidencia histórica en [Auditorías](../../auditoria/).
+
+Se conservan DEC-001 a DEC-050. La autorización de esta sincronización incorpora D1–D6 como DEC-051 a DEC-056 y precisa qué acuerdos anteriores actualizan. Las fuentes académicas excluidas no se inspeccionaron de nuevo.
 
 ## Aclaraciones académicas confirmadas
 
@@ -37,7 +39,8 @@ Cada oferta establece el inicio y el fin de su horario de recojo, configurados p
 Una reserva pagada que no se entrega antes del fin del horario de recojo pasa automáticamente a expirada (no recogida) y ya no puede entregarse. El importe cobrado y la comisión se conservan, no cuenta como pack entregado para el impacto y el consumidor recibe un aviso. No existe un margen adicional después del fin del horario.
 
 ## DEC-010 — Reseñas solo tras recojo completado
-No se puede reseñar una experiencia que no haya terminado en entrega.
+
+Solo se puede reseñar una compra efectivamente recogida. La cantidad permitida se precisa por compra en D2 / DEC-052; su adaptación todavía está pendiente en el código.
 
 ## DEC-011 — Separar PackSorpresa de OfertaPack
 `PackSorpresa` es una definición reutilizable; `OfertaPack` es la publicación concreta para una fecha, precio, stock y horario determinados.
@@ -46,7 +49,8 @@ No se puede reseñar una experiencia que no haya terminado en entrega.
 Roles, estados y métodos de pago cerrados se modelarán como enums cuando corresponda, en vez de crear entidades artificiales solo para alcanzar el mínimo de clases.
 
 ## DEC-013 — Acceso presencial mediante QR
-Un establecimiento puede mostrar QR que lleva directamente a una oferta activa. Sirve para quien ya está físicamente allí y también para dar visibilidad a la plataforma.
+
+El QR abre la oferta de una compra presencial. D1 / DEC-051 fija que cada oferta tiene su propio código; queda descartada la propuesta anterior de un QR permanente por local.
 
 ## DEC-014 — Medios de pago según contexto
 - Remoto: solo pago digital simulado.
@@ -60,16 +64,19 @@ Un usuario no puede publicar packs inmediatamente; debe solicitar afiliación y 
 La plataforma revisa documentación aportada, pero no se presenta como autoridad sanitaria ni emite certificaciones sanitarias propias.
 
 ## DEC-017 — Documentos obligatorios dentro del registro/solicitud
-La documentación requerida se adjunta como parte del mismo proceso de solicitud de afiliación. No se completa “después de registrarse” para poder enviar la solicitud.
+
+Los documentos se adjuntan antes de enviar la solicitud de afiliación. D3 / DEC-053 deja pendiente el conjunto exacto de documentos exigibles; no se debe inventar esa lista ni afirmar que el sistema ya la valida.
 
 ## DEC-018 — Transparencia sin exposición de documentos privados
-El consumidor puede ver estados de verificación/vigencia del establecimiento, pero no los archivos documentales originales.
+
+El consumidor debe conocer la verificación sin acceder a documentos privados. D4 / DEC-054 precisa la indicación visible y exige distinguir aprobación del establecimiento de vigencia documental. Su presentación al consumidor está pendiente.
 
 ## DEC-019 — Vigencia individual por documento
 No se asume una frecuencia universal de renovación. Cada documento puede tener fecha de emisión/vencimiento y su propia vigencia.
 
 ## DEC-020 — Revisión documental manual en V1
-Un administrador humano abre el documento y registra manualmente datos relevantes como tipo, número, fecha de emisión, vencimiento y observaciones. No OCR/análisis automático en V1.
+
+La revisión es humana, sin OCR. El planteamiento inicial incluía transcribir o corregir tipo, número y fechas. DEC-049 define la pantalla actual con datos de solo lectura y resolución conjunta; las operaciones anteriores conservan la edición y permanecen temporalmente por D5 / DEC-055.
 
 ## DEC-021 — Registro público para consumidores y aspirantes a comercio
 Las cuentas internas administrativas no tienen registro público.
@@ -85,38 +92,15 @@ Toda función futura presente en el prototipo debe identificarse claramente como
 
 ## DEC-025 — Arquitectura de monolito modular por capas
 
-**Estado:** Aprobada.
+**Estado:** aprobada.
 
-### Decisión
+Una sola aplicación Spring Boot y una base relacional compartida, organizadas por módulos de negocio y capas según su necesidad: controller, service, repository, domain y dto. El frontend se comunica por HTTP; los servicios coordinan reglas y transacciones y los repositorios acceden a datos mediante JPA.
 
-La primera versión de la plataforma se desarrollará mediante una arquitectura de monolito modular por capas.
+La elección permite repartir el trabajo académico entre cinco integrantes, comprender el sistema y mantener sus modelos sin la complejidad de microservicios. Estos últimos quedan fuera de V1.
 
-El backend será una única aplicación Java con Spring Boot y utilizará una única base de datos relacional. Internamente, el código se organizará en módulos correspondientes a las principales áreas del negocio. Dentro de cada módulo se separarán las responsabilidades mediante las capas `controller`, `service`, `repository`, `domain` y `dto`.
+Los controladores deben delegar las decisiones importantes; los repositorios no deben decidir reglas de negocio; el frontend no accede a la base de datos. Los cambios de reserva, pago y stock deben conservarse juntos mediante transacciones. Las funciones técnicas compartidas deben separarse de la lógica de negocio. Los contratos entre módulos requieren coordinación de sus responsables.
 
-El frontend se comunicará con el backend mediante HTTP y servicios REST. Los controllers recibirán las solicitudes y delegarán las operaciones; los services implementarán las reglas del negocio y los límites transaccionales; los repositories gestionarán la persistencia mediante JPA; y las clases de dominio representarán los conceptos, relaciones y estados del negocio.
-
-Las funciones transversales de seguridad, validación, configuración y manejo de excepciones se mantendrán separadas de la lógica funcional.
-
-### Justificación
-
-Esta arquitectura satisface la exigencia académica de aplicar una arquitectura de software, separación por capas, persistencia con JPA, base de datos, formularios y servicios REST.
-
-Es adecuada para el alcance de la primera versión porque facilita las pruebas, mantiene alineados los diagramas y el código, permite repartir el trabajo entre cinco integrantes y puede ser comprendida y sustentada por todo el equipo.
-
-La aplicación no se dividirá en microservicios durante la V1. Una separación física futura solo se evaluará si aparece una necesidad concreta que la justifique.
-
-### Consecuencias
-
-- Existirá un único backend desplegable.
-- La base de datos será compartida por todos los módulos.
-- La lógica del negocio se concentrará en los services y el dominio.
-- El frontend no accederá directamente a la base de datos.
-- Los controllers no contendrán reglas importantes del negocio.
-- Los repositories no tomarán decisiones del negocio.
-- Las operaciones que requieran consistencia, como la creación de una reserva y la actualización del stock, se ejecutarán mediante transacciones.
-- La organización modular deberá corresponder con los requerimientos, casos de uso y clases definitivas.
-- Las versiones y tecnologías concretas se confirmarán según lo utilizado en clase.
-
+[Arquitectura](../ARQUITECTURA.md) distingue estas reglas de la estructura implementada, que no contiene todas las capas en cada módulo y tiene dependencias directas entre repositorios de distintas áreas.
 
 ## DEC-026 — Una identidad con perfiles combinables
 
@@ -160,9 +144,11 @@ Una reserva remota puede cancelarse mientras esté pendiente de recojo y antes d
 
 ## DEC-036 — Comisión del 10 % sobre lo cobrado
 
-La comisión de la plataforma será el 10 % del importe que efectivamente permanezca cobrado. Si una reserva se cancela, la comisión se calcula sobre la mitad retenida, no sobre el precio original.
+La comisión de la plataforma es el 10 % del importe que permanece cobrado, con redondeo monetario a dos decimales. Si una reserva se cancela, se aplica sobre la mitad retenida, no sobre el precio original. La cifra estaba confirmada en RF-24 y en las definiciones funcionales documentadas del avance 2.
 
-**Estado de esta cifra:** confirmada en RF-24 y en las definiciones funcionales aprobadas del informe del avance 2. El cálculo está implementado: si el consumidor cancela, la comisión se aplica sobre el 50 % retenido; en efectivo queda como saldo simulado del local con la plataforma.
+Ejemplo: en una compra de S/ 20, la comisión es S/ 2 y el ingreso del local S/ 18. Si se cancela, se devuelven S/ 10; de los S/ 10 retenidos, Sazloop recibe S/ 1 y el local S/ 9. En efectivo, la comisión queda como saldo simulado del local con la plataforma.
+
+`ComisionService.recalcular` implementa el cálculo. El panel empresarial incluye el importe retenido de cancelaciones en ingresos y comisiones, pero informa cancelaciones por separado de las ventas. El panel del trabajador calcula la ganancia de lo entregado.
 
 ## DEC-037 — Panel basado en información calculada
 
@@ -174,19 +160,11 @@ El impacto ambiental se registrará conceptualmente después de un recojo comple
 
 ## DEC-039 — Stack tecnológico principal
 
-- Java 21.
-- Spring Boot.
-- Maven.
-- Spring Data JPA.
-- MySQL.
-- HTML, CSS y JavaScript.
-- Tailwind CSS.
-
-El POM ya declara Spring Boot 4.1.1 y Java 21. H2 se utiliza en el perfil `dev`; MySQL tiene un perfil local separado. El stack del frontend permanece previsto.
+Java 21, Spring Boot, Maven, Spring Data JPA y MySQL; HTML, CSS propio y JavaScript en el frontend. El POM declara Spring Boot 4.1.1; H2 sirve para desarrollo y pruebas. La inclusión histórica de Tailwind queda sustituida por D6 / DEC-056. Los detalles actuales se mantienen en Arquitectura.
 
 ## DEC-040 — Identidad del proyecto
 
-El nombre de la plataforma es **Sazloop**. El equipo ha confirmado que corresponde al proyecto **N.º 91 — SalvemosLaComida**. El repositorio se encuentra en `Zheyben/Sazloop`. El paquete Java pasa a `com.sazloop` y el artefacto Maven a `sazloop-backend`. El esquema MySQL mantiene su identificador anterior por compatibilidad con las instalaciones existentes.
+La plataforma se llama **Sazloop**, proyecto académico **N.º 91 — SalvemosLaComida**. MealFlow se conserva como antecedente histórico. La dirección actual es `Zheyben/Sazloop`, el paquete Java `com.sazloop`, el artefacto `sazloop-backend` y el esquema configurado de MySQL `sazloop`; no se presume que las instalaciones personales antiguas tengan el mismo nombre.
 
 ## DEC-041 — Delimitación territorial de la primera versión
 
@@ -194,11 +172,13 @@ La primera versión se dirige a establecimientos y consumidores de Lima Metropol
 
 ## DEC-042 — Separación entre diseño e implementación
 
-Los RF corresponden a los 26 requisitos agrupados del informe del primer avance. Las 31 entidades existen en el backend y originan 33 tablas al incluir las dos asociaciones muchos a muchos. Las operaciones dibujadas, la API REST y los prototipos describen comportamiento previsto; no se marcan como ejecutados sin evidencia. El estado del código se mantiene en [ESTADO_ACTUAL.md](../tareas/ESTADO_ACTUAL.md).
+Los 26 RF conservan sus identificadores y trazabilidad. Las 31 entidades JPA y dos asociaciones muchos a muchos describen 33 tablas de aplicación en el código. No se declara comprobada su coincidencia con los diagramas excluidos. Encontrar una clase, una ruta o un prototipo no demuestra una ejecución correcta: [Proyecto](../PROYECTO.md) separa implementación, pruebas concretas, adaptación pendiente y definición pendiente.
 
 ## DEC-043 — Vigencia de documentos y aviso previo
 
-Todo documento aprobado con fecha de vencimiento cuenta para la vigencia del local; uno sin fecha no vence. El propietario puede indicar la fecha al adjuntarlo y el administrador la corrige al revisarlo. Un documento vale hasta el final del día de su vencimiento (hora de Perú). Siete días antes, el propietario recibe un único aviso; si vence sin una renovación aprobada, una tarea programada (al iniciar y cada minuto) suspende el local, registra el motivo y lo notifica. La suspensión automática queda firmada por una cuenta interna del sistema sin acceso, para conservar la relación obligatoria con `AdministradorPlataforma` del modelo.
+Todo documento aprobado con vencimiento cuenta para la vigencia actual; uno sin fecha no vence. Vale hasta el final de su fecha de vencimiento en Perú. Se avisa una vez cuando entra en los próximos siete días y, si vence sin renovación aprobada, se suspende el local, se registra el motivo y se notifica al propietario.
+
+La fecha la presenta el propietario; la corrección administrativa prevista originalmente permanece en las operaciones anteriores conservadas, mientras la pantalla de DEC-049 es de solo lectura. La revisión programada actual empieza a los 15 segundos y se repite cada minuto, con intervalos configurables. La suspensión se atribuye a una cuenta interna desactivada del sistema para conservar su relación con AdministradorPlataforma.
 
 ## DEC-044 — Renovación de documentos
 
@@ -222,11 +202,51 @@ El fin del horario es el único límite (DEC-008): el personal puede entregar un
 
 ## DEC-049 — Resolución de una solicitud en un solo paso
 
-El administrador revisa todos los documentos de una solicitud o renovación y la decide en una sola operación atómica (`POST /api/administradores/solicitudes/{id}/resolucion`). La solicitud se aprueba únicamente si todos los documentos se aprueban; un documento vencido solo puede rechazarse. El motivo se arma con el comentario opcional del administrador o, si se rechaza, con las observaciones de cada documento. Ya no existe un paso de «decisión final» separado. El administrador no edita los datos transcritos: la fecha de vencimiento la declara el propietario al adjuntar el documento.
+El administrador revisa y resuelve una solicitud o renovación desde una pantalla mediante `POST /api/administradores/solicitudes/{id}/resolucion`. Se guardan conjuntamente revisiones y evaluación; la solicitud solo se aprueba con todos los documentos aprobados y no vencidos. El motivo se obtiene del comentario general opcional o de las observaciones de rechazo.
+
+La pantalla no permite editar datos transcritos: las fechas las declara el propietario. Presenta un documento vencido para rechazo y exige observaciones al rechazar. La regla de no aprobar documentos vencidos se conserva; no debe confundirse la validación de la aprobación final con todas las posibilidades de las rutas anteriores.
+
+El paso separado desapareció de la pantalla, no del backend: D5 / DEC-055 conserva temporalmente `/revision` y `/decision`.
 
 ## DEC-050 — Sesiones por rol
 
 La persona (consumidor o propietario), la cuenta del local y el administrador comparten la cookie del navegador, pero cada rol guarda su propio atributo de sesión. Iniciar o cerrar sesión en un rol no afecta a los demás, de modo que pueden estar abiertos a la vez los portales de empresa, trabajador y administración en un mismo navegador.
+
+## DEC-051 — QR por oferta (D1)
+
+**Aprobada:** cada oferta tiene su propio QR. El enlace identifica la publicación concreta y no se reutiliza como QR permanente del establecimiento. Precisa DEC-013 y sustituye ese planteamiento anterior del modelo. Está implementado mediante `OfertaPack.tokenQr`, `trabajador.js` y `qr.js`; al vencer o cambiar la oferta, el QR anterior no redirige a la nueva.
+
+## DEC-052 — Una reseña por compra recogida (D2)
+
+**Aprobada; adaptación pendiente:** como máximo una reseña por compra efectivamente recogida. Una persona puede reseñar varias compras del mismo establecimiento. Precisa DEC-010 y RF-23.
+
+Continúan la restricción única consumidor/local de `Resena` y las comprobaciones por local de `ResenaService` y `CompraRecojoService`; no cumplen todavía esta decisión. Deben adaptarse conjuntamente en otra tarea. La contradicción entre calificación obligatoria y posibilidad de omitir sigue pendiente del equipo; no se resuelve cambiando su redacción sin acuerdo.
+
+## DEC-053 — Lista documental pendiente (D3)
+
+**Aprobada; definición detallada pendiente:** el equipo todavía no fija qué documentos exactos debe presentar cada establecimiento. Se conserva RF-06 y DEC-017 sin inventar documentos obligatorios.
+
+La implementación comprueba propiedad, estado de solicitud, archivo y fechas; exige algún adjunto para enviar la afiliación inicial y cubre tipos vencidos faltantes al renovar un local suspendido. Estas comprobaciones no equivalen a una lista inicial aprobada.
+
+## DEC-054 — Verificación visible para consumidores (D4)
+
+**Aprobada; implementación pendiente:** mostrar una indicación sencilla, como «Establecimiento verificado», sin acceso a documentos privados. El estado debe ser real y distinguir aprobación del local de vigencia de sus documentos. La regla exacta de presentación cuando difieren requiere precisión del equipo antes de implementarse.
+
+El catálogo actual filtra locales activos, pero su respuesta no incluye el indicador documental. No se presenta ese filtro como cumplimiento de DEC-018 ni de esta decisión.
+
+## DEC-055 — Conservar operaciones administrativas anteriores (D5)
+
+**Aprobada; conservación existente:** mantener temporalmente revisión y decisión separadas. La pantalla actual usa resolución conjunta. Las pruebas existentes y `DatosDemoH2` aún invocan servicios del recorrido anterior; no se ha establecido una lista completa de consumidores externos. [Arquitectura](../ARQUITECTURA.md) identifica las rutas. Su posible eliminación queda pendiente de evaluación de compatibilidad.
+
+## DEC-056 — CSS propio, sin Tailwind (D6)
+
+**Aprobada y reflejada en los requisitos:** Sazloop continúa con sus estilos CSS actuales y no utilizará Tailwind. Sustituye su inclusión en DEC-039 y en el requisito tecnológico anterior. La revisión del frontend y las dependencias no identificó integración técnica de Tailwind que retirar; si aparece alguna, se registrará su limpieza sin modificar código dentro de una tarea documental.
+
+## Decisiones todavía abiertas
+
+- Cierre anticipado de ofertas: no hay operación implementada identificada; DEC-007 se conserva para una eventual cancelación.
+- Simulación de pagos digitales rechazados: la compra válida se confirma directamente; no se decide aquí agregar una pasarela ni un simulador de rechazos.
+- Obligatoriedad y omisión de reseñas, lista exacta de documentos y criterio de presentación de la verificación, según DEC-052 a DEC-054.
 
 ## Documentos relacionados
 

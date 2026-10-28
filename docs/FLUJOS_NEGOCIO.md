@@ -1,121 +1,70 @@
-# Flujos principales del negocio
+# Flujos de negocio de Sazloop
 
-Este documento explica cómo interactúan los usuarios con la plataforma. Describe el comportamiento esperado de Sazloop, no una implementación terminada. Los 26 RF se mantienen en [REQUISITOS.md](requisitos/REQUISITOS.md); la ejecución de estos flujos no está acreditada por los prototipos.
+Estos recorridos permiten seguir las operaciones del sistema. El [estado y las pruebas](PROYECTO.md) distinguen lo implementado de lo comprobado; los [requisitos](requisitos/REQUISITOS.md) conservan el comportamiento exigido y las [decisiones](decisiones/DECISIONES_PROYECTO.md) explican las reglas.
 
-## 1. Registro y afiliación de un establecimiento
+## 1. Registro y afiliación
 
-```mermaid
-flowchart TD
-    A["Usuario crea una cuenta"] --> B["Activa su perfil empresarial"]
-    B --> C["Registra empresa y establecimiento"]
-    C --> D["Adjunta documentos obligatorios"]
-    D --> E["Administrador revisa cada documento"]
-    E --> F{"¿Solicitud conforme?"}
-    F -->|Sí| G["Establecimiento aprobado"]
-    F -->|No| H["Solicitud rechazada con motivo"]
-    H --> I["Propietario presenta una nueva solicitud"]
-```
+1. La persona crea una cuenta e ingresa. Al registrar su empresa obtiene el perfil propietario sin duplicar credenciales.
+2. Registra uno o más locales, cada uno con su ubicación.
+3. Adjunta archivos privados a una solicitud del local y la envía a revisión.
+4. El administrador descarga los archivos, registra aprobado/rechazado y observaciones; la pantalla actual guarda revisión y resolución juntas.
+5. Si se aprueba, el local queda activo y el propietario puede crear su cuenta operativa. Si se rechaza, se conserva la información y se presenta un nuevo intento.
 
-Reglas principales:
+**Comprobaciones actuales:** propiedad del local, solicitud editable, adjuntos no vacíos de tipo admitido y hasta 10 MB, coherencia de fechas y al menos un adjunto al enviar. No se permite aprobar una solicitud con documentos rechazados o vencidos. La lista exacta de documentos obligatorios está pendiente (D3); no se atribuye al código una validación de esa lista.
 
-- Los documentos se evalúan por establecimiento.
-- El administrador realiza la revisión manualmente.
-- Un rechazo no elimina la cuenta, la empresa ni el establecimiento.
-- La cuenta operativa del local se crea después de su aprobación.
+La pantalla utiliza `/resolucion`; se conservan temporalmente las rutas anteriores de revisión y decisión (D5), detalladas en [Arquitectura](ARQUITECTURA.md).
 
-## 2. Publicación de una oferta
+## 2. Publicación y QR
 
-```mermaid
-flowchart TD
-    A["Cuenta del establecimiento ingresa"] --> B["Define la oferta del día"]
-    B --> C["Agrega tamaños, precios y stock"]
-    C --> D["Configura inicio y fin del recojo"]
-    D --> E{"¿Ya existe una oferta activa?"}
-    E -->|No| F["Publica la oferta"]
-    E -->|Sí| G["Debe cerrar o esperar la oferta actual"]
-```
+1. El trabajador ingresa con la cuenta de su establecimiento.
+2. Elige un pack anterior o define uno nuevo, con posibles contenidos y advertencias alimentarias.
+3. Configura variantes, precios, stock e inicio y fin del recojo.
+4. Publica si el local está activo y no tiene otra oferta activa sin vencer.
+5. La oferta genera su propio QR; el cliente abre esa publicación mediante su identificador y token (D1).
 
-El establecimiento puede mantener la descripción general de su pack, pero solo tendrá una oferta activa simultáneamente. Cada tamaño funciona como una variante con precio y stock propios.
+La tolerancia de cinco minutos en el inicio permite publicar con la hora actual del navegador. Al crear otra oferta se utiliza otro QR. El código anterior continúa asociado a su publicación anterior y no redirige a la nueva.
+
+**Pendiente de decisión:** cierre anticipado. Hoy se espera al fin de la oferta para publicar otra; no existe una acción de cierre o cancelación anticipada identificada. Se conserva la regla que prohíbe cancelar una oferta con reservas confirmadas si esa operación se desarrolla.
 
 ## 3. Compra remota
 
-```mermaid
-flowchart TD
-    A["Consumidor busca establecimientos"] --> B["Abre una oferta"]
-    B --> C["Elige variante y cantidad"]
-    C --> D["Realiza pago digital simulado"]
-    D --> E{"¿Pago aprobado?"}
-    E -->|Sí| F["Se confirma reserva y stock"]
-    E -->|No| G["No se confirma la compra"]
-    F --> H["Se genera boleta y código"]
-    H --> I["Recordatorio de recojo en Notificaciones"]
-```
+1. El consumidor consulta ofertas y filtros de distrito, dirección, precio y calificación.
+2. Agrega variantes y cantidades al carrito; esto todavía no retiene stock.
+3. Elige tarjeta de débito o Yape simulados y confirma uno o varios pedidos.
+4. El backend comprueba oferta, local, cantidades y stock; registra conjuntamente reserva, descuento de unidades y pago confirmado.
+5. Cada pedido obtiene su boleta, código, comisión y recordatorio en Notificaciones. Si falla una compra del lote, no se debe conservar un lote parcialmente confirmado.
 
-Reglas principales:
+La validación de tarjeta/Yape en pantalla es de formato y no consulta entidades financieras. No hay un escenario propio de pago digital rechazado implementado; si debe simularse, continúa pendiente de decisión. No se debe confundir el rechazo por stock con el rechazo de un pago.
 
-- Los medios remotos son tarjeta de débito simulada y Yape simulado.
-- Varios pedidos del carrito se pagan en una sola operación; cada pedido genera su propia reserva, boleta, código y recordatorio de recojo.
-- La reserva y la actualización definitiva del stock se ejecutan de forma consistente.
-- El contenido exacto del pack continúa siendo sorpresa.
+## 4. Compra presencial por QR
 
-## 4. Compra presencial mediante QR
+El cliente abre el QR de una oferta e ingresa con su cuenta. Puede elegir pago digital simulado o efectivo.
 
-```mermaid
-flowchart TD
-    A["Consumidor escanea QR del local"] --> B["Abre la oferta activa"]
-    B --> C["Elige variante y forma de pago"]
-    C --> D{"¿Pago en efectivo?"}
-    D -->|Sí| E["Se retiene el stock"]
-    E --> F["Personal confirma dinero recibido"]
-    F --> G["Pago y recojo completados"]
-    D -->|No| H["Pago digital simulado"]
-    H --> I["Se genera código de recojo"]
-    I --> J["Personal confirma la entrega"]
-```
+| Medio | Recorrido actual |
+|---|---|
+| Digital | Se valida el token y se confirma la compra como presencial. Se genera código y el trabajador confirma la entrega. |
+| Efectivo | Se crea una reserva pendiente y se retienen unidades hasta diez minutos, o hasta el fin del horario si llega antes. El trabajador confirma cobro y entrega juntos; se generan boleta, comisión e impacto. |
 
-El efectivo solo está disponible para una compra presencial. La retención temporal evita vender las mismas unidades a otra persona mientras el personal confirma el cobro.
+Si el efectivo no se confirma a tiempo, una tarea libera las unidades y vence la reserva y el código. No hay cobro confirmado ni reembolso en ese caso. Las compras presenciales no admiten la cancelación remota.
 
-## 5. Confirmación del recojo y reseña
+## 5. Entrega y reseña
 
-```mermaid
-flowchart TD
-    A["Consumidor presenta su código"] --> B["Personal busca la reserva"]
-    B --> C{"¿Código válido y pendiente?"}
-    C -->|Sí| D["Marca el recojo"]
-    D --> E["Código queda utilizado"]
-    E --> F["Consumidor puede reseñar"]
-    C -->|No| G["No se entrega desde esa reserva"]
-```
+El trabajador busca el código de una compra de su local. Si está pagada, el código está pendiente y todavía no llegó el fin del horario, confirma la entrega y deja el código utilizado. Puede entregar desde el pago, incluso antes del inicio anunciado (DEC-048). Después del fin no se permite entregar ni cancelar; una tarea marca las compras pagadas no recogidas como expiradas y avisa al consumidor.
 
-Pagar no equivale a recibir el pack. El recojo es el hecho que cierra correctamente la compra, registra su impacto (un pack entregado) y habilita la calificación. Solo se entrega dentro del horario de recojo; al terminar ese horario, la reserva pagada no recogida pasa a expirada y el consumidor recibe un aviso.
+Cada entrega registra impacto conceptual y permite calificar. **D2 aprobó una reseña como máximo por compra recogida**, con nuevas reseñas para compras diferentes del mismo establecimiento. El código aún aplica una por consumidor/local: su adaptación está pendiente. La interfaz también permite omitir la reseña de una compra; su relación con la obligatoriedad de calificar sigue pendiente de definición.
 
-## 6. Cancelación de una reserva remota
+## 6. Cancelación remota
 
-```mermaid
-flowchart TD
-    A["Consumidor solicita cancelar"] --> B{"¿Sigue pendiente y antes del fin del horario?"}
-    B -->|Sí| C["Reserva cancelada"]
-    C --> D["Reembolso simulado del 50 %"]
-    C --> E["Stock vuelve si aún puede venderse"]
-    C --> F["Comisión sobre importe retenido"]
-    B -->|No| G["Cancelación no permitida"]
-```
+El consumidor puede cancelar una compra propia de origen remoto que siga confirmada y esté antes del fin del horario. Se devuelve de forma simulada el 50 %, se recalcula la comisión sobre el importe retenido y se invalida el código. El stock solo vuelve si la oferta y el local siguen disponibles para vender.
 
-No se puede cancelar una reserva ya recogida, cancelada o expirada. Las compras presenciales completadas no tienen cancelación mediante la plataforma.
+Una compra recogida, cancelada o expirada no admite esta operación. La regla económica y su ejemplo se mantienen en DEC-036 para no repetir el cálculo en todos los documentos.
 
-## 7. Vencimiento de un documento
+## 7. Vencimiento y renovación de documentos
 
-```mermaid
-flowchart TD
-    P["Faltan 7 días"] --> Q["Aviso al propietario"]
-    Q --> A["Vence documento sin renovación aprobada"]
-    A --> B["Establecimiento suspendido y notificado"]
-    B --> C["No aparece en la búsqueda ni publica ofertas"]
-    C --> D["Propietario presenta solo los documentos vencidos"]
-    D --> E["Administrador revisa manualmente"]
-    E --> F{"¿Renovación aprobada?"}
-    F -->|Sí| G["Establecimiento reactivado y notificado"]
-    F -->|No| H["Continúa suspendido y puede volver a presentar"]
-```
+1. Una revisión programada avisa una vez cuando un documento aprobado entra en los próximos siete días de vencimiento.
+2. El documento vale hasta terminar su fecha en Perú. Si vence sin renovación aprobada, la siguiente revisión suspende el local y avisa al propietario.
+3. El local deja de aparecer en búsqueda y no admite nuevas ventas ni publicaciones. La cuenta operativa conserva la entrega de compras pagadas.
+4. El propietario adjunta documentos renovables en una nueva solicitud. En un local suspendido debe cubrir los tipos vencidos faltantes; también se admite renovar documentos próximos a vencer.
+5. El administrador resuelve. Al aprobar, los nuevos documentos sustituyen a los anteriores del mismo tipo para calcular vigencia, conservando el historial. Si no quedan vencidos, se cierra la suspensión y se reactiva el local.
 
-La suspensión conserva la cuenta, el historial y la información del establecimiento. La cuenta del trabajador sigue activa para validar códigos y entregar las reservas pagadas antes de la suspensión. Un documento que vence en los próximos siete días también puede renovarse antes de que el local se suspenda.
+**D4 pendiente de implementación:** el consumidor debe ver una indicación sencilla y real de verificación, sin documentos privados. No se debe presentar la aprobación inicial como garantía indefinida de vigencia; la forma exacta de combinar ambos estados necesita precisarse antes de implementarla.

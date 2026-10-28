@@ -2,9 +2,9 @@
 
 ## Fuente y estado
 
-Los requisitos corresponden a las secciones 3.1 y 3.2 del [informe del segundo avance](../informe/Avance_del_proyecto_02.docx) y se precisan en su anexo «Definiciones funcionales aprobadas», resumido al final de este documento. Se conservan los 26 IDs, actores, prioridades y dependencias. Los IDs no se renumeran al agrupar por módulos. Si un texto antiguo contradice el anexo aprobado, prevalece el anexo.
+Los requisitos corresponden a las secciones 3.1 y 3.2 del [informe del segundo avance](../informe/Avance_del_proyecto_02.docx) y se precisan en su anexo «Definiciones funcionales aprobadas», resumido al final de este documento. Se conservan los 26 IDs, actores, prioridades y dependencias. Los IDs no se renumeran al agrupar por módulos. Si un texto antiguo contradice el anexo aprobado, prevalece el anexo, salvo las actualizaciones posteriores D1–D6 autorizadas para esta sincronización y registradas en DEC-051 a DEC-056. La fuente del informe se conserva como referencia; su contenido está excluido de esta revisión.
 
-El [estado actual](../tareas/ESTADO_ACTUAL.md) indica qué está implementado y cómo se comprobó.
+El [estado por requisito y su verificación](../PROYECTO.md) distingue código existente, escenarios probados, adaptación pendiente y definición pendiente. Aprobar un requisito no demuestra que esté implementado.
 
 ## Requisitos funcionales
 
@@ -46,7 +46,7 @@ packs sorpresa disponibles.
 | **RF-13** | El sistema deberá permitir que el establecimiento configure el inicio y el fin del horario de recojo de los packs sorpresa. El fin del horario es el único límite para entregar o cancelar una reserva. | Establecimiento     | **Esencial**  | **-**           |
 | **RF-14** | El sistema deberá permitir que el consumidor busque y filtre establecimientos por distrito, dirección textual, precio y calificación.                                | Consumidor          | **Esencial**  | **-**           |
 | **RF-15** | El sistema deberá mostrar al consumidor la información del establecimiento, la oferta activa, el descuento, los posibles alérgenos y las restricciones alimentarias. | Consumidor          | **Esencial**  | **-**           |
-| **RF-17** | El sistema deberá mostrar directamente la oferta activa de un establecimiento cuando el consumidor acceda mediante su código QR físico.                              | Consumidor          | **Esencial**  | **-**           |
+| **RF-17** | El sistema deberá mostrar la oferta identificada por su código QR propio cuando el consumidor acceda a él, siempre que la oferta continúe disponible (D1).                              | Consumidor          | **Esencial**  | **-**           |
 
 ### Módulo de Reservas
 
@@ -106,16 +106,29 @@ notificaciones posteriores o complementarias a la operación principal.
 
 El detalle de cada regla y su justificación están en [Decisiones del proyecto](../decisiones/DECISIONES_PROYECTO.md) (DEC-008, DEC-009, DEC-030, DEC-035, DEC-036 y DEC-043 a DEC-047).
 
+## Precisiones aprobadas en esta sincronización
+
+Se mantienen los 26 IDs, actores, prioridades y dependencias. Estas precisiones corresponden a decisiones expresas del equipo, no a cambios inferidos del código:
+
+- **D1 / RF-17:** un QR por oferta, sin enlace permanente por establecimiento (DEC-051).
+- **D2 / RF-23:** como máximo una reseña por cada compra efectivamente recogida; se permiten reseñas de distintas compras del mismo local. La restricción actual por consumidor/local sigue pendiente de adaptación. La redacción de calificación obligatoria y la posibilidad de omitir continúan en revisión: no se presupone resuelta su interpretación (DEC-052).
+- **D3 / RF-06:** la lista exacta de documentos exigibles está pendiente. No se inventa un conjunto obligatorio; las comprobaciones actuales se describen en Flujos y Arquitectura (DEC-053).
+- **D4 / RF-15 y DEC-018:** el consumidor debe ver una indicación sencilla y real de verificación, sin documentos privados. No debe confundirse aprobación del local con vigencia documental. Falta implementar el indicador y precisar su presentación cuando esos estados difieran (DEC-054).
+- **D5 / RF-07 y RF-08:** se conservan temporalmente las operaciones administrativas anteriores, aunque la pantalla usa resolución conjunta. Su eliminación requiere evaluar compatibilidad (DEC-055).
+- **D6 / requisito tecnológico:** se retira Tailwind y se conservan los estilos CSS actuales (DEC-056).
+
+El cierre anticipado de ofertas y la simulación de pagos digitales rechazados siguen pendientes de decisión. Se mantienen sus reglas de consistencia; no se declaran disponibles esas operaciones.
+
 ## Requisitos no funcionales
 
-La tabla contiene los seis criterios del informe del primer avance. Las decisiones técnicas y de privacidad se documentan en Arquitectura y Decisiones.
+La tabla conserva los seis criterios documentados del primer avance; el tecnológico se actualiza expresamente por D6. Las decisiones técnicas y de privacidad se documentan en Arquitectura y Decisiones.
 
 | Criterio | Descripción del requisito no funcional |
 |---|---|
 | Usabilidad (Mobile-First) | La interfaz web debe diseñarse y maquetarse bajo el enfoque mobile-first, adaptándose a dispositivos móviles sin degradar la experiencia de usuario. |
 | Rendimiento | El sistema debe responder a las consultas de búsqueda y procesamiento de compras simuladas en tiempos mínimos (de 2 a 3 segundos). |
 | Arquitectura | La aplicación backend debe desarrollarse siguiendo una estructura monolítica modular organizada por capas (Controlador, Servicio, Repositorio, Modelo). |
-| Tecnología y Stack | La solución debe ser construida con Java 21, Spring Boot, Maven, Spring Data JPA, MySQL en el backend; y HTML, CSS, JavaScript y Tailwind CSS en el frontend. |
+| Tecnología y Stack | La solución debe ser construida con Java 21, Spring Boot, Maven, Spring Data JPA, MySQL en el backend; y HTML, CSS propio y JavaScript en el frontend, sin Tailwind CSS (D6). |
 | Seguridad de Acceso | Las cuentas operativas de establecimientos y usuarios deben mantener la separación estricta de roles y permisos mediante autenticación segura. |
 | Persistencia e Integridad | Las transacciones de reservas y control de stock retenido deben mantener consistencia e integridad relacional en MySQL para evitar la sobreventa de packs. |
 

@@ -1,169 +1,111 @@
-# Arquitectura del sistema
+# Arquitectura de Sazloop
 
-## Decisión principal
+Este documento describe la organización implementada. El estado de las funciones y sus comprobaciones se mantiene en [Proyecto](PROYECTO.md); los acuerdos que debe respetar el desarrollo están en [Decisiones](decisiones/DECISIONES_PROYECTO.md).
 
-Sazloop utilizará una arquitectura de **monolito modular organizado por capas**.
+## Aplicación y tecnologías
 
-Habrá un solo backend desplegable y una sola base de datos. El código se separará internamente por áreas del negocio para evitar que todas las clases terminen mezcladas.
+Hay un único backend Spring Boot y una base relacional compartida: un monolito organizado por áreas del negocio. El paquete base es `com.sazloop` y el artefacto Maven, `com.sazloop:sazloop-backend`.
 
-Esta solución es suficiente para el alcance académico y permite que los cinco integrantes trabajen sobre módulos reconocibles sin introducir la complejidad de los microservicios.
-
-## Tecnologías
-
-| Componente | Tecnología |
+| Elemento | Configuración actual |
 |---|---|
-| Lenguaje backend | Java 21 |
-| Framework backend | Spring Boot 4.1.1 |
-| Construcción y dependencias | Maven |
-| Persistencia | Spring Data JPA |
-| Base de datos oficial | MySQL |
-| Base de datos de desarrollo | H2 |
-| Frontend | HTML, CSS y JavaScript |
-| Estilos | Tailwind CSS |
-| Comunicación | API REST sobre HTTP |
+| Java / Spring Boot | Java 21 / Spring Boot 4.1.1, declarados en el [POM](../backend/pom.xml) |
+| Construcción | Maven; el wrapper configura 3.9.16 |
+| Web y validación | Spring Web MVC y Spring Validation |
+| Persistencia | Spring Data JPA; Hibernate gestiona las entidades |
+| Bases de datos | MySQL para persistencia local; H2 en memoria para desarrollo y pruebas aisladas |
+| Frontend | HTML, CSS propio y JavaScript con módulos ES; sin proceso de construcción de Node |
+| Recursos externos | SweetAlert2 desde jsDelivr y Animate.css desde cdnjs, en las páginas que los incluyen |
+| QR | `frontend/app/vendor/qrcode.mjs`, distribuido con su licencia MIT |
 
-El proyecto base utiliza Spring Boot 4.1.1 y Java 21. Durante el desarrollo inicial se usa H2 en memoria para realizar comprobaciones rápidas; MySQL continúa siendo la base de datos oficial para la integración y la entrega final.
+Tailwind se retiró del stack por decisión D6 / DEC-056. No se identificó una integración técnica que deba eliminarse. Las versiones de las dependencias de Java se administran desde Spring Boot; deben consultarse en Maven cuando se necesite el árbol resuelto.
 
-## Estado implementado al 9 de octubre de 2026
+El POM declara también MySQL Connector/J, H2, `spring-boot-h2console`, Lombok, DevTools y Starter Test. Web MVC incorpora Tomcat y Jackson; Data JPA incorpora Hibernate y el manejo de conexiones. No es necesario repetir todas las dependencias transitivas en este documento.
 
-- Backend: los seis módulos tienen controllers, services, repositories y DTO sobre las 31 entidades JPA; paquete base `com.sazloop`, coordenadas `com.sazloop:sazloop-backend`.
-- Sesiones con cookie `HttpOnly` separadas para persona (consumidor o propietario), cuenta del local y administrador; contraseñas con PBKDF2.
-- Tareas programadas (`@Scheduled`): vencimiento de reservas no recogidas, liberación de retenciones de efectivo y revisión de vigencia de documentos (`VigenciaDocumentosService`).
-- Frontend en `frontend/` con HTML, CSS y JavaScript (módulos ES) que consume la API REST con `fetch`. Maven lo copia como contenido estático, por lo que backend y frontend se sirven desde el mismo origen. Los tres portales internos comparten `panel.css` y `panel.js`; el consumidor usa `portal.css` y `portal.js`.
-- Perfiles: `dev` con H2 en memoria y su consola (módulo `spring-boot-h2console`), y `mysql` con la base `sazloop`.
-- Errores: la API devuelve el motivo de negocio (`spring.web.error.include-message`) y nunca la traza.
+## Módulos y responsabilidades
 
-El estado por requisito y su comprobación se resumen en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
+| Paquete | Responsabilidad | Capas presentes | Responsable documentado |
+|---|---|---|---|
+| `identidad` | Personas, perfiles, empresas, locales, cuentas operativas y perfil personal | controller, service, repository, domain, dto | Emanuel |
+| `afiliacion` | Adjuntos privados, solicitudes, revisión, resolución, vigencia y suspensión | Las cinco capas | Daniel |
+| `ofertas` | Packs, variantes, publicación, búsqueda y panel del trabajador | Las cinco capas | Franco |
+| `reservas` | Compra remota y presencial, retención, entrega, cancelación y vencimiento | Las cinco capas | Piero |
+| `transacciones` | Modelo de pagos, boletas, reembolsos y comisiones; cálculo de comisión | domain y service | Alejandro |
+| `experiencia` | Reseñas, notificaciones e impacto conceptual | Las cinco capas | Alejandro |
+| `shared` | `SesionesPorRol`, compartido por los accesos | Sin subcapas | Revisión de Daniel y Franco |
+| `demo` | Carga ficticia de H2 mediante `DatosDemoH2` | Configuración de demostración | Sin nueva asignación |
 
-## Dependencias del backend
+Las capas separan tareas: el controller recibe HTTP, el service coordina reglas, el repository accede a datos, domain contiene entidades y estados, y los DTO describen entradas y respuestas. Algunas respuestas están declaradas como `record` dentro de controladores o servicios. No se exige crear capas vacías.
 
-Maven utiliza dos tipos de dependencias:
+Los pagos se coordinan desde servicios de Reservas; la ubicación de una entidad no determina por sí sola dónde se ejecuta un caso de uso. Los cambios que afecten a varios módulos deben coordinarse con sus responsables.
 
-- **Directas:** aparecen declaradas expresamente en el `pom.xml`.
-- **Transitivas:** son incorporadas automáticamente por una dependencia directa. No están ocultas ni deben copiarse una por una en el `pom.xml`.
+### Dependencias actuales y reglas de mantenimiento
 
-### Dependencias directas
+El objetivo sigue siendo comunicar módulos mediante servicios claros, mantener las decisiones de negocio fuera de los controladores y ejecutar conjuntamente los cambios de compra, pago y stock. Actualmente existen accesos directos a repositorios ajenos: por ejemplo, `CompraRecojoService` utiliza repositorios de Identidad, Ofertas y Experiencia; `OfertaService` consulta Identidad y Reseñas. Son dependencias existentes que deben evaluarse antes de refactorizar, no una autorización para ampliarlas sin criterio.
 
-| Dependencia | Uso en Sazloop | Alcance |
+`shared` no contiene hoy un sistema general de autorización ni un manejador global propio de excepciones, aunque sus comentarios históricos mencionen esos usos posibles. Las comprobaciones de acceso se realizan en los componentes de sesión y servicios correspondientes.
+
+## Frontend e integración
+
+Maven copia los recursos seleccionados de `frontend/` a `static` al construir el backend. La portada y los portales se sirven desde el mismo origen que `/api`; no hay un servidor frontend independiente configurado.
+
+| Área | Archivos principales |
+|---|---|
+| Portada y selección de acceso | `frontend/index.html`, `js/acceso.js`, `app/index.html` |
+| Registro e ingreso | `app/acceso-*.html`, `accesos.js` |
+| Empresa, trabajador y administrador | Sus `.html` y `.js`; comparten `panel.js` y `panel.css` |
+| Consumidor | `portal-main.js` monta Inicio, Catálogo, Compras, Perfil y Notificaciones; `portal.js` comparte navegación y carrito |
+| Ofertas y compra | `ofertas-portal.js`, `compras.js`, `qr.js` y `resenas-portal.js` |
+| Solicitudes HTTP | `comun.js` antepone `/api`, envía cookies y trata respuestas JSON; `accesos.js` hace sus propias solicitudes |
+
+El carrito vive en `sessionStorage`, separado por usuario; no es una reserva ni retiene stock. `portal-main.js` puede cambiar el contenido principal sin recargar toda la página. La compra por QR usa `qr.html?oferta=...&token=...`; tanto el identificador como el token pertenecen a una oferta.
+
+Los errores de negocio útiles se muestran desde `comun.js`; los errores de servidor reciben un mensaje general y los accesos usan mensajes propios. El backend configura la inclusión del motivo y la exclusión de la traza. No debe suponerse que todas las pantallas muestran exactamente el mismo detalle.
+
+## Mapa de la API
+
+Son rutas actuales, no una lista de funciones futuras. Todas llevan el prefijo `/api`. Los contratos exactos están en los [controladores y DTO](../backend/src/main/java/com/sazloop/).
+
+| Área | Operaciones principales | Acceso |
 |---|---|---|
-| Spring Web MVC | API REST, controladores, conversión JSON y servidor web. | Aplicación |
-| Spring Data JPA | Persistencia mediante JPA, Hibernate y repositories. | Aplicación |
-| Spring Validation | Validación de los datos recibidos por formularios y endpoints. | Aplicación |
-| MySQL Connector/J | Conexión JDBC con la base de datos oficial MySQL. | Ejecución |
-| H2 Database | Base de datos en memoria para desarrollo y pruebas rápidas. | Ejecución |
-| Lombok | Reducción controlada de código repetitivo en las clases Java. | Opcional |
-| Spring Boot DevTools | Reinicio rápido y ayudas durante el desarrollo. | Opcional |
-| Spring Boot Starter Test | Pruebas con JUnit Jupiter, Mockito y AssertJ. | Pruebas |
+| Persona | `POST /usuarios`; `POST/GET/DELETE /sesion` | Registro público; después sesión de persona |
+| Perfil | `PUT /perfil`, `PUT /perfil/contrasena`, `POST/GET /perfil/foto` | Persona |
+| Empresa | `POST /empresas`; `GET /empresas/actual`; `GET /empresas/actual/indicadores`; `POST/GET /empresas/actual/establecimientos` | Persona propietaria |
+| Afiliación | Bajo `/establecimientos/{localId}`: `GET /solicitud`, `GET /documentacion`, `POST /documentos`, `POST /solicitud/enviar`, `GET /documentos/{documentoId}/archivo` | Propietario del local |
+| Cuenta de local | `POST /establecimientos/{id}/cuenta`; `POST/GET/DELETE /local/sesion` | Propietario para crear; cuenta operativa para ingresar |
+| Administración | `POST/GET/DELETE /administradores/sesion`; consultas de solicitudes, documentos y establecimientos | Administrador |
+| Resolución vigente en pantalla | `POST /administradores/solicitudes/{id}/resolucion` | Administrador |
+| Operaciones anteriores conservadas | `POST /administradores/documentos/{id}/revision`; `POST /administradores/solicitudes/{id}/decision` | Administrador; detalle debajo |
+| Publicación y panel | `GET/POST /local/packs`, `POST /local/publicaciones`, `POST /local/ofertas`, `GET /local/resumen` | Cuenta operativa |
+| Catálogo | `GET /ofertas`, `GET /ofertas/{id}` | Consulta pública de API; el portal exige sesión |
+| Compra remota | `POST /compras`, `POST /compras/lote`, `GET /compras/mias` | Persona |
+| Compra presencial | `POST /compras/presenciales`, `POST /compras/presenciales/efectivo` | Persona y token de la oferta |
+| Entrega y efectivo | `GET /local/recojos/{codigo}`, `POST /local/recojos/{codigo}/confirmar`, `POST /local/efectivo/{codigo}/confirmar` | Cuenta del local correspondiente |
+| Cancelación y reseña | `POST /compras/{reservaId}/cancelar`, `POST /compras/{reservaId}/resena`, `POST /compras/{reservaId}/resena/omitir` | Consumidor de la compra |
+| Notificaciones | `GET /notificaciones`; `POST /notificaciones/leer-todas`; `POST /notificaciones/{id}/leer` | Persona destinataria |
 
-Las versiones compatibles son administradas por Spring Boot 4.1.1. Los identificadores técnicos se mantienen en el `pom.xml`; no se declararán versiones individuales salvo que exista una necesidad técnica comprobada.
+En administración, `administrador.js` llama a `/resolucion`: presenta datos de solo lectura y envía resultados y observaciones juntos. Las rutas anteriores siguen permitiendo revisar por separado y, mediante `RevisionRequest`, cambiar tipo, número y fechas. Las pruebas existentes y `DatosDemoH2` invocan directamente servicios de ese recorrido; no se acreditó un inventario de clientes HTTP externos. D5 / DEC-055 exige conservarlas temporalmente; su eliminación necesita evaluación de compatibilidad.
 
-### Dependencias transitivas principales
+## Persistencia y entornos
 
-| Componente incorporado | Dependencia directa que lo aporta | Función |
+Las [31 entidades](decisiones/MODELO_DOMINIO.md) y dos asociaciones muchos a muchos describen un esquema de 33 tablas de aplicación. Esto no acredita su coincidencia con diagramas externos.
+
+| Perfil | Datos y esquema | Uso |
 |---|---|---|
-| Spring Framework y Spring MVC | Spring Web MVC | Controladores, inyección de dependencias y procesamiento HTTP. |
-| Apache Tomcat | Spring Web MVC | Servidor HTTP embebido en el backend. |
-| Jackson | Spring Web MVC | Conversión entre objetos Java y JSON. |
-| Hibernate ORM | Spring Data JPA | Implementación de JPA y generación de operaciones SQL. |
-| Spring Data JPA | Spring Data JPA | Creación de repositories y consultas de persistencia. |
-| HikariCP | Spring Data JPA | Administración eficiente de conexiones a la base de datos. |
-| Hibernate Validator | Spring Validation | Ejecución de las reglas de validación. |
-| SLF4J y Logback | Spring Boot | Registro de mensajes, advertencias y errores. |
-| JUnit Jupiter, Mockito y AssertJ | Spring Boot Starter Test | Pruebas automatizadas. |
+| `mysql` | Base `sazloop`, `ddl-auto=update`; conserva datos | Perfil activo por defecto en `application.properties` |
+| `dev` | H2 en memoria, `ddl-auto=create-drop`; consola H2 habilitada | Desarrollo temporal |
+| `dev,demo` | H2 y carga ficticia de `DatosDemoH2`; archivos demo bajo `target` | Demostración; el cargador requiere ambos perfiles |
 
-Las versiones transitivas deben verificarse con el árbol resuelto de Maven; no se fijan aquí versiones que esta revisión no pudo resolver. Esta tabla registra los componentes principales que el equipo debe conocer; no intenta repetir cada archivo JAR descargado. El árbol completo y vigente puede consultarse desde la carpeta del backend con `mvnw.cmd dependency:tree` en Windows o `sh mvnw dependency:tree` en Linux y macOS.
+`spring.jpa.open-in-view=false`: las lecturas de relaciones necesarias para una respuesta deben completarse dentro del servicio. `@Transactional` agrupa operaciones; los repositorios bloquean ofertas, reservas, códigos o locales en los puntos previstos. Estos controles no sustituyen pruebas de concurrencia real ni acreditan MySQL por haber probado H2.
 
-## Módulos propuestos
+Los documentos privados se guardan por defecto en `data/documentos`, fuera de los recursos web; `sazloop.documentos.directorio` permite elegir otra ruta. Se admiten archivos no vacíos de hasta 10 MB y se reconocen cabeceras de PDF, PNG y JPG. Los propietarios solo descargan documentos de su local y los administradores usan sus rutas autorizadas. Esto no equivale a validar el contenido legal del archivo. La foto de perfil se guarda en la entidad Usuario, admite PNG/JPG y tiene un límite propio de 2 MB.
 
-| Módulo | Responsabilidad |
-|---|---|
-| `identidad` | Usuarios, perfiles, empresas, establecimientos y cuentas operativas. |
-| `afiliacion` | Solicitudes, documentos, revisiones, aprobaciones y suspensiones. |
-| `ofertas` | Packs, ofertas, variantes, alérgenos y restricciones. |
-| `reservas` | Retenciones de stock, reservas, detalles, códigos de recojo y entregas. |
-| `transacciones` | Pagos, boletas simuladas, cancelaciones, reembolsos y comisiones. |
-| `experiencia` | Reseñas, notificaciones e impacto ambiental. |
-| `shared` | Configuración y componentes técnicos reutilizados por varios módulos. |
+## Acceso, tareas automáticas y límites
 
-## Propiedad funcional de los módulos
+- Las contraseñas se derivan con PBKDF2-HMAC-SHA256, sal individual y 210 000 iteraciones en `CodificadorContrasena`.
+- Una sesión HTTP guarda atributos independientes para persona, local y administrador. `SesionesPorRol` cambia el identificador al ingresar y solo invalida toda la sesión cuando no quedan roles conectados. Las cookies se configuran como `HttpOnly` y `SameSite=Lax`.
+- La cuenta del local suspendido sigue permitiendo entregar compras pagadas; la búsqueda y nuevas compras/publicaciones se restringen por el estado del local.
+- La provisión administrativa normal usa propiedades y solo crea una cuenta si su correo no existe. En demo se utiliza el cargador ficticio. No hay registro público de administradores.
+- Vencimiento de reservas y liberación de retenciones: revisión cada 60 segundos. Vigencia documental: primera revisión a los 15 segundos y después cada 60 segundos, configurables. El cambio de estado puede producirse en la siguiente revisión; no implica una ejecución exacta al segundo del vencimiento.
+- Las fechas de vigencia y los períodos del panel usan `America/Lima`; varias marcas de tiempo usan la zona de la JVM y el navegador interpreta fechas sin zona. Para pruebas se debe fijar la zona de Perú; la uniformidad entre zonas sigue por verificar.
 
-| Módulo | Responsable principal |
-|---|---|
-| `identidad` | Emanuel |
-| `afiliacion` | Daniel |
-| `ofertas` | Franco |
-| `reservas` | Piero |
-| `transacciones` | Alejandro |
-| `experiencia` | Alejandro |
-
-Cada responsable conoce y modifica las clases de su módulo. Los demás módulos pueden relacionarse con ellas mediante asociaciones y servicios acordados, pero no cambiarán su funcionamiento interno sin coordinación.
-
-El módulo `shared` no pertenece a un rubro del negocio. Sus cambios técnicos deberán ser revisados por Daniel y Franco para evitar que se convierta en una carpeta de código mezclado.
-
-Las 31 clases y sus razones están explicadas en [MODELO_DOMINIO.md](decisiones/MODELO_DOMINIO.md).
-
-## Capas dentro de cada módulo
-
-| Capa | Responsabilidad |
-|---|---|
-| `controller` | Recibe solicitudes HTTP, valida la entrada básica y devuelve respuestas. |
-| `service` | Coordina los casos de uso y aplica las reglas del negocio. |
-| `repository` | Consulta y guarda información mediante JPA. |
-| `domain` | Contiene las clases y reglas propias del negocio. |
-| `dto` | Transporta datos de entrada y salida sin exponer directamente las entidades. |
-
-## Reglas de dependencia
-
-- El frontend nunca accederá directamente a MySQL.
-- Un controller delegará las operaciones al service.
-- Los controllers no contendrán decisiones importantes del negocio.
-- Los repositories no decidirán reglas de cancelación, stock o aprobación.
-- El dominio no dependerá del frontend.
-- Las funciones compartidas no deben convertirse en un lugar para colocar código sin organización.
-- Una comunicación entre módulos deberá realizarse mediante servicios claros, no accediendo indiscriminadamente a sus repositories.
-- Una relación entre clases de módulos diferentes no cambia la propiedad de esas clases.
-- Los cambios que afecten el contrato entre dos módulos deberán ser revisados por ambos responsables.
-- Las operaciones que afecten reserva, pago y stock deberán ejecutarse mediante transacciones.
-
-## Organización prevista del backend
-
-```text
-backend/
-└── src/
-    ├── main/
-    │   ├── java/com/sazloop/
-    │   │   ├── identidad/
-    │   │   ├── afiliacion/
-    │   │   ├── ofertas/
-    │   │   ├── reservas/
-    │   │   ├── transacciones/
-    │   │   ├── experiencia/
-    │   │   └── shared/
-    │   └── resources/
-    └── test/
-```
-
-Cada módulo podrá contener las capas que realmente necesite. No se crearán carpetas vacías únicamente para cumplir una forma visual.
-
-## Comunicación prevista
-
-```mermaid
-flowchart LR
-    A["Frontend mobile-first"] --> B["API REST"]
-    B --> C["Módulos del backend"]
-    C --> D["Spring Data JPA"]
-    D --> E["MySQL"]
-```
-
-## Seguridad y privacidad inicial
-
-- Las cuentas administrativas no tendrán registro público.
-- Los accesos se limitarán según el perfil del usuario.
-- Las contraseñas deberán almacenarse de forma segura.
-- Los archivos de los establecimientos serán privados.
-- El consumidor solo verá el estado de verificación, no los documentos originales.
-- No se guardarán credenciales ni secretos dentro del repositorio.
-
-## Base del primer avance
-
-El avance 1 estableció el proyecto Spring Boot, la estructura modular, las clases de dominio y la configuración inicial de persistencia. El estado actual del código se documenta en [tareas/ESTADO_ACTUAL.md](tareas/ESTADO_ACTUAL.md).
+Debe mantenerse la regla de no versionar secretos. La configuración actual contiene credenciales literales de MySQL y administración; su retirada o rotación está pendiente y no se reproduce aquí ningún valor. Tampoco debe interpretarse este diseño local como una validación completa de seguridad. Los hallazgos y la evidencia de ejecución están en [Auditorías](../auditoria/).
