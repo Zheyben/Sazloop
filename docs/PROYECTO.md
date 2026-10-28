@@ -2,7 +2,7 @@
 
 Sazloop es el proyecto académico N.º 91, «SalvemosLaComida», del curso Desarrollo Web Integrado. Conecta establecimientos con consumidores de Lima Metropolitana para vender excedentes aptos para consumo en packs sorpresa con recojo presencial y pagos simulados.
 
-El objetivo es reducir desperdicio mediante una plataforma que permita gestionar personas, empresas y locales, revisar su afiliación y completar compra, pago simulado, cancelación y entrega con control de stock. El trabajo comprende diseño de arquitectura, modelo y pantallas, implementación y validación. El problema y la delimitación proceden de la documentación académica anterior; no acreditan un estudio de campo ni pérdidas confirmadas de negocios concretos.
+El objetivo es reducir desperdicio de alimentos mediante una plataforma que permita gestionar personas, empresas y locales, revisar su afiliación y completar compra, pago simulado, cancelación y entrega con control de stock. El trabajo comprende diseño de arquitectura, modelo y pantallas, implementación y validación.
 
 ## Dónde consultar cada tema
 
